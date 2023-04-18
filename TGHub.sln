@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGHub", "TGHub\TGHub.csproj", "{6F331444-2D41-49CC-8845-AA7D8230C0EA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{2DCA1FFD-CD5A-4215-B54F-1793EF3E2B64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7B35E04C-E72F-48B5-B039-402FD1188C0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{A904E7E7-94CC-4030-A27C-AA2667958153}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F7048AA1-B3CD-417B-BDEE-2FC8CFC1A591}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGHub.Blazor", "TGHub.Blazor\TGHub.Blazor.csproj", "{ADF3E503-06E4-4D69-89F4-7BE9BC37D7C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +19,16 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6F331444-2D41-49CC-8845-AA7D8230C0EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F331444-2D41-49CC-8845-AA7D8230C0EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F331444-2D41-49CC-8845-AA7D8230C0EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F331444-2D41-49CC-8845-AA7D8230C0EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF3E503-06E4-4D69-89F4-7BE9BC37D7C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADF3E503-06E4-4D69-89F4-7BE9BC37D7C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADF3E503-06E4-4D69-89F4-7BE9BC37D7C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADF3E503-06E4-4D69-89F4-7BE9BC37D7C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ADF3E503-06E4-4D69-89F4-7BE9BC37D7C4} = {2DCA1FFD-CD5A-4215-B54F-1793EF3E2B64}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7B86EB1-28F0-47DA-881B-4D99299CC35C}

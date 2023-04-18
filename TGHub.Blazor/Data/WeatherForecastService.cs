@@ -1,4 +1,4 @@
-namespace TGHub.Data
+namespace TGHub.Blazor.Data
 {
     public class WeatherForecastService
     {
