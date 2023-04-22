@@ -5,13 +5,13 @@ using Telegram.Bot.Types.Enums;
 
 namespace TGHub.WebApiCore.Controllers.Telegram;
 
-[Route("bot")]
+[Route("api/[controller]")]
 [ApiController]
-public class TelegramController : ControllerBase
+public class BotController : ControllerBase
 {
     private readonly ITelegramBotClient _telegramBotClient;
 
-    public TelegramController(ITelegramBotClient telegramBotClient)
+    public BotController(ITelegramBotClient telegramBotClient)
     {
         _telegramBotClient = telegramBotClient;
     }

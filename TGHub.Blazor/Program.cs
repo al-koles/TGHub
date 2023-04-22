@@ -14,7 +14,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddControllers()
     .AddNewtonsoftJson()
-    .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(TelegramController).Assembly));
+    .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(BotController).Assembly));
 builder.Services.AddSingleton<WeatherForecastService>();
 
 var app = builder.Build();
