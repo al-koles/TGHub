@@ -1,0 +1,18 @@
+﻿@inject NavigationManager NavigationManager
+
+<AuthorizeView>
+    <button class="px-2 py-1 border rounded hover:bg-gray-700/ text-slate-50"
+            @onclick="@LogOut">
+        Log out
+    </button>
+</AuthorizeView>
+
+@code {
+
+    private void LogOut()
+    {
+        var redirectUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.NavigateTo($"/api/auth/logout?redirectUrl={redirectUrl}", true);
+    }
+    
+}

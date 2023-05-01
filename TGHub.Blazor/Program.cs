@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using TGHub.Blazor.Data;
 using TGHub.Blazor.Extensions;
@@ -15,7 +16,11 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddControllers()
     .AddNewtonsoftJson()
     .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(BotController).Assembly));
+
 builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
 
 var app = builder.Build();
 
@@ -32,6 +37,9 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
