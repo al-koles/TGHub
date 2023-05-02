@@ -11,4 +11,14 @@
       <PackageReference Include="Telegram.Bot" Version="18.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Authentication.Cookies">
+        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.16\Microsoft.AspNetCore.Authentication.Cookies.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TGHub.Application\TGHub.Application.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,9 @@
+using System.Reflection;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using TGHub.Application;
+using TGHub.Application.Common.Mappings;
+using TGHub.Application.Services.Auth;
 using TGHub.Blazor.Data;
 using TGHub.Blazor.Extensions;
 using TGHub.WebApiCore;
@@ -6,20 +11,30 @@ using TGHub.WebApiCore.Controllers.Telegram;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddOptions(builder.Configuration);
-builder.Services.AddTelegramBotClient();
-
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddControllers()
     .AddNewtonsoftJson()
-    .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(TelegramController).Assembly));
+    .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(BotController).Assembly));
+
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddOptions(builder.Configuration);
+builder.Services.AddTelegramBotClient();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddApplication();
+builder.Services.AddScoped<UserSession>();
+builder.Services.AddAutoMapper(opt =>
+{
+    opt.AddProfiles(new[]
+    {
+        new AssemblyMappingProfile(Assembly.GetExecutingAssembly()),
+        new AssemblyMappingProfile(Assembly.GetAssembly(typeof(BotController))!),
+        new AssemblyMappingProfile(Assembly.GetAssembly(typeof(AssemblyMappingProfile))!)
+    });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -32,6 +47,9 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

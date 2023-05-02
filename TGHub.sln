@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGHub.WebApiCore", "TGHub.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGHub.Domain", "TGHub.Domain\TGHub.Domain.csproj", "{308F4CB4-7C30-4723-8ACB-E85A275C6771}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGHub.Application", "TGHub.Application\TGHub.Application.csproj", "{5AD5D5B2-B75D-48D6-BD00-5FC9CD89EF00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{308F4CB4-7C30-4723-8ACB-E85A275C6771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{308F4CB4-7C30-4723-8ACB-E85A275C6771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{308F4CB4-7C30-4723-8ACB-E85A275C6771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AD5D5B2-B75D-48D6-BD00-5FC9CD89EF00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AD5D5B2-B75D-48D6-BD00-5FC9CD89EF00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AD5D5B2-B75D-48D6-BD00-5FC9CD89EF00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AD5D5B2-B75D-48D6-BD00-5FC9CD89EF00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{ADF3E503-06E4-4D69-89F4-7BE9BC37D7C4} = {2DCA1FFD-CD5A-4215-B54F-1793EF3E2B64}
 		{B9A2880B-67A7-4EC0-A674-27BEC68E4461} = {2DCA1FFD-CD5A-4215-B54F-1793EF3E2B64}
 		{308F4CB4-7C30-4723-8ACB-E85A275C6771} = {7B35E04C-E72F-48B5-B039-402FD1188C0B}
+		{5AD5D5B2-B75D-48D6-BD00-5FC9CD89EF00} = {7B35E04C-E72F-48B5-B039-402FD1188C0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7B86EB1-28F0-47DA-881B-4D99299CC35C}
