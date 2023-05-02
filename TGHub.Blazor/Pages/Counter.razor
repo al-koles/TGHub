@@ -1,6 +1,10 @@
 ﻿@page "/counter"
+@using TGHub.Application.Services.Auth
+@using JsonSerializer = System.Text.Json.JsonSerializer
 
 @attribute [Authorize]
+
+@inject UserSession UserSession
 
 <PageTitle>Counter</PageTitle>
 
@@ -10,11 +14,33 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<p>User: @(UserSessionString())</p>
+
 @code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authStateTask { get; set; }
+    
     private int currentCount = 0;
 
     private void IncrementCount()
     {
         currentCount++;
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tgid = UserSession.TelegramId;
+        if (authStateTask is not null)
+        {
+            var authState = await authStateTask;
+            var user = authState.User.Claims.ToList();
+        }
+    }
+
+    private string UserSessionString()
+    {
+        return JsonSerializer.Serialize(UserSession);
+    }
+
 }

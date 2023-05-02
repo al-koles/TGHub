@@ -1,0 +1,84 @@
+﻿@page "/login-callback"
+@using TGHub.WebApiCore.Options
+@using Microsoft.Extensions.Options
+@using TGHub.Application.Services.Auth
+@using Microsoft.AspNetCore.WebUtilities
+@using System.Security.Cryptography
+@using System.Text
+@using TGHub.Blazor.Shared.Loaders
+
+@inject IOptionsSnapshot<TelegramBotOptions> BotOptions
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<ElementLoader/>
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string RedirectUrl { get; set; } = null!;
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "first_name")]
+    public string? FirstName { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "last_name")]
+    public string? LastName { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? UserName { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "photo_url")]
+    public string? PhotoUrl { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auth_date")]
+    public string? AuthDate { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string Hash { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ValidateCallback())
+        {
+            var userSession = new UserSession
+            {
+                TelegramId = Id.ToString(),
+                FirstName = FirstName,
+                LastName = LastName,
+                UserName = UserName,
+                PhotoUrl = PhotoUrl,
+                AuthDate = AuthDate
+            };
+            await ((CustomAuthStateProvider)AuthenticationStateProvider).LoginAsync(userSession);
+            NavigationManager.NavigateTo($"/{RedirectUrl}", true);
+        }
+    }
+
+    private bool ValidateCallback()
+    {
+        var queryString = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query;
+        var query = QueryHelpers.ParseQuery(queryString);
+
+        var dataCheckString = string.Join("\n",
+            query.Where(p => p.Key != "hash" && p.Key != "redirectUrl")
+                .Select(p => $"{p.Key}={p.Value}")
+                .OrderBy(p => p));
+        var secretKey = SHA256.HashData(Encoding.UTF8.GetBytes(BotOptions.Value.Token));
+        var checkHash = BitConverter.ToString(HMACSHA256.HashData(secretKey, Encoding.UTF8.GetBytes(dataCheckString)))
+            .Replace("-", "").ToLower();
+
+        return checkHash == Hash;
+    }
+
+}

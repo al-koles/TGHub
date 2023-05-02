@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGHub.WebApiCore", "TGHub.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGHub.Domain", "TGHub.Domain\TGHub.Domain.csproj", "{308F4CB4-7C30-4723-8ACB-E85A275C6771}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{5AD5D5B2-B75D-48D6-BD00-5FC9CD89EF00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGHub.Application", "TGHub.Application\TGHub.Application.csproj", "{5AD5D5B2-B75D-48D6-BD00-5FC9CD89EF00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

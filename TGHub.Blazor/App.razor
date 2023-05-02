@@ -11,7 +11,7 @@
                     @if (context.User.Identity?.IsAuthenticated == false)
                     {
                         var redirectUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-                        <Redirect To="@($"/Login?redirectUrl={redirectUrl}")"/>
+                        <Redirect To="@($"/login?redirectUrl={redirectUrl}")"/>
                     }
                     else
                     {
