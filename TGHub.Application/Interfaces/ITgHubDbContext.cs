@@ -18,5 +18,6 @@ public interface ITgHubDbContext
     DbSet<PostButton> PostButtons { get; set; }
     DbSet<TgHubUser> Users { get; set; }
 
-    Task<int> SaveChangesAsync();
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    DbSet<TEntity> Set<TEntity>() where TEntity : class;
 }

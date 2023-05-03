@@ -5,10 +5,17 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Security.Cryptography
 @using System.Text
+@using AutoMapper
+@using TGHub.Application.Services.User
 @using TGHub.Blazor.Shared.Loaders
+@using TGHub.Domain.Entities
 
 @inject IOptionsSnapshot<TelegramBotOptions> BotOptions
 @inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inject IMapper Mapper
+@inject IToastService ToastService
+@inject ILogger<LoginCallback> Logger
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <ElementLoader/>
@@ -21,7 +28,7 @@
 
     [Parameter]
     [SupplyParameterFromQuery]
-    public int Id { get; set; }
+    public string Id { get; set; } = null!;
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "first_name")]
@@ -47,21 +54,31 @@
     [SupplyParameterFromQuery]
     public string Hash { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (ValidateCallback())
+        if (firstRender)
         {
-            var userSession = new UserSession
+            if (ValidateCallback())
             {
-                TelegramId = Id.ToString(),
-                FirstName = FirstName,
-                LastName = LastName,
-                UserName = UserName,
-                PhotoUrl = PhotoUrl,
-                AuthDate = AuthDate
-            };
-            await ((CustomAuthStateProvider)AuthenticationStateProvider).LoginAsync(userSession);
-            NavigationManager.NavigateTo($"/{RedirectUrl}", true);
+                var userSession = GetUserSession();
+                try
+                {
+                    await UpdateUserDataAndLoginAsync(userSession);
+                    NavigationManager.NavigateTo($"/{RedirectUrl}", true);
+                    ToastService.ShowSuccess($"Welcome back {FirstName}!");
+                }
+                catch (Exception e)
+                {
+                    ToastService.ShowError("Login error. Please try again.");
+                    NavigationManager.NavigateTo("/login", true);
+                    Logger.LogError("Login error. {0}", e.Message);
+                }
+            }
+            else
+            {
+                ToastService.ShowError("Invalid data. Please try again.");
+                NavigationManager.NavigateTo("/login", true);
+            }
         }
     }
 
@@ -79,6 +96,38 @@
             .Replace("-", "").ToLower();
 
         return checkHash == Hash;
+    }
+
+    private UserSession GetUserSession()
+    {
+        return new UserSession
+        {
+            TelegramId = Id,
+            FirstName = FirstName,
+            LastName = LastName,
+            UserName = UserName,
+            PhotoUrl = PhotoUrl,
+            AuthDate = AuthDate
+        };
+    }
+
+    private async Task UpdateUserDataAndLoginAsync(UserSession userSession)
+    {
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+
+        var user = await userService.FirsOrDefaultAsync(u => u.TelegramId == userSession.TelegramId);
+        if (user == null)
+        {
+            var userId = await userService.CreateAsync(Mapper.Map<TgHubUser>(userSession));
+            userSession.Id = userId;
+        }
+        else
+        {
+            Mapper.Map(userSession, user);
+            await userService.UpdateAsync(user);
+        }
+        await ((CustomAuthStateProvider)AuthenticationStateProvider).LoginAsync(userSession);
     }
 
 }

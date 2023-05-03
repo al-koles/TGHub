@@ -23,11 +23,6 @@ public class TgHubDbContext : DbContext, ITgHubDbContext
     public DbSet<PostButton> PostButtons { get; set; } = null!;
     public DbSet<TgHubUser> Users { get; set; } = null!;
 
-    public Task<int> SaveChangesAsync()
-    {
-        return base.SaveChangesAsync();
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(TgHubDbContext).Assembly);
