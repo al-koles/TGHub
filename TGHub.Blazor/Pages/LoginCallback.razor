@@ -124,6 +124,7 @@
         }
         else
         {
+            userSession.Id = user.Id;
             Mapper.Map(userSession, user);
             await userService.UpdateAsync(user);
         }
