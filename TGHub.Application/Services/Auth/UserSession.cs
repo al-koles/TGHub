@@ -1,8 +1,11 @@
 ﻿using System.Security.Claims;
+using AutoMapper;
+using TGHub.Application.Common.Mappings;
+using TGHub.Domain.Entities;
 
 namespace TGHub.Application.Services.Auth;
 
-public class UserSession
+public class UserSession : IMapWith<TgHubUser>
 {
     public int Id { get; set; }
     public string TelegramId { get; set; } = null!;
@@ -16,6 +19,13 @@ public class UserSession
     public string? PhotoUrl { get; set; }
 
     public string? AuthDate { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<UserSession, TgHubUser>()
+            .ForMember(dst => dst.Id,
+                opt => opt.Ignore());
+    }
 
     public List<Claim> ToClaims()
     {

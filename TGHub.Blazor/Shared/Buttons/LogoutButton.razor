@@ -2,6 +2,8 @@
 @using TGHub.Blazor.Shared.Loaders
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IToastService ToastService
+@inject ILogger<LogoutButton> Logger
 
 <AuthorizeView>
     <button class="px-2 py-1 border rounded hover:bg-gray-700/ text-slate-50"
@@ -24,6 +26,12 @@
         {
             _isLoading = true;
             await ((CustomAuthStateProvider)AuthenticationStateProvider).LogoutAsync();
+            ToastService.ShowInfo("You logged out");
+        }
+        catch(Exception e)
+        {
+            ToastService.ShowError("Logout error. Please try again.");
+            Logger.LogError("Login error. {0}", e.Message);
         }
         finally
         {
