@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\TGHub.Application\TGHub.Application.csproj" />
+    </ItemGroup>
+
 </Project>
