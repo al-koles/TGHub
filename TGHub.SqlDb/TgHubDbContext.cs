@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TGHub.Application.Interfaces;
 using TGHub.Domain.Entities;
 
@@ -23,7 +22,7 @@ public class TgHubDbContext : DbContext, ITgHubDbContext
     public DbSet<PostAttachment> PostAttachments { get; set; } = null!;
     public DbSet<PostButton> PostButtons { get; set; } = null!;
     public DbSet<TgHubUser> Users { get; set; } = null!;
-    
+
     public Task<int> SaveChangesAsync()
     {
         return base.SaveChangesAsync();

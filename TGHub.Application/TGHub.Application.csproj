@@ -7,19 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Authentication.Abstractions" />
-      <Reference Include="Microsoft.AspNetCore.Authentication.Cookies">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.16\Microsoft.AspNetCore.Authentication.Cookies.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.AspNetCore.Components.Authorization">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.16\Microsoft.AspNetCore.Components.Authorization.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.16\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="AutoMapper" Version="12.0.1" />
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
       <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
@@ -31,6 +18,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TGHub.Domain\TGHub.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Common\Options" />
     </ItemGroup>
 
 </Project>

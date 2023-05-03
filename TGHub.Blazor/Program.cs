@@ -6,6 +6,7 @@ using TGHub.Application.Common.Mappings;
 using TGHub.Application.Services.Auth;
 using TGHub.Blazor.Data;
 using TGHub.Blazor.Extensions;
+using TGHub.SqlDb;
 using TGHub.WebApiCore;
 using TGHub.WebApiCore.Controllers.Telegram;
 
@@ -22,6 +23,7 @@ builder.Services.AddOptions(builder.Configuration);
 builder.Services.AddTelegramBotClient();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddApplication();
+builder.Services.AddSqlDb(builder.Configuration["ConnectionStrings:DefaultConnection"]);
 builder.Services.AddScoped<UserSession>();
 builder.Services.AddAutoMapper(opt =>
 {
@@ -54,5 +56,7 @@ app.UseAuthorization();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapControllers();
+
+await app.MigrateDbContextIfNecessaryAsync<TgHubDbContext>();
 
 app.Run();

@@ -12,10 +12,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.16" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Include="EntityConfigurations\PostAttachmentConfiguration.cs" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.16" />
     </ItemGroup>
 
 </Project>
