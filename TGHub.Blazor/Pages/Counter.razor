@@ -1,6 +1,7 @@
 ﻿@page "/counter"
 @using TGHub.Application.Services.Auth
 @using JsonSerializer = System.Text.Json.JsonSerializer
+@using TGHub.Blazor.Shared.Components
 
 @attribute [Authorize]
 
@@ -16,12 +17,18 @@
 
 <p>User: @(UserSessionString())</p>
 
+<p>Current value: @UserSession.FirstName</p>
+<EditForm Model="@UserSession">
+    <MyInputText @bind-Value="@UserSession.FirstName"/>
+</EditForm>
+
 @code {
 
     [CascadingParameter]
     private Task<AuthenticationState>? authStateTask { get; set; }
     
     private int currentCount = 0;
+    private string inputString;
 
     private void IncrementCount()
     {
