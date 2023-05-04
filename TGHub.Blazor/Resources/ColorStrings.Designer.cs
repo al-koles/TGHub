@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TGHub.Application.Resourses {
+namespace TGHub.Blazor.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace TGHub.Application.Resourses {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class NotificationStrings {
+    public class ColorStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal NotificationStrings() {
+        internal ColorStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace TGHub.Application.Resourses {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TGHub.Application.Resourses.NotificationStrings", typeof(NotificationStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TGHub.Blazor.Resources.ColorStrings", typeof(ColorStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,56 @@ namespace TGHub.Application.Resourses {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello.
+        ///   Looks up a localized string similar to #fafaf0.
         /// </summary>
-        public static string Greeting {
+        public static string C0 {
             get {
-                return ResourceManager.GetString("Greeting", resourceCulture);
+                return ResourceManager.GetString("C0", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello world.
+        ///   Looks up a localized string similar to #e6e6d5.
         /// </summary>
-        public static string Test {
+        public static string C1 {
             get {
-                return ResourceManager.GetString("Test", resourceCulture);
+                return ResourceManager.GetString("C1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #5b5b5d.
+        /// </summary>
+        public static string C2 {
+            get {
+                return ResourceManager.GetString("C2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #627a77.
+        /// </summary>
+        public static string C3 {
+            get {
+                return ResourceManager.GetString("C3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #699991.
+        /// </summary>
+        public static string C4 {
+            get {
+                return ResourceManager.GetString("C4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #70b8ab.
+        /// </summary>
+        public static string C5 {
+            get {
+                return ResourceManager.GetString("C5", resourceCulture);
             }
         }
     }

@@ -117,16 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExceptionDev" xml:space="preserve">
-    <value>An unhandled exception has occurred. See browser dev tools for details.</value>
+  <data name="C0" xml:space="preserve">
+    <value>#fafaf0</value>
   </data>
-  <data name="ExceptionProd" xml:space="preserve">
-    <value>An error has occurred. This application may no longer respond until reloaded.</value>
+  <data name="C1" xml:space="preserve">
+    <value>#e6e6d5</value>
   </data>
-  <data name="LogoutInstruction" xml:space="preserve">
-    <value>If you want to login with another account go to Telegram app or website, find chat with Telegram service notifications and click "Terminate session" button.</value>
+  <data name="C2" xml:space="preserve">
+    <value>#5b5b5d</value>
   </data>
-  <data name="Reload" xml:space="preserve">
-    <value>Reload</value>
+  <data name="C3" xml:space="preserve">
+    <value>#627a77</value>
+  </data>
+  <data name="C4" xml:space="preserve">
+    <value>#699991</value>
+  </data>
+  <data name="C5" xml:space="preserve">
+    <value>#70b8ab</value>
   </data>
 </root>

@@ -1,12 +1,14 @@
 ﻿@using TGHub.Blazor.Shared.Components
+@using TGHub.Application.Resources
 
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<UiStrings> UiStringsLoc
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <Authorizing>Authorizing</Authorizing>
+                <Authorizing>@UiStringsLoc[nameof(UiStrings.Authorizing)]</Authorizing>
                 <NotAuthorized>
                     @if (context.User.Identity?.IsAuthenticated == false)
                     {
@@ -15,7 +17,7 @@
                     }
                     else
                     {
-                        <p>You don't have access to this resource.</p>
+                        <p>@UiStringsLoc[nameof(UiStrings.AccessDenied)]</p>
                     }
                 </NotAuthorized>
             </AuthorizeRouteView>
@@ -24,7 +26,7 @@
         <NotFound>
             <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <p role="alert">@UiStringsLoc[nameof(UiStrings.NotFound)]</p>
             </LayoutView>
         </NotFound>
     </Router>
