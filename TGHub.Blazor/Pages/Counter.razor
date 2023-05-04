@@ -29,6 +29,8 @@
     <CultureSelector/>
 </div>
 
+<button @onclick="@(() => throw new Exception())">Throw</button>
+
 @code {
 
     [CascadingParameter]

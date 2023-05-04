@@ -61,11 +61,38 @@ namespace TGHub.Application.Resourses {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ui string.
+        ///   Looks up a localized string similar to An unhandled exception has occurred. See browser dev tools for details..
         /// </summary>
-        public static string UiStr {
+        public static string ExceptionDev {
             get {
-                return ResourceManager.GetString("UiStr", resourceCulture);
+                return ResourceManager.GetString("ExceptionDev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error has occurred. This application may no longer respond until reloaded..
+        /// </summary>
+        public static string ExceptionProd {
+            get {
+                return ResourceManager.GetString("ExceptionProd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you want to login with another account go to Telegram app or website, find chat with Telegram service notifications and click &quot;Terminate session&quot; button..
+        /// </summary>
+        public static string LogoutInstruction {
+            get {
+                return ResourceManager.GetString("LogoutInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload.
+        /// </summary>
+        public static string Reload {
+            get {
+                return ResourceManager.GetString("Reload", resourceCulture);
             }
         }
     }

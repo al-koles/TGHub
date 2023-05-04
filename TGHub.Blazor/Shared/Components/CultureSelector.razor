@@ -2,17 +2,15 @@
 @using TGHub.Application
 @inject NavigationManager Navigation
 
-<p>
-    <label>
-        Select your locale:
-        <select @bind="Culture">
-            @foreach (var culture in _supportedCultures)
-            {
-                <option value="@culture">@culture.DisplayName</option>
-            }
-        </select>
-    </label>
-</p>
+<div class="px-3 py-2 flex items-center gap-1 rounded-full bg-[#54a9eb] text-white">
+    <i class="fa-solid fa-language fa-xl mt-0.5"></i>
+    <select @bind="Culture" class="bg-inherit">
+        @foreach (var culture in _supportedCultures)
+        {
+            <option class="bg-white text-black" value="@culture">@culture.DisplayName</option>
+        }
+    </select>
+</div>
 
 @code
 {
