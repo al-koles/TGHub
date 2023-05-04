@@ -35,6 +35,7 @@ builder.Services.AddAutoMapper(opt =>
         new AssemblyMappingProfile(typeof(AssemblyMappingProfile).Assembly)
     });
 });
+builder.Services.AddLocalization();
 
 var app = builder.Build();
 
@@ -50,6 +51,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseLocalization();
 
 app.UseAuthentication();
 app.UseAuthorization();

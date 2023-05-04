@@ -1,0 +1,49 @@
+﻿@using System.Globalization
+@using TGHub.Application
+@inject NavigationManager Navigation
+
+<p>
+    <label>
+        Select your locale:
+        <select @bind="Culture">
+            @foreach (var culture in _supportedCultures)
+            {
+                <option value="@culture">@culture.DisplayName</option>
+            }
+        </select>
+    </label>
+</p>
+
+@code
+{
+    private readonly CultureInfo[] _supportedCultures = ApplicationConstants.SupportedCultures
+        .Select(c => new CultureInfo(c)).ToArray();
+
+    private CultureInfo _culture = CultureInfo.CurrentCulture;
+
+    protected override void OnInitialized()
+    {
+        Culture = CultureInfo.CurrentCulture;
+    }
+
+    private CultureInfo Culture
+    {
+        get => _culture;
+        set
+        {
+            if (!Equals(CultureInfo.CurrentCulture, value))
+            {
+                _culture = value;
+
+                var uri = new Uri(Navigation.Uri)
+                    .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+                var cultureEscaped = Uri.EscapeDataString(value.Name);
+                var uriEscaped = Uri.EscapeDataString(uri);
+
+                Navigation.NavigateTo(
+                    $"api/Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
+                    true);
+            }
+        }
+    }
+}

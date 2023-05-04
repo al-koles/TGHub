@@ -2,10 +2,12 @@
 @using TGHub.Application.Services.Auth
 @using JsonSerializer = System.Text.Json.JsonSerializer
 @using TGHub.Blazor.Shared.Components
+@using TGHub.Application.Resourses
 
 @attribute [Authorize]
 
 @inject UserSession UserSession
+@inject IStringLocalizer<NotificationStrings> NotificationsLocalizer
 
 <PageTitle>Counter</PageTitle>
 
@@ -21,6 +23,11 @@
 <EditForm Model="@UserSession">
     <MyInputText @bind-Value="@UserSession.FirstName"/>
 </EditForm>
+
+<p>Greeting localized: @NotificationsLocalizer[nameof(NotificationStrings.Greeting)]</p>
+<div>
+    <CultureSelector/>
+</div>
 
 @code {
 
