@@ -53,7 +53,7 @@ public class JwtService : IJwtService
             ValidateIssuer = true,
             ValidIssuer = _jwtOptions.Issuer,
             ValidateAudience = true,
-            ValidAudience = _jwtOptions.Audience,
+            ValidAudience = _jwtOptions.Audience
         };
         var tokenHandler = new JwtSecurityTokenHandler();
 

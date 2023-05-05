@@ -2,13 +2,13 @@
 @using TGHub.WebApiCore.Options
 @using Microsoft.Extensions.Options
 @using TGHub.Application.Services.Auth
-@using Microsoft.AspNetCore.WebUtilities
-@using System.Security.Cryptography
-@using System.Text
-@using AutoMapper
 @using TGHub.Application.Services.User
 @using TGHub.Blazor.Shared.Loaders
 @using TGHub.Domain.Entities
+@using AutoMapper
+@using Microsoft.AspNetCore.WebUtilities
+@using System.Security.Cryptography
+@using System.Text
 
 @inject IOptionsSnapshot<TelegramBotOptions> BotOptions
 @inject NavigationManager NavigationManager
@@ -58,6 +58,11 @@
     {
         if (firstRender)
         {
+            if (await IsAuthenticatedAsync())
+            {
+                NavigationManager.NavigateTo($"/{RedirectUrl}", true);
+                return;
+            }
             if (ValidateCallback())
             {
                 var userSession = GetUserSession();
@@ -80,6 +85,12 @@
                 NavigationManager.NavigateTo("/login", true);
             }
         }
+    }
+
+    private async Task<bool> IsAuthenticatedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        return authState.User.Identity is {IsAuthenticated: true };
     }
 
     private bool ValidateCallback()
