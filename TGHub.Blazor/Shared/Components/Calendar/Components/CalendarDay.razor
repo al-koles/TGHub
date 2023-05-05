@@ -1,0 +1,19 @@
+﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
+<div class="border rounded p-1">
+    @Date.Day
+    <div>
+        @foreach (var calendarEvent in Events)
+        {
+            <CalendarEvent Event="@calendarEvent"/>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public DateTime Date { get; set; }
+
+    [Parameter]
+    public List<CalendarEventModel> Events { get; set; } = new();
+
+}

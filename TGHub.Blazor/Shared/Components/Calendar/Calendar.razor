@@ -1,0 +1,83 @@
+﻿@using System.Globalization
+@using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Blazor.Shared.Components.Calendar.Components
+@using TGHub.Domain.Enums
+<div>
+    <table>
+        <thead>
+        <tr>
+            @foreach (var dayOfWeek in _daysOfWeek)
+            {
+                <th>
+                    @dayOfWeek
+                </th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @for (var i = 0; i < _weeksCount; i++)
+        {
+            var days = _dates.Skip(i * 7).Take(7);
+            <tr>
+                @foreach (var day in days)
+                {
+                    var events = Events.Where(e => e.ReleaseDateTime == day);
+                    <td>
+                        <CalendarDay Date="@day" Events="@events"/>
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    
+    [Parameter]
+    public Month Month { get; set; }
+    
+    [Parameter]
+    public int Year { get; set; }
+
+    [Parameter]
+    public List<CalendarEventModel> Events { get; set; } = new();
+
+    private readonly string[] _daysOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.DayNames;
+    private List<DateTime> _dates = new();
+    private int _weeksCount;
+
+    protected override void OnInitialized()
+    {
+    }
+
+    protected override void OnParametersSet()
+    {
+        _dates.Clear();
+        _dates.AddRange(GetAllCalendarDays());
+        _weeksCount = _dates.Count / 7;
+    }
+
+    private List<DateTime> GetAllCalendarDays()
+    {
+        var calendarDays = new List<DateTime>();
+        
+        var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+        var lastDayOfWeek = ((int)firstDayOfWeek + 6) % 7;
+        
+        var day = new DateTime(Year, (int)Month, 1);
+        while (day.DayOfWeek != firstDayOfWeek)
+        {
+            day = day.AddDays(-1);
+        }
+
+        do
+        {
+            calendarDays.Add(day);
+            day = day.AddDays(1);
+        } while (day.Month <= (int)Month || (int)day.DayOfWeek != lastDayOfWeek);
+
+        return calendarDays;
+    }
+
+}

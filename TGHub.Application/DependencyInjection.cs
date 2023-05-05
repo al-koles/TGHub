@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using TGHub.Application.Services.Auth;
 using TGHub.Application.Services.Jwt;
+using TGHub.Application.Services.Post;
 using TGHub.Application.Services.User;
 
 namespace TGHub.Application;
@@ -15,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
         services.AddTransient<IUserService, UserService>();
+        services.AddTransient<IPostService, PostService>();
         
         return services;
     }

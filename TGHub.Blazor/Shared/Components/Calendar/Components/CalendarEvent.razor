@@ -1,0 +1,17 @@
+﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
+
+<div class="rounded bg-green-200">
+    <h4>
+        @Event.Name
+    </h4>
+    <p>
+        @Event.ReleaseDateTime.ToString("HH:mm")
+    </p>
+</div>
+
+@code {
+
+    [Parameter]
+    public CalendarEventModel Event { get; set; } = new();
+
+}
