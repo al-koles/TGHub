@@ -1,24 +1,24 @@
 ﻿@using Blazored.Toast.Configuration
 @inherits LayoutComponentBase
 
-<PageTitle>TGHub.Blazor</PageTitle>
+<PageTitle>TGHub</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
-<BlazoredToasts 
+<main>
+    <AuthorizeView>
+        <Authorized>
+            <NavMenu/>
+            <div class="max-w-6xl mx-auto py-2 px-4">
+                @Body
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="max-w-6xl mx-auto py-2 px-4">
+                @Body
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+</main>
+<BlazoredToasts
     MaxToastCount="3"
     ShowProgressBar="true"
     Position="ToastPosition.BottomRight"/>

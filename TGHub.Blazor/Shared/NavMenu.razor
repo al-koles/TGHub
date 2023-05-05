@@ -1,45 +1,39 @@
-﻿@using TGHub.Blazor.Shared.Buttons
+﻿@using TGHub.Blazor.Resources
+@using TGHub.Blazor.Shared.Buttons
+@using TGHub.Application.Resources
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">TGHub.Blazor</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+@inject IStringLocalizer<UiStrings> UiStringsLoc
 
-<div>
-    <div class="flex-column">
-        <div class="px-3">
-            <LogoutButton/>
-        </div>
-        <div class="px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home"></span> Home
-            </NavLink>
-        </div>
-        <div class="px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus"></span> Counter
-            </NavLink>
-        </div>
-        <div class="px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich"></span> Fetch data
-            </NavLink>
-        </div>
+<nav class="bg-[@ColorStrings.C3]/40 shadow-md">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex justify-between">
+      <div class="flex">
+        <a href="/" class="flex items-center py-1 px-2 bg-[@ColorStrings.C1]">
+          <img class="h-10 w-auto mr-2" src="/icons/logo_icon_and_name.png" alt="Logo">
+        </a>
+        <ul class="flex flex-wrap items-center ml-4 space-x-4">
+          <li><a href="/" class="text-gray-600 hover:text-gray-800">
+            @UiStringsLoc[nameof(UiStrings.NavDashboard)]
+          </a></li>
+          <li><a href="/lottery" class="text-gray-600 hover:text-gray-800">
+            @UiStringsLoc[nameof(UiStrings.NavLottery)]
+          </a></li>
+          <li><a href="/comments" class="text-gray-600 hover:text-gray-800">
+            @UiStringsLoc[nameof(UiStrings.NavComments)]
+          </a></li>
+          <li><a href="/messages" class="text-gray-600 hover:text-gray-800">
+            @UiStringsLoc[nameof(UiStrings.NavMessages)]
+          </a></li>
+        </ul>
+      </div>
+      <div class="flex items-center">
+        <a href="/profile" class="text-gray-600 hover:text-gray-800 mr-4">Profile</a>
+        <LogoutButton/>
+      </div>
     </div>
-</div>
+  </div>
+</nav>
 
 @code {
-
-    private bool _collapseNavMenu = true;
-
-    private string NavMenuCssClass => _collapseNavMenu ? "collapse" : "";
-
-    private void ToggleNavMenu()
-    {
-        _collapseNavMenu = !_collapseNavMenu;
-    }
+    
 }

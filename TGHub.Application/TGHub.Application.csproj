@@ -24,4 +24,58 @@
       <Folder Include="Common\Options" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\NotificationStrings.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>NotificationStrings.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\UiStrings.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>UiStrings.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resourses\NotificationStrings.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>NotificationStrings.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resourses\UiStrings.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>UiStrings.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resourses\NotificationStrings.uk.resx">
+        <DependentUpon>NotificationStrings.resx</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resourses\UiStrings.uk.resx">
+        <DependentUpon>UiStrings.resx</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\NotificationStrings.uk.resx">
+        <DependentUpon>NotificationStrings.resx</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\UiStrings.uk.resx">
+        <DependentUpon>UiStrings.resx</DependentUpon>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\NotificationStrings.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>NotificationStrings.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\UiStrings.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UiStrings.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resourses\NotificationStrings.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>NotificationStrings.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resourses\UiStrings.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UiStrings.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

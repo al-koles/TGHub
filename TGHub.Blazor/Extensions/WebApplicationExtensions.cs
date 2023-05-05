@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TGHub.Application;
 
 namespace TGHub.Blazor.Extensions;
 
@@ -31,5 +32,16 @@ public static class WebApplicationExtensions
             logger.LogError(e,
                 $"An error occurred while migrating the database used on context {typeof(TDbContext).Name}");
         }
+    }
+
+    public static void UseLocalization(this WebApplication app)
+    {
+        var supportedCultures = ApplicationConstants.SupportedCultures;
+        var localizationOptions = new RequestLocalizationOptions()
+            .SetDefaultCulture(supportedCultures[0])
+            .AddSupportedCultures(supportedCultures)
+            .AddSupportedUICultures(supportedCultures);
+
+        app.UseRequestLocalization(localizationOptions);
     }
 }
