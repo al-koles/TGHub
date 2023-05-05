@@ -129,6 +129,9 @@
   <data name="ExceptionProd" xml:space="preserve">
     <value>Сталася помилка. Перезавантажте сторінку.</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Мова</value>
+  </data>
   <data name="LogoutInstruction" xml:space="preserve">
     <value>Якщо ви хочете увійти за допомогою іншого облікового запису, перейдіть до додатку або веб-сайту Telegram, знайдіть чат зі сповіщеннями служби Telegram і натисніть кнопку «Завершити сеанс».</value>
   </data>

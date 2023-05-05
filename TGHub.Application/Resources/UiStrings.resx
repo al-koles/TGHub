@@ -129,6 +129,9 @@
   <data name="ExceptionProd" xml:space="preserve">
     <value>An error has occurred. This application may no longer respond until reloaded.</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
   <data name="LogoutInstruction" xml:space="preserve">
     <value>If you want to login with another account go to Telegram app or website, find chat with Telegram service notifications and click "Terminate session" button.</value>
   </data>

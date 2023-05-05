@@ -1,28 +1,41 @@
-﻿@using System.Globalization
+﻿@using TGHub.Application.Resources
+@using TGHub.Blazor.Resources
+@using System.Globalization
 @using TGHub.Application
 @inject NavigationManager Navigation
+@inject IStringLocalizer<UiStrings> UiStringsLoc
 
-<div class="px-3 py-2 flex items-center justify-center gap-1 rounded-full bg-[#54a9eb] text-white">
-    <i class="fa-solid fa-language fa-xl mt-0.5"></i>
-    <select @bind="Culture" class="bg-inherit">
-        @foreach (var culture in _supportedCultures)
-        {
-            <option class="bg-white text-black" value="@culture">@culture.DisplayName</option>
-        }
-    </select>
+<div class="cursor-pointer @CssClass"
+     title="@UiStringsLoc[nameof(UiStrings.Language)]">
+    <div class="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="@StrokeWidth" stroke="currentColor"
+             class="w-[@(SizeRem)rem] h-[@(SizeRem)rem]">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802"/>
+        </svg>
+        <select @bind="Culture" class="bg-transparent text-transparent focus:outline-0 absolute top-0 left-0 w-full h-full">
+            @foreach (var culture in _supportedCultures)
+            {
+                <option class="bg-white text-black" value="@culture">@culture.DisplayName</option>
+            }
+        </select>
+    </div>
 </div>
 
 @code
 {
+    [Parameter]
+    public int SizeRem { get; set; } = 2;
+
+    [Parameter]
+    public double StrokeWidth { get; set; } = 2;
+
+    [Parameter]
+    public string CssClass { get; set; } = $"text-[{ColorStrings.C5}] hover:text-[{ColorStrings.C4}]";
+
     private readonly CultureInfo[] _supportedCultures = ApplicationConstants.SupportedCultures
         .Select(c => new CultureInfo(c)).ToArray();
 
     private CultureInfo _culture = CultureInfo.CurrentCulture;
-
-    protected override void OnInitialized()
-    {
-        Culture = CultureInfo.CurrentCulture;
-    }
 
     private CultureInfo Culture
     {

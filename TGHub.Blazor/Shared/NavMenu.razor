@@ -1,39 +1,50 @@
-﻿@using TGHub.Blazor.Resources
+﻿@using TGHub.Application.Resources
+@using TGHub.Blazor.Resources
 @using TGHub.Blazor.Shared.Buttons
-@using TGHub.Application.Resources
-
+@using TGHub.Blazor.Shared.Components
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 
 <nav class="bg-[@ColorStrings.C3]/40 shadow-md">
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="flex justify-between">
-      <div class="flex">
-        <a href="/" class="flex items-center py-1 px-2 bg-[@ColorStrings.C1]">
-          <img class="h-10 w-auto mr-2" src="/icons/logo_icon_and_name.png" alt="Logo">
-        </a>
-        <ul class="flex flex-wrap items-center ml-4 space-x-4">
-          <li><a href="/" class="text-gray-600 hover:text-gray-800">
-            @UiStringsLoc[nameof(UiStrings.NavDashboard)]
-          </a></li>
-          <li><a href="/lottery" class="text-gray-600 hover:text-gray-800">
-            @UiStringsLoc[nameof(UiStrings.NavLottery)]
-          </a></li>
-          <li><a href="/comments" class="text-gray-600 hover:text-gray-800">
-            @UiStringsLoc[nameof(UiStrings.NavComments)]
-          </a></li>
-          <li><a href="/messages" class="text-gray-600 hover:text-gray-800">
-            @UiStringsLoc[nameof(UiStrings.NavMessages)]
-          </a></li>
-        </ul>
-      </div>
-      <div class="flex items-center">
-        <a href="/profile" class="text-gray-600 hover:text-gray-800 mr-4">Profile</a>
-        <LogoutButton/>
-      </div>
+    <div class="flex justify-between max-w-7xl mx-auto px-4">
+        <div class="flex">
+            <a href="/" class="flex items-center py-1 px-2 bg-[@ColorStrings.C1]">
+                <img class="h-10 w-auto mr-2" src="/icons/logo_icon_and_name.png" alt="Logo">
+            </a>
+            <ul class="flex flex-wrap items-center ml-4 space-x-4">
+                <li>
+                    <a href="/" class="text-gray-600 hover:text-gray-800">
+                        @UiStringsLoc[nameof(UiStrings.NavDashboard)]
+                    </a>
+                </li>
+                <li>
+                    <a href="/lottery" class="text-gray-600 hover:text-gray-800">
+                        @UiStringsLoc[nameof(UiStrings.NavLottery)]
+                    </a>
+                </li>
+                <li>
+                    <a href="/comments" class="text-gray-600 hover:text-gray-800">
+                        @UiStringsLoc[nameof(UiStrings.NavComments)]
+                    </a>
+                </li>
+                <li>
+                    <a href="/messages" class="text-gray-600 hover:text-gray-800">
+                        @UiStringsLoc[nameof(UiStrings.NavMessages)]
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="flex flex-wrap items-center gap-10">
+            <div class="flex items-center">
+                <CultureSelector/>
+            </div>
+            <div class="flex flex-wrap items-center">
+                <a href="/profile" class="text-gray-600 hover:text-gray-800 mr-4">Profile</a>
+                <LogoutButton/>
+            </div>
+        </div>
     </div>
-  </div>
 </nav>
 
 @code {
-    
+
 }
