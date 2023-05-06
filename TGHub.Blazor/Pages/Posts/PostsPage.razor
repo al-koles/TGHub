@@ -1,6 +1,7 @@
 ﻿@page "/posts"
 @using TGHub.Application.Services.Post
 @using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Blazor.Shared.Components.Calendar
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using AutoMapper
@@ -12,10 +13,13 @@
 @inject NavigationManager NavigationManager
 @inject IToastService ToastService
 
-<h3>Messages</h3>
-
-<div>
-    <Calendar Events="@_events" Year="@_year" Month="@_month"/>
+<div class="h-full flex flex-col">
+    <div class="w-full">
+        <h3>Posts</h3>
+    </div>
+    <div class="grow w-full">
+        <Calendar Events="@_events" Year="@_year" Month="@_month"/>
+    </div>
 </div>
 
 @code {

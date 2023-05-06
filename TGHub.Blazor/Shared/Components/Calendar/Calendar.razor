@@ -2,13 +2,14 @@
 @using TGHub.Blazor.Shared.Components.Calendar.Models
 @using System.Globalization
 @using TGHub.Blazor.Shared.Components.Calendar.Components
-<div>
-    <table>
-        <thead>
+
+<div class="h-full">
+    <table class="w-full h-full border-spacing-0">
+        <thead class="h-min">
         <tr>
             @foreach (var dayOfWeek in _daysOfWeek)
             {
-                <th>
+                <th class="text-center">
                     @dayOfWeek
                 </th>
             }
@@ -22,7 +23,7 @@
                 @foreach (var day in days)
                 {
                     var events = Events.Where(e => e.ReleaseDateTime == day).ToList();
-                    <td>
+                    <td class="border w-[14%]">
                         <CalendarDay Date="@day" Events="@events"/>
                     </td>
                 }
