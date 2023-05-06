@@ -5,7 +5,7 @@ namespace TGHub.Application.Services.Post;
 
 public class PostService : Service<Domain.Entities.Post>, IPostService
 {
-    protected PostService(ITgHubDbContext dbContext) : base(dbContext)
+    public PostService(ITgHubDbContext dbContext) : base(dbContext)
     {
     }
 }

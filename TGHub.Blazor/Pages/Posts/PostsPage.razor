@@ -1,0 +1,85 @@
+﻿@page "/posts"
+@using TGHub.Application.Services.Post
+@using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Domain.Entities
+@using TGHub.Domain.Enums
+@using AutoMapper
+@using System.Globalization
+@using TGHub.Application.Common.Filtering
+
+@inject IPostService PostService
+@inject IMapper Mapper
+@inject NavigationManager NavigationManager
+@inject IToastService ToastService
+
+<h3>Messages</h3>
+
+<div>
+    <Calendar Events="@_events" Year="@_year" Month="@_month"/>
+</div>
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Year { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Month { get; set; }
+
+    private int _year = DateTime.UtcNow.Year;
+    private Month _month = (Month)DateTime.UtcNow.Month;
+
+    private List<CalendarEventModel> _events = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!TryGetParameters(out _year, out _month))
+        {
+            var now = DateTime.UtcNow;
+            NavigationManager.NavigateTo($"/posts?year={now.Year}&month={now.Month}", true);
+            return;
+        }
+
+        _events = await GetEventsAsync();
+    }
+
+    private bool TryGetParameters(out int year, out Month month)
+    {
+        year = DateTime.MinValue.Year;
+        month = Domain.Enums.Month.January;
+        if (int.TryParse(Year, out year) && int.TryParse(Month, out var monthInt))
+        {
+            month = (Month)monthInt;
+            return year >= DateTime.MinValue.Year && year <= DateTime.MaxValue.Year &&
+                   monthInt is >= 1 and <= 12;
+        }
+        return false;
+    }
+
+    private async Task<List<CalendarEventModel>> GetEventsAsync()
+    {
+        var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+        var lastDayOfWeek = firstDayOfWeek + 6;
+
+        var from = new DateTime(_year, (int)_month, 1);
+        var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
+        from = from.AddDays(-1 * daysToFirstDayOfWeek);
+
+        var to = new DateTime(_year, (int)_month, 1).AddMonths(1).AddDays(-1);
+        var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
+        to = to.AddDays(daysToWeekEndCount);
+
+        var posts = await PostService.ListAsync(new FilterBase<Post>
+        {
+            Where = p => p.ReleaseDateTime >= from && p.ReleaseDateTime <= to
+        });
+        return Mapper.Map<List<CalendarEventModel>>(posts);
+    }
+
+}

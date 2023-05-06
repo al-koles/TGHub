@@ -1,7 +1,7 @@
-﻿@using System.Globalization
+﻿@using TGHub.Domain.Enums
 @using TGHub.Blazor.Shared.Components.Calendar.Models
+@using System.Globalization
 @using TGHub.Blazor.Shared.Components.Calendar.Components
-@using TGHub.Domain.Enums
 <div>
     <table>
         <thead>
@@ -21,7 +21,7 @@
             <tr>
                 @foreach (var day in days)
                 {
-                    var events = Events.Where(e => e.ReleaseDateTime == day);
+                    var events = Events.Where(e => e.ReleaseDateTime == day).ToList();
                     <td>
                         <CalendarDay Date="@day" Events="@events"/>
                     </td>
@@ -33,22 +33,23 @@
 </div>
 
 @code {
-    
+
     [Parameter]
     public Month Month { get; set; }
-    
+
     [Parameter]
     public int Year { get; set; }
 
     [Parameter]
     public List<CalendarEventModel> Events { get; set; } = new();
 
-    private readonly string[] _daysOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.DayNames;
+    private string[] _daysOfWeek = new string[] { };
     private List<DateTime> _dates = new();
     private int _weeksCount;
 
     protected override void OnInitialized()
     {
+        _daysOfWeek = GetDaysOfWeek();
     }
 
     protected override void OnParametersSet()
@@ -61,23 +62,40 @@
     private List<DateTime> GetAllCalendarDays()
     {
         var calendarDays = new List<DateTime>();
-        
+
         var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
-        var lastDayOfWeek = ((int)firstDayOfWeek + 6) % 7;
-        
-        var day = new DateTime(Year, (int)Month, 1);
-        while (day.DayOfWeek != firstDayOfWeek)
+        var lastDayOfWeek = firstDayOfWeek + 6;
+
+        var from = new DateTime(Year, (int)Month, 1);
+        var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
+        from = from.AddDays(-1 * daysToFirstDayOfWeek);
+
+        var to = new DateTime(Year, (int)Month, 1).AddMonths(1).AddDays(-1);
+        var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
+        to = to.AddDays(daysToWeekEndCount);
+
+        while (from <= to)
         {
-            day = day.AddDays(-1);
+            calendarDays.Add(from);
+            from = from.AddDays(1);
         }
 
-        do
-        {
-            calendarDays.Add(day);
-            day = day.AddDays(1);
-        } while (day.Month <= (int)Month || (int)day.DayOfWeek != lastDayOfWeek);
-
         return calendarDays;
+    }
+
+    private string[] GetDaysOfWeek()
+    {
+        var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+        var daysOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames;
+        var orderedDaysOfWeek = new string[7];
+
+        for (var i = 0; i < 7; i++)
+        {
+            var index = ((int)firstDayOfWeek + i) % 7;
+            orderedDaysOfWeek[i] = daysOfWeek[index];
+        }
+
+        return orderedDaysOfWeek;
     }
 
 }
