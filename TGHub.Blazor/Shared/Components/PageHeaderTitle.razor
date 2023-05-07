@@ -1,0 +1,12 @@
+﻿@using TGHub.Blazor.Resources
+
+<h1 class="text-3xl font-bold text-[@ColorStrings.C4] uppercase">
+    @Text
+</h1>
+
+@code {
+
+    [Parameter]
+    public string Text { get; set; } = null!;
+
+}

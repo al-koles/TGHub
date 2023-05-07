@@ -1,5 +1,7 @@
 ﻿@page "/posts"
 @using TGHub.Application.Services.Post
+@using TGHub.Blazor.Shared.Buttons
+@using TGHub.Blazor.Shared.Components
 @using TGHub.Blazor.Shared.Components.Calendar.Models
 @using TGHub.Blazor.Shared.Components.Calendar
 @using TGHub.Domain.Entities
@@ -14,8 +16,9 @@
 @inject IToastService ToastService
 
 <div class="h-full flex flex-col">
-    <div class="w-full">
-        <h3>Posts</h3>
+    <div class="w-full flex items-center justify-between my-2">
+        <PageHeaderTitle Text="Posts"/>
+        <ActiveButton Text="Create"/>
     </div>
     <div class="grow w-full">
         <Calendar Events="@_events" Year="@_year" Month="@_month"/>
