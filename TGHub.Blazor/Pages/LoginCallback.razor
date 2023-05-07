@@ -1,8 +1,8 @@
 ﻿@page "/login-callback"
 @using TGHub.WebApiCore.Options
 @using Microsoft.Extensions.Options
-@using TGHub.Application.Services.Auth
-@using TGHub.Application.Services.User
+@using TGHub.Application.Common
+@using TGHub.Application.Services.Base
 @using TGHub.Blazor.Shared.Loaders
 @using TGHub.Domain.Entities
 @using AutoMapper
@@ -109,9 +109,9 @@
         return checkHash == Hash;
     }
 
-    private UserSession GetUserSession()
+    private LocalStorageProvider GetUserSession()
     {
-        return new UserSession
+        return new LocalStorageProvider
         {
             TelegramId = Id,
             FirstName = FirstName,
@@ -122,24 +122,24 @@
         };
     }
 
-    private async Task UpdateUserDataAndLoginAsync(UserSession userSession)
+    private async Task UpdateUserDataAndLoginAsync(LocalStorageProvider localStorageProvider)
     {
         await using var scope = ServiceProvider.CreateAsyncScope();
-        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        var userService = scope.ServiceProvider.GetRequiredService<IService<TgHubUser>>();
 
-        var user = await userService.FirsOrDefaultAsync(u => u.TelegramId == userSession.TelegramId);
+        var user = await userService.FirsOrDefaultAsync(u => u.TelegramId == localStorageProvider.TelegramId);
         if (user == null)
         {
-            var userId = await userService.CreateAsync(Mapper.Map<TgHubUser>(userSession));
-            userSession.Id = userId;
+            var userId = await userService.CreateAsync(Mapper.Map<TgHubUser>(localStorageProvider));
+            localStorageProvider.Id = userId;
         }
         else
         {
-            userSession.Id = user.Id;
-            Mapper.Map(userSession, user);
+            localStorageProvider.Id = user.Id;
+            Mapper.Map(localStorageProvider, user);
             await userService.UpdateAsync(user);
         }
-        await ((CustomAuthStateProvider)AuthenticationStateProvider).LoginAsync(userSession);
+        await ((CustomAuthStateProvider)AuthenticationStateProvider).LoginAsync(localStorageProvider);
     }
 
 }

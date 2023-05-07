@@ -1,16 +1,17 @@
-﻿@page "/posts"
-@using TGHub.Application.Services.Post
+﻿@attribute [Authorize]
+@page "/posts"
+@using TGHub.Domain.Entities
+@using TGHub.Domain.Enums
+@using TGHub.Application.Services.Base
 @using TGHub.Blazor.Shared.Buttons
 @using TGHub.Blazor.Shared.Components
 @using TGHub.Blazor.Shared.Components.Calendar.Models
 @using TGHub.Blazor.Shared.Components.Calendar
-@using TGHub.Domain.Entities
-@using TGHub.Domain.Enums
 @using AutoMapper
 @using System.Globalization
 @using TGHub.Application.Common.Filtering
 
-@inject IPostService PostService
+@inject IService<Post> PostService
 @inject IMapper Mapper
 @inject NavigationManager NavigationManager
 @inject IToastService ToastService
@@ -46,12 +47,15 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (!TryGetParameters(out _year, out _month))
+        if (!TryGetParameters(out var year, out var month))
         {
             var now = DateTime.UtcNow;
-            NavigationManager.NavigateTo($"/posts?year={now.Year}&month={now.Month}", true);
+            NavigationManager.NavigateTo($"/posts?year={now.Year}&month={now.Month}");
             return;
         }
+
+        _year = year;
+        _month = month;
 
         _events = await GetEventsAsync();
     }

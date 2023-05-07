@@ -1,23 +1,26 @@
 ﻿using System.Security.Claims;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using TGHub.Application.Common.SessionStorage;
 using TGHub.Application.Services.Jwt;
 
-namespace TGHub.Application.Services.Auth;
+namespace TGHub.Application.Common;
 
 public class CustomAuthStateProvider : AuthenticationStateProvider
 {
     private const string TokenKey = "Auth";
     private readonly IJwtService _jwtService;
+    private readonly LocalStorageProvider _localStorageProvider;
     private readonly ILocalStorageService _localStorageService;
-    private readonly UserSession _userSession;
+    private readonly SessionStorageProvider _sessionStorageProvider;
 
     public CustomAuthStateProvider(ILocalStorageService localStorageService, IJwtService jwtService,
-        UserSession userSession)
+        LocalStorageProvider localStorageProvider, SessionStorageProvider sessionStorageProvider)
     {
         _localStorageService = localStorageService;
         _jwtService = jwtService;
-        _userSession = userSession;
+        _localStorageProvider = localStorageProvider;
+        _sessionStorageProvider = sessionStorageProvider;
     }
 
     private AuthenticationState NotAuthenticated => new(new ClaimsPrincipal(new ClaimsIdentity()));
@@ -37,17 +40,19 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         }
 
         var (userSession, claims) = _jwtService.ParseToken(token);
-        userSession.CopyTo(_userSession);
-        var identity = new ClaimsIdentity(claims, "auth");
+        userSession.CopyTo(_localStorageProvider);
 
+        await _sessionStorageProvider.FetchAsync();
+
+        var identity = new ClaimsIdentity(claims, "auth");
         return new AuthenticationState(new ClaimsPrincipal(identity));
     }
 
-    public async Task LoginAsync(UserSession userSession)
+    public async Task LoginAsync(LocalStorageProvider localStorageProvider)
     {
-        var token = _jwtService.GenerateToken(userSession);
+        var token = _jwtService.GenerateToken(localStorageProvider);
         await _localStorageService.SetItemAsStringAsync(TokenKey, token);
-        var identity = new ClaimsIdentity(userSession.ToClaims(), "auth");
+        var identity = new ClaimsIdentity(localStorageProvider.ToClaims(), "auth");
         var principal = new ClaimsPrincipal(identity);
 
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));

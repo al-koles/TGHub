@@ -1,12 +1,12 @@
 ﻿@page "/counter"
-@using TGHub.Application.Services.Auth
 @using JsonSerializer = System.Text.Json.JsonSerializer
 @using TGHub.Blazor.Shared.Components
 @using TGHub.Application.Resources
+@using TGHub.Application.Common
 
 @attribute [Authorize]
 
-@inject UserSession UserSession
+@inject LocalStorageProvider LocalStorageProvider
 @inject IStringLocalizer<NotificationStrings> NotificationsLocalizer
 
 <PageTitle>Counter</PageTitle>
@@ -19,9 +19,9 @@
 
 <p>User: @(UserSessionString())</p>
 
-<p>Current value: @UserSession.FirstName</p>
-<EditForm Model="@UserSession">
-    <MyInputText @bind-Value="@UserSession.FirstName"/>
+<p>Current value: @LocalStorageProvider.FirstName</p>
+<EditForm Model="@LocalStorageProvider">
+    <MyInputText @bind-Value="@LocalStorageProvider.FirstName"/>
 </EditForm>
 
 <p>Greeting localized: @NotificationsLocalizer[nameof(NotificationStrings.Greeting)]</p>
@@ -46,7 +46,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var tgid = UserSession.TelegramId;
+        var tgid = LocalStorageProvider.TelegramId;
         if (authStateTask is not null)
         {
             var authState = await authStateTask;
@@ -56,7 +56,7 @@
 
     private string UserSessionString()
     {
-        return JsonSerializer.Serialize(UserSession);
+        return JsonSerializer.Serialize(LocalStorageProvider);
     }
 
 }

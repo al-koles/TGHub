@@ -3,9 +3,9 @@ using AutoMapper;
 using TGHub.Application.Common.Mappings;
 using TGHub.Domain.Entities;
 
-namespace TGHub.Application.Services.Auth;
+namespace TGHub.Application.Common;
 
-public class UserSession : IMapWith<TgHubUser>
+public class LocalStorageProvider : IMapWith<TgHubUser>
 {
     public int Id { get; set; }
     public string TelegramId { get; set; } = null!;
@@ -22,7 +22,7 @@ public class UserSession : IMapWith<TgHubUser>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<UserSession, TgHubUser>()
+        profile.CreateMap<LocalStorageProvider, TgHubUser>()
             .ForMember(dst => dst.Id,
                 opt => opt.Ignore());
     }
@@ -42,7 +42,7 @@ public class UserSession : IMapWith<TgHubUser>
         return claims;
     }
 
-    public UserSession FillWithClaims(List<Claim> claims)
+    public LocalStorageProvider FillWithClaims(List<Claim> claims)
     {
         Id = int.Parse(claims.FirstOrDefault(c => c.Type == nameof(Id))?.Value ?? "0");
         TelegramId = claims.FirstOrDefault(c => c.Type == nameof(TelegramId))?.Value ?? string.Empty;
@@ -54,14 +54,14 @@ public class UserSession : IMapWith<TgHubUser>
         return this;
     }
 
-    public void CopyTo(UserSession userSession)
+    public void CopyTo(LocalStorageProvider localStorageProvider)
     {
-        userSession.Id = Id;
-        userSession.TelegramId = TelegramId;
-        userSession.FirstName = FirstName;
-        userSession.LastName = LastName;
-        userSession.UserName = UserName;
-        userSession.PhotoUrl = PhotoUrl;
-        userSession.AuthDate = AuthDate;
+        localStorageProvider.Id = Id;
+        localStorageProvider.TelegramId = TelegramId;
+        localStorageProvider.FirstName = FirstName;
+        localStorageProvider.LastName = LastName;
+        localStorageProvider.UserName = UserName;
+        localStorageProvider.PhotoUrl = PhotoUrl;
+        localStorageProvider.AuthDate = AuthDate;
     }
 }

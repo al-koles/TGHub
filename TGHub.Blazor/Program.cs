@@ -1,9 +1,10 @@
 using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 using Blazored.Toast;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using TGHub.Application;
+using TGHub.Application.Common;
 using TGHub.Application.Common.Mappings;
-using TGHub.Application.Services.Auth;
 using TGHub.Blazor.Data;
 using TGHub.Blazor.Extensions;
 using TGHub.SqlDb;
@@ -22,10 +23,10 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddOptions(builder.Configuration);
 builder.Services.AddTelegramBotClient();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredToast();
 builder.Services.AddApplication();
 builder.Services.AddSqlDb(builder.Configuration["ConnectionStrings:DefaultConnection"]);
-builder.Services.AddScoped<UserSession>();
 builder.Services.AddAutoMapper(opt =>
 {
     opt.AddProfiles(new[]

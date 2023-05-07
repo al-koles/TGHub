@@ -1,0 +1,14 @@
+﻿@using TGHub.Blazor.Pages.Posts.Models
+<EditForm Model="@Model">
+
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public PostModel Model { get; set; } = new();
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+}
