@@ -110,6 +110,10 @@ public class BotController : ControllerBase
                 {
                     await CreateOrUpdateChannelAsync(member.Chat);
                 }
+                else if(member.Chat.Type == ChatType.Supergroup)
+                {
+                    
+                }
             }
             else
             {
@@ -164,9 +168,18 @@ public class BotController : ControllerBase
     private async Task FillFromTgChannelAsync(Chat tgChannel, Channel dbChannel)
     {
         dbChannel.TelegramId = tgChannel.Id;
-        dbChannel.LinkedChatTelegramId = tgChannel.LinkedChatId;
         dbChannel.Name = tgChannel.Title ?? Guid.NewGuid().ToString();
         dbChannel.IsActive = true;
+
+        try
+        {
+            var tgChannelFullInfo = await _telegramBotClient.GetChatAsync(tgChannel.Id);
+            dbChannel.LinkedChatTelegramId = tgChannelFullInfo.LinkedChatId;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Error fetching channel ({0})", tgChannel.Id);
+        }
 
         try
         {
