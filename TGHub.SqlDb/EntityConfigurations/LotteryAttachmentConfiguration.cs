@@ -14,6 +14,7 @@ public class LotteryAttachmentConfiguration : IEntityTypeConfiguration<LotteryAt
 
         builder.HasOne(e => e.Lottery)
             .WithMany(e => e.Attachments)
-            .HasForeignKey(e => e.LotteryId);
+            .HasForeignKey(e => e.LotteryId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -16,10 +16,12 @@ public class ChannelAdministratorConfiguration : IEntityTypeConfiguration<Channe
 
         builder.HasOne(e => e.Administrator)
             .WithMany(e => e.AdministratedChannels)
-            .HasForeignKey(e => e.AdministratorId);
+            .HasForeignKey(e => e.AdministratorId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.Channel)
             .WithMany(e => e.Administrators)
-            .HasForeignKey(e => e.ChannelId);
+            .HasForeignKey(e => e.ChannelId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

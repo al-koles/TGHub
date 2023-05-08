@@ -14,6 +14,7 @@ public class PostAttachmentConfiguration : IEntityTypeConfiguration<PostAttachme
 
         builder.HasOne(e => e.Post)
             .WithMany(e => e.Attachments)
-            .HasForeignKey(e => e.PostId);
+            .HasForeignKey(e => e.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

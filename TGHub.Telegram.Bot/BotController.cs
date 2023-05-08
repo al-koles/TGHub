@@ -102,24 +102,43 @@ public class BotController : ControllerBase
             {
                 if (member.Chat.Type == ChatType.Channel)
                 {
-                    var tgChannel = member.Chat;
-                    var dbChannel = await _channelService.FirsOrDefaultAsync(ch => ch.TelegramId == tgChannel.Id);
-                    if (dbChannel == null)
-                    {
-                        await CreateChannelFromTgAsync(tgChannel);
-                    }
-                    else
-                    {
-                        await UpdateChannelFromTgAsync(tgChannel, dbChannel);
-                    }
+                    await CreateOrUpdateChannelAsync(member.Chat);
                 }
             }
-
-            await _telegramBotClient.SendTextMessageAsync(member.Chat.Id, "Hello world");
+            else
+            {
+                if (member.Chat.Type == ChatType.Channel)
+                {
+                    await MarkChannelInactiveIfExist(member.Chat.Id);
+                }
+            }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
+        }
+    }
+
+    private async Task MarkChannelInactiveIfExist(long channelTelegramId)
+    {
+        var dbChannel = await _channelService.FirsOrDefaultAsync(ch => ch.TelegramId == channelTelegramId);
+        if (dbChannel != null)
+        {
+            dbChannel.IsActive = false;
+            await _channelService.UpdateAsync(dbChannel);
+        }
+    }
+
+    private async Task CreateOrUpdateChannelAsync(Chat tgChannel)
+    {
+        var dbChannel = await _channelService.FirsOrDefaultAsync(ch => ch.TelegramId == tgChannel.Id);
+        if (dbChannel == null)
+        {
+            await CreateChannelFromTgAsync(tgChannel);
+        }
+        else
+        {
+            await UpdateChannelFromTgAsync(tgChannel, dbChannel);
         }
     }
 

@@ -16,6 +16,7 @@ public class BannedUserConfiguration : IEntityTypeConfiguration<BannedUser>
 
         builder.HasOne(e => e.Channel)
             .WithMany(e => e.BannedUsers)
-            .HasForeignKey(e => e.ChannelId);
+            .HasForeignKey(e => e.ChannelId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

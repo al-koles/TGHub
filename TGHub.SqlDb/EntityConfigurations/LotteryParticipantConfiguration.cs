@@ -16,6 +16,7 @@ public class LotteryParticipantConfiguration : IEntityTypeConfiguration<LotteryP
 
         builder.HasOne(e => e.Lottery)
             .WithMany(e => e.Participants)
-            .HasForeignKey(e => e.LotteryId);
+            .HasForeignKey(e => e.LotteryId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

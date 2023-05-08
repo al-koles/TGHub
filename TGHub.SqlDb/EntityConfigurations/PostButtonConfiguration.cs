@@ -14,6 +14,7 @@ public class PostButtonConfiguration : IEntityTypeConfiguration<PostButton>
 
         builder.HasOne(e => e.Post)
             .WithMany(e => e.Buttons)
-            .HasForeignKey(e => e.PostId);
+            .HasForeignKey(e => e.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
