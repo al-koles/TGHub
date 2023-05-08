@@ -32,7 +32,7 @@ public class Service<TEntity> : IService<TEntity> where TEntity : class, IEntity
         return query.Sort(filter).ToListAsync();
     }
 
-    public virtual Task<TEntity?> FirsOrDefaultAsync(Expression<Func<TEntity, bool>>? predicate = null)
+    public virtual Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>>? predicate = null)
     {
         var query = DbContext.Set<TEntity>().AsNoTracking();
 

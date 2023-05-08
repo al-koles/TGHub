@@ -127,7 +127,7 @@
         await using var scope = ServiceProvider.CreateAsyncScope();
         var userService = scope.ServiceProvider.GetRequiredService<IService<TgHubUser>>();
 
-        var user = await userService.FirsOrDefaultAsync(u => u.TelegramId == localStorageProvider.TelegramId);
+        var user = await userService.FirstOrDefaultAsync(u => u.TelegramId == localStorageProvider.TelegramId);
         if (user == null)
         {
             var userId = await userService.CreateAsync(Mapper.Map<TgHubUser>(localStorageProvider));

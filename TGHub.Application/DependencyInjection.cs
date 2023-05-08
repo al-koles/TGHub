@@ -19,7 +19,7 @@ public static class DependencyInjection
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
         services.AddTransient<IService<TgHubUser>, Service<TgHubUser>>();
-        services.AddTransient<IService<Channel>, Service<Channel>>();
+        services.AddTransient<IService<Channel>, ChannelService>();
         services.AddTransient<IService<ChannelAdministrator>, ChannelAdministratorService>();
         services.AddTransient<IService<Post>, Service<Post>>();
 
