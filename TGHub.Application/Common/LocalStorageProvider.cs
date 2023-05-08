@@ -8,7 +8,7 @@ namespace TGHub.Application.Common;
 public class LocalStorageProvider : IMapWith<TgHubUser>
 {
     public int Id { get; set; }
-    public string TelegramId { get; set; } = null!;
+    public long TelegramId { get; set; }
 
     public string? FirstName { get; set; }
 
@@ -32,7 +32,7 @@ public class LocalStorageProvider : IMapWith<TgHubUser>
         var claims = new List<Claim>
         {
             new(nameof(Id), Id.ToString()),
-            new(nameof(TelegramId), TelegramId),
+            new(nameof(TelegramId), TelegramId.ToString()),
             new(nameof(UserName), UserName ?? ""),
             new(nameof(FirstName), FirstName ?? ""),
             new(nameof(LastName), LastName ?? ""),
@@ -45,7 +45,7 @@ public class LocalStorageProvider : IMapWith<TgHubUser>
     public LocalStorageProvider FillWithClaims(List<Claim> claims)
     {
         Id = int.Parse(claims.FirstOrDefault(c => c.Type == nameof(Id))?.Value ?? "0");
-        TelegramId = claims.FirstOrDefault(c => c.Type == nameof(TelegramId))?.Value ?? string.Empty;
+        TelegramId = long.Parse(claims.FirstOrDefault(c => c.Type == nameof(TelegramId))?.Value ?? string.Empty);
         FirstName = claims.FirstOrDefault(c => c.Type == nameof(FirstName))?.Value;
         LastName = claims.FirstOrDefault(c => c.Type == nameof(LastName))?.Value;
         UserName = claims.FirstOrDefault(c => c.Type == nameof(UserName))?.Value;

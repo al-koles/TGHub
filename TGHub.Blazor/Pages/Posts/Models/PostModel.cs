@@ -14,7 +14,7 @@ public class PostModel : IMapWith<Post>
     [Required]
     public DateTime ReleaseDateTime { get; set; }
 
-    public string? TelegramId { get; set; }
+    public long? TelegramId { get; set; }
 
     [Required]
     public int CreatorId { get; set; }

@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TGHub.Application\TGHub.Application.csproj" />
     <ProjectReference Include="..\TGHub.SqlDb\TGHub.SqlDb.csproj" />
+    <ProjectReference Include="..\TGHub.Telegram.Bot\TGHub.Telegram.Bot.csproj" />
     <ProjectReference Include="..\TGHub.WebApiCore\TGHub.WebApiCore.csproj" />
   </ItemGroup>
 

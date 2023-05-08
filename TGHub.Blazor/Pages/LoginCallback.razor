@@ -1,5 +1,4 @@
 ﻿@page "/login-callback"
-@using TGHub.WebApiCore.Options
 @using Microsoft.Extensions.Options
 @using TGHub.Application.Common
 @using TGHub.Application.Services.Base
@@ -9,6 +8,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Security.Cryptography
 @using System.Text
+@using TGHub.Telegram.Bot.Options
 
 @inject IOptionsSnapshot<TelegramBotOptions> BotOptions
 @inject NavigationManager NavigationManager
@@ -28,7 +28,7 @@
 
     [Parameter]
     [SupplyParameterFromQuery]
-    public string Id { get; set; } = null!;
+    public long Id { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "first_name")]

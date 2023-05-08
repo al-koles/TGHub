@@ -1,15 +1,13 @@
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Blazored.Toast;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using TGHub.Application;
-using TGHub.Application.Common;
 using TGHub.Application.Common.Mappings;
 using TGHub.Blazor.Data;
 using TGHub.Blazor.Extensions;
 using TGHub.SqlDb;
-using TGHub.WebApiCore;
-using TGHub.WebApiCore.Controllers.Telegram;
+using TGHub.Telegram.Bot;
+using TGHub.WebApiCore.Controllers.Culture;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +15,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddControllers()
     .AddNewtonsoftJson()
-    .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(BotController).Assembly));
+    .AddApplicationPart(typeof(BotController).Assembly)
+    .AddApplicationPart(typeof(CultureController).Assembly);
 
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddOptions(builder.Configuration);

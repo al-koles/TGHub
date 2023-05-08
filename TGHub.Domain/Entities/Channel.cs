@@ -2,7 +2,8 @@
 
 public class Channel : EntityBase
 {
-    public string TelegramId { get; set; } = null!;
+    public long TelegramId { get; set; }
+    public long? LinkedChatTelegramId { get; set; }
     public string Name { get; set; } = null!;
     public bool SpamOn { get; set; }
 

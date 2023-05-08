@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TGHub.SqlDb;
 
@@ -11,9 +12,10 @@ using TGHub.SqlDb;
 namespace TGHub.SqlDb.Migrations
 {
     [DbContext(typeof(TgHubDbContext))]
-    partial class TgHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230508114552_ChangedTelegramIdTypeToLong")]
+    partial class ChangedTelegramIdTypeToLong
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace TGHub.SqlDb.Migrations
 
                     b.HasIndex("ChannelsId");
 
-                    b.ToTable("ChannelBannTopic", (string)null);
+                    b.ToTable("ChannelBannTopic");
                 });
 
             modelBuilder.Entity("TGHub.Domain.Entities.BannedUser", b =>

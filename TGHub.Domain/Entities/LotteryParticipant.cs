@@ -2,7 +2,7 @@
 
 public class LotteryParticipant : EntityBase
 {
-    public string TelegramId { get; set; } = null!;
+    public long TelegramId { get; set; }
     public bool IsWinner { get; set; }
 
     public int LotteryId { get; set; }

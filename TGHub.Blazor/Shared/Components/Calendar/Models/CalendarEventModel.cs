@@ -7,7 +7,7 @@ namespace TGHub.Blazor.Shared.Components.Calendar.Models;
 public class CalendarEventModel : IMapWith<Lottery>
 {
     public int Id { get; set; }
-    public string? TelegramId { get; set; }
+    public long? TelegramId { get; set; }
     public string Name { get; set; } = null!;
     public DateTime ReleaseDateTime { get; set; }
 

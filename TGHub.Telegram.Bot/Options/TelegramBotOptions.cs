@@ -1,4 +1,4 @@
-﻿namespace TGHub.WebApiCore.Options;
+﻿namespace TGHub.Telegram.Bot.Options;
 
 public class TelegramBotOptions
 {

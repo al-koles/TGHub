@@ -2,7 +2,7 @@
 
 public class BannedUser : EntityBase
 {
-    public string TelegramId { get; set; } = null!;
+    public long TelegramId { get; set; }
     public string Context { get; set; } = null!;
     public DateTime BannDate { get; set; }
     public DateTime? BannTo { get; set; }
