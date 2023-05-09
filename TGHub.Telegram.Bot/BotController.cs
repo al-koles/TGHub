@@ -4,10 +4,8 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using TGHub.Application.Common.Filtering;
-using TGHub.Application.Services.Base;
-using TGHub.Domain.Entities;
-using TGHub.Domain.Enums;
+using TGHub.Application.Services.Channels;
+using TGHub.Telegram.Bot.TelegramChannels;
 
 namespace TGHub.Telegram.Bot;
 
@@ -15,21 +13,18 @@ namespace TGHub.Telegram.Bot;
 [ApiController]
 public class BotController : ControllerBase
 {
-    private readonly IService<ChannelAdministrator> _channelAdministratorService;
-    private readonly IService<Channel> _channelService;
+    private readonly IChannelService _channelService;
     private readonly ILogger<BotController> _logger;
     private readonly ITelegramBotClient _telegramBotClient;
-    private readonly IService<TgHubUser> _userService;
+    private readonly ITelegramChannelService _telegramChannelService;
 
-    public BotController(ITelegramBotClient telegramBotClient, IService<Channel> channelService,
-        IService<TgHubUser> userService, IService<ChannelAdministrator> channelAdministratorService,
-        ILogger<BotController> logger)
+    public BotController(ITelegramBotClient telegramBotClient, IChannelService channelService,
+        ILogger<BotController> logger, ITelegramChannelService telegramChannelService)
     {
         _telegramBotClient = telegramBotClient;
         _channelService = channelService;
-        _userService = userService;
-        _channelAdministratorService = channelAdministratorService;
         _logger = logger;
+        _telegramChannelService = telegramChannelService;
     }
 
     [HttpPost]
@@ -52,7 +47,7 @@ public class BotController : ControllerBase
                     await AnswerPost(update);
                     break;
                 case UpdateType.MyChatMember:
-                    await ChatMember(update);
+                    await MyChatMember(update);
                     break;
             }
         }
@@ -94,7 +89,7 @@ public class BotController : ControllerBase
             replyToMessageId: post.MessageId);
     }
 
-    private async Task ChatMember(Update update)
+    private async Task MyChatMember(Update update)
     {
         var member = update.MyChatMember;
         if (member == null)
@@ -104,135 +99,25 @@ public class BotController : ControllerBase
 
         try
         {
-            if (member.NewChatMember.Status == ChatMemberStatus.Administrator)
+            if (member.Chat.Type == ChatType.Channel)
             {
-                if (member.Chat.Type == ChatType.Channel)
+                if (member.NewChatMember.Status == ChatMemberStatus.Administrator)
                 {
-                    await CreateOrUpdateChannelAsync(member.Chat);
+                    await _telegramChannelService.CreateOrUpdateChannelFromTgAsync(member.Chat.Id);
                 }
-                else if(member.Chat.Type == ChatType.Supergroup)
+                else
                 {
-                    
+                    await _channelService.MarkChannelInactiveIfExistAsync(member.Chat.Id);
                 }
             }
-            else
+            else if (member.Chat.Type == ChatType.Supergroup)
             {
-                if (member.Chat.Type == ChatType.Channel)
-                {
-                    await MarkChannelInactiveIfExist(member.Chat.Id);
-                }
+                await _telegramChannelService.UpdateCommentsGroupAsync(member.Chat.Id);
             }
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e, "Error on member update");
         }
-    }
-
-    private async Task MarkChannelInactiveIfExist(long channelTelegramId)
-    {
-        var dbChannel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == channelTelegramId);
-        if (dbChannel != null)
-        {
-            dbChannel.IsActive = false;
-            await _channelService.UpdateAsync(dbChannel);
-        }
-    }
-
-    private async Task CreateOrUpdateChannelAsync(Chat tgChannel)
-    {
-        var dbChannel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == tgChannel.Id);
-        if (dbChannel == null)
-        {
-            await CreateChannelFromTgAsync(tgChannel);
-        }
-        else
-        {
-            await UpdateChannelFromTgAsync(tgChannel, dbChannel);
-        }
-    }
-
-    private async Task CreateChannelFromTgAsync(Chat tgChannel)
-    {
-        var channel = new Channel();
-        await FillFromTgChannelAsync(tgChannel, channel);
-        await _channelService.CreateAsync(channel);
-    }
-
-    private async Task UpdateChannelFromTgAsync(Chat tgChannel, Channel dbChannel)
-    {
-        await FillFromTgChannelAsync(tgChannel, dbChannel);
-        await _channelService.UpdateAsync(dbChannel);
-    }
-
-    private async Task FillFromTgChannelAsync(Chat tgChannel, Channel dbChannel)
-    {
-        dbChannel.TelegramId = tgChannel.Id;
-        dbChannel.Name = tgChannel.Title ?? Guid.NewGuid().ToString();
-        dbChannel.IsActive = true;
-
-        try
-        {
-            var tgChannelFullInfo = await _telegramBotClient.GetChatAsync(tgChannel.Id);
-            dbChannel.LinkedChatTelegramId = tgChannelFullInfo.LinkedChatId;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error fetching channel ({0})", tgChannel.Id);
-        }
-
-        try
-        {
-            var tgAdministrators = await FetchChatAdministratorsAsync(tgChannel);
-            var administratorsToAdd = tgAdministrators.Where(tgAdmin =>
-                    dbChannel.Administrators.All(dbAdmin =>
-                        dbAdmin.Administrator.TelegramId != tgAdmin.User.Id))
-                .ToList();
-
-            List<TgHubUser> existingDbUsersToAdd = new();
-            if (administratorsToAdd.Any())
-            {
-                existingDbUsersToAdd = await _userService.ListAsync(new FilterBase<TgHubUser>
-                {
-                    Where = u => administratorsToAdd.Select(a => a.User.Id).Contains(u.TelegramId)
-                });
-            }
-
-            dbChannel.Administrators = dbChannel.Administrators
-                .Concat(administratorsToAdd.Select(tgAdmin =>
-                    new ChannelAdministrator
-                    {
-                        Role = tgAdmin.Status == ChatMemberStatus.Creator
-                            ? ChannelRole.Owner
-                            : ChannelRole.Administrator,
-                        IsActive = true,
-                        Administrator =
-                            existingDbUsersToAdd.FirstOrDefault(dbUser => dbUser.TelegramId == tgAdmin.User.Id)
-                            ?? new TgHubUser
-                            {
-                                TelegramId = tgAdmin.User.Id,
-                                FirstName = tgAdmin.User.FirstName,
-                                LastName = tgAdmin.User.LastName,
-                                UserName = tgAdmin.User.Username
-                            }
-                    }))
-                .ToList();
-            
-            foreach (var dbAdmin in dbChannel.Administrators)
-            {
-                dbAdmin.IsActive = tgAdministrators.Any(tgAdmin =>
-                    tgAdmin.User.Id == dbAdmin.Administrator.TelegramId);
-            }
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error fetching administrators of channel ({0})", tgChannel.Id);
-        }
-    }
-
-    private async Task<ChatMember[]> FetchChatAdministratorsAsync(Chat chat)
-    {
-        var administrators = await _telegramBotClient.GetChatAdministratorsAsync(chat.Id);
-        return administrators.Where(a => !a.User.IsBot).ToArray();
     }
 }

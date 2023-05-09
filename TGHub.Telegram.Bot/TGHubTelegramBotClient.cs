@@ -1,19 +1,18 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Types;
+﻿using TGHub.Telegram.Bot.TelegramChannels;
 
 namespace TGHub.Telegram.Bot;
 
-public class TgHubTelegramBotClient
+internal class TgHubTelegramBotClient : ITgHubTelegramBotClient
 {
-    private readonly ITelegramBotClient _telegramBotClient;
+    private readonly ITelegramChannelService _tgChannelService;
 
-    public TgHubTelegramBotClient(ITelegramBotClient telegramBotClient)
+    public TgHubTelegramBotClient(ITelegramChannelService tgChannelService)
     {
-        _telegramBotClient = telegramBotClient;
+        _tgChannelService = tgChannelService;
     }
 
-    public async Task UpdateChannels()
+    public Task CreateOrUpdateChannelFromTg(long channelTelegramId)
     {
-        // var channels = _telegramBotClient.GetChatAdministratorsAsync(new ChatId())
+        return _tgChannelService.CreateOrUpdateChannelFromTgAsync(channelTelegramId);
     }
 }

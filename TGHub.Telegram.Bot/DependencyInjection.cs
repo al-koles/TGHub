@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
 using TGHub.Telegram.Bot.Options;
+using TGHub.Telegram.Bot.TelegramChannels;
 
 namespace TGHub.Telegram.Bot;
 
@@ -14,6 +15,8 @@ public static class DependencyInjection
             var settings = provider.GetRequiredService<IOptionsSnapshot<TelegramBotOptions>>();
             return new TelegramBotClient(settings.Value.Token);
         });
+        services.AddTransient<ITgHubTelegramBotClient, TgHubTelegramBotClient>();
+        services.AddTransient<ITelegramChannelService, TelegramChannelService>();
 
         return services;
     }

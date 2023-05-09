@@ -4,6 +4,7 @@ using TGHub.Application.Common;
 using TGHub.Application.Common.SessionStorage;
 using TGHub.Application.Services.Base;
 using TGHub.Application.Services.ChannelAdministrators;
+using TGHub.Application.Services.Channels;
 using TGHub.Application.Services.Jwt;
 using TGHub.Domain.Entities;
 
@@ -19,7 +20,7 @@ public static class DependencyInjection
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
         services.AddTransient<IService<TgHubUser>, Service<TgHubUser>>();
-        services.AddTransient<IService<Channel>, ChannelService>();
+        services.AddTransient<IChannelService, ChannelService>();
         services.AddTransient<IService<ChannelAdministrator>, ChannelAdministratorService>();
         services.AddTransient<IService<Post>, Service<Post>>();
 
