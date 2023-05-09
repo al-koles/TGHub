@@ -2,6 +2,6 @@
 
 public interface ITelegramChannelService
 {
-    Task CreateOrUpdateChannelFromTgAsync(long channelTelegramId);
+    Task CreateOrUpdateChannelFromTgAsync(long channelTgId);
     Task UpdateCommentsGroupAsync(long commentsGroupTelegramId);
 }

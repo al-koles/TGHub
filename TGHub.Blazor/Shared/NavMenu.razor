@@ -2,7 +2,21 @@
 @using TGHub.Blazor.Resources
 @using TGHub.Blazor.Shared.Buttons
 @using TGHub.Blazor.Shared.Components
+@using TGHub.Blazor.Shared.Components.CustomSelect
+@using TGHub.Application.Common
+@using TGHub.Application.Common.Filtering
+@using TGHub.Application.Common.SessionStorage
+@using TGHub.Application.Services.Base
+@using TGHub.Application.Services.Channels
+@using TGHub.Domain.Entities
+@using TGHub.Telegram.Bot
 @inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject LocalStorageProvider LocalStorageProvider
+@inject SessionStorageProvider SessionStorageProvider
+@inject IService<ChannelAdministrator> ChannelAdministratorService
+@inject ITgHubTelegramBotClient TgHubTelegramBotClient
+@inject ILogger<NavMenu> Logger
+@inject IWebHostEnvironment WebHostEnvironment
 
 <nav class="bg-[@ColorStrings.C3]/40 shadow-md">
     <div class="flex justify-between max-w-7xl mx-auto px-4">
@@ -32,6 +46,7 @@
                     </a>
                 </li>
             </ul>
+            <CustomSelect @bind-Value="@_selectedChannel" Items="@_administratedChannels"/>
         </div>
         <div class="flex flex-wrap items-center gap-10">
             <div class="flex items-center">
@@ -46,5 +61,30 @@
 </nav>
 
 @code {
+
+    private List<CustomSelectModel<int>> _administratedChannels = new();
+    private CustomSelectModel<int>? _selectedChannel;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var administratedChannels = await ChannelAdministratorService
+                .ListAsync(new FilterBase<ChannelAdministrator>
+                {
+                    Where = a => a.IsActive && a.AdministratorId == LocalStorageProvider.Id
+                });
+            foreach (var channel in administratedChannels)
+            {
+                var selectModel = new CustomSelectModel<int>
+                {
+                    Id = channel.ChannelId,
+                    Name = channel.Channel.Name,
+                    PhotoUrl = channel.Channel.PhotoUrl
+                };
+                _administratedChannels.Add(selectModel);
+            }
+        }
+    }
 
 }

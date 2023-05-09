@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -8,6 +9,7 @@ using TGHub.Application.Services.Base;
 using TGHub.Application.Services.Channels;
 using TGHub.Domain.Entities;
 using TGHub.Domain.Enums;
+using File = System.IO.File;
 
 namespace TGHub.Telegram.Bot.TelegramChannels;
 
@@ -17,25 +19,29 @@ internal class TelegramChannelService : ITelegramChannelService
     private readonly ILogger<TelegramChannelService> _logger;
     private readonly ITelegramBotClient _telegramBotClient;
     private readonly IService<TgHubUser> _userService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public TelegramChannelService(ITelegramBotClient telegramBotClient, IChannelService channelService,
-        ILogger<TelegramChannelService> logger, IService<TgHubUser> userService)
+        ILogger<TelegramChannelService> logger, IService<TgHubUser> userService, IWebHostEnvironment webHostEnvironment)
     {
         _telegramBotClient = telegramBotClient;
         _channelService = channelService;
         _logger = logger;
         _userService = userService;
+        _webHostEnvironment = webHostEnvironment;
     }
 
-    public async Task CreateOrUpdateChannelFromTgAsync(long channelTelegramId)
+    public const string LogoPicturesFolderName = "channel_logo_pictures";
+
+    public async Task CreateOrUpdateChannelFromTgAsync(long channelTgId)
     {
-        var tgChannel = await _telegramBotClient.GetChatAsync(channelTelegramId);
+        var tgChannel = await _telegramBotClient.GetChatAsync(channelTgId);
         if (tgChannel == null)
         {
-            throw new NotFoundException("Telegram channel", channelTelegramId);
+            throw new NotFoundException("Telegram channel", channelTgId);
         }
 
-        var dbChannel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == channelTelegramId);
+        var dbChannel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == channelTgId);
         if (dbChannel == null)
         {
             await CreateChannelFromTgAsync(tgChannel);
@@ -91,6 +97,8 @@ internal class TelegramChannelService : ITelegramChannelService
         dbChannel.Name = tgChannel.Title ?? Guid.NewGuid().ToString();
         dbChannel.IsActive = true;
 
+        await UpdatePhotoAsync(tgChannel, dbChannel);
+
         try
         {
             var tgAdministrators = await FetchChatAdministratorsAsync(tgChannel);
@@ -137,6 +145,29 @@ internal class TelegramChannelService : ITelegramChannelService
         catch (Exception e)
         {
             _logger.LogError(e, $"Error fetching administrators of channel ({0})", tgChannel.Id);
+        }
+    }
+
+    private async Task UpdatePhotoAsync(Chat tgChannel, Channel dbChannel)
+    {
+        if (tgChannel.Photo != null)
+        {
+            try
+            {
+                var file = await _telegramBotClient.GetFileAsync(tgChannel.Photo.BigFileId);
+                var path = Path.Combine(LogoPicturesFolderName,
+                    tgChannel.Id.ToString() + Path.GetExtension(file.FilePath));
+                var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
+            
+                await using var stream = File.Create(fullPath);
+                await _telegramBotClient.DownloadFileAsync(file.FilePath!, stream);
+
+                dbChannel.PhotoUrl = path;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed downloading channel ({0}) logo picture", dbChannel.Name);
+            }
         }
     }
 

@@ -2,5 +2,5 @@
 
 public interface ITgHubTelegramBotClient
 {
-    Task CreateOrUpdateChannelFromTg(long channelTelegramId);
+    Task CreateOrUpdateChannelFromTg(long channelTgId);
 }

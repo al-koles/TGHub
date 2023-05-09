@@ -7,6 +7,7 @@ public class Channel : EntityBase
     public string Name { get; set; } = null!;
     public bool SpamOn { get; set; }
     public bool IsActive { get; set; }
+    public string? PhotoUrl { get; set; }
 
     public ICollection<ChannelAdministrator> Administrators { get; set; } = new List<ChannelAdministrator>();
     public ICollection<BannTopic> BannTopics { get; set; } = new HashSet<BannTopic>();
