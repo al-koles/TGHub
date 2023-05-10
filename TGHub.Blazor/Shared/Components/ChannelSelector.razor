@@ -87,6 +87,7 @@
             };
         }
         await SessionStorageProvider.PushAsync();
+        await SessionStorageProvider.NotifyDataChangedAsync();
     }
     
 }

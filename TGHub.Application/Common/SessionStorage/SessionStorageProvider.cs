@@ -24,6 +24,18 @@ public class SessionStorageProvider
 
     public ChannelAdministratorSessionData? SelectedChannelAdministratorData { get; set; }
 
+    public event Action? DataChanged;
+    public event Func<Task>? DataChangedAsync; 
+
+    public async Task NotifyDataChangedAsync()
+    {
+        DataChanged?.Invoke();
+        if (DataChangedAsync != null)
+        {
+            await DataChangedAsync.Invoke();
+        }
+    }
+
     public async Task FetchAsync()
     {
         var selectedChannelId = await _sessionStorageService
@@ -31,6 +43,7 @@ public class SessionStorageProvider
         if (selectedChannelId == null)
         {
             SelectedChannelAdministratorData = null;
+            await NotifyDataChangedAsync();
             return;
         }
 
@@ -43,9 +56,12 @@ public class SessionStorageProvider
         {
             SelectedChannelAdministratorData = null;
             await PushAsync();
+            await NotifyDataChangedAsync();
+            return;
         }
 
         SelectedChannelAdministratorData = _mapper.Map<ChannelAdministratorSessionData>(channelAdministrator);
+        await NotifyDataChangedAsync();
     }
 
     public async Task PushAsync()

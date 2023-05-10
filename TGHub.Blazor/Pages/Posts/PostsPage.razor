@@ -1,20 +1,22 @@
 ﻿@attribute [Authorize]
 @page "/posts"
-@using TGHub.Domain.Entities
-@using TGHub.Domain.Enums
-@using TGHub.Application.Services.Base
+@using TGHub.Application.Services.Posts
 @using TGHub.Blazor.Shared.Buttons
 @using TGHub.Blazor.Shared.Components
 @using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Domain.Enums
 @using TGHub.Blazor.Shared.Components.Calendar
 @using AutoMapper
+@using TGHub.Application.Common.SessionStorage
+@using TGHub.Application.Common
 @using System.Globalization
-@using TGHub.Application.Common.Filtering
 
-@inject IService<Post> PostService
+@inject IPostService PostService
 @inject IMapper Mapper
 @inject NavigationManager NavigationManager
 @inject IToastService ToastService
+@inject SessionStorageProvider SessionStorageProvider
+@inject LocalStorageProvider LocalStorageProvider
 
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
@@ -41,8 +43,9 @@
 
     private List<CalendarEventModel> _events = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
+        SessionStorageProvider.DataChangedAsync += RefreshEventsAsync;
     }
 
     protected override async Task OnParametersSetAsync()
@@ -57,7 +60,7 @@
         _year = year;
         _month = month;
 
-        _events = await GetEventsAsync();
+        await RefreshEventsAsync();
     }
 
     private bool TryGetParameters(out int year, out Month month)
@@ -73,7 +76,7 @@
         return false;
     }
 
-    private async Task<List<CalendarEventModel>> GetEventsAsync()
+    private async Task RefreshEventsAsync()
     {
         var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
         var lastDayOfWeek = firstDayOfWeek + 6;
@@ -86,11 +89,26 @@
         var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
         to = to.AddDays(daysToWeekEndCount);
 
-        var posts = await PostService.ListAsync(new FilterBase<Post>
+        var filter = new PostFilter
         {
-            Where = p => p.ReleaseDateTime >= from && p.ReleaseDateTime <= to
-        });
-        return Mapper.Map<List<CalendarEventModel>>(posts);
+            From = from,
+            To = to,
+            Where = p => p.ReleaseDateTime >= from && p.ReleaseDateTime <= to &&
+                         (SessionStorageProvider.SelectedChannelAdministratorData == null
+                             ? p.Creator.Channel.Administrators.Any(a => a.AdministratorId == LocalStorageProvider.Id)
+                             : p.Creator.ChannelId == SessionStorageProvider.SelectedChannelAdministratorData!.ChannelId)
+        };
+        if (SessionStorageProvider.SelectedChannelAdministratorData == null)
+        {
+            filter.ChannelAdministratorId = LocalStorageProvider.Id;
+        }
+        else
+        {
+            filter.ChannelId = SessionStorageProvider.SelectedChannelAdministratorData.ChannelId;
+        }
+        var posts = await PostService.ListAsync(filter);
+        _events = Mapper.Map<List<CalendarEventModel>>(posts);
+        await InvokeAsync(StateHasChanged);
     }
 
 }

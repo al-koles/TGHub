@@ -6,6 +6,7 @@ using TGHub.Application.Services.Base;
 using TGHub.Application.Services.ChannelAdministrators;
 using TGHub.Application.Services.Channels;
 using TGHub.Application.Services.Jwt;
+using TGHub.Application.Services.Posts;
 using TGHub.Domain.Entities;
 
 namespace TGHub.Application;
@@ -21,8 +22,8 @@ public static class DependencyInjection
 
         services.AddTransient<IService<TgHubUser>, Service<TgHubUser>>();
         services.AddTransient<IChannelService, ChannelService>();
+        services.AddTransient<IPostService, PostService>();
         services.AddTransient<IService<ChannelAdministrator>, ChannelAdministratorService>();
-        services.AddTransient<IService<Post>, Service<Post>>();
 
         return services;
     }
