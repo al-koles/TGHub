@@ -2,6 +2,7 @@
 
 public class Lottery : EntityBase
 {
+    public string Title { get; set; } = null!;
     public string Content { get; set; } = null!;
     public DateTime FromDateTime { get; set; }
     public DateTime ToDateTime { get; set; }

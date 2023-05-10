@@ -1,75 +1,22 @@
 ﻿@attribute [Authorize]
 @page "/posts/create"
 @using TGHub.Application.Common
-@using TGHub.Application.Common.Filtering
 @using TGHub.Application.Common.SessionStorage
 @using TGHub.Application.Resources
 @using TGHub.Application.Services.Base
 @using TGHub.Blazor.Pages.Posts.Forms
 @using TGHub.Blazor.Pages.Posts.Models
-@using TGHub.Blazor.Shared.Loaders
 @using TGHub.Domain.Entities
 @inject LocalStorageProvider LocalStorageProvider
 @inject SessionStorageProvider SessionStorageProvider
-@inject IService<ChannelAdministrator> ChannelService
+@inject IService<ChannelAdministrator> ChannelAdministratorService
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 
-@if (_isLoading)
-{
-    <PageLoader/>
-}
-<div>
-    @if (_isForbidden)
-    {
-        @((MarkupString)_forbiddenMessage)
-    }
-    else
-    {
-        <PostForm IsEdit="@false" Model="@_model"/>
-    }
+<div class="h-full">
+    <PostForm IsEdit="@false" Model="@_model"/>
 </div>
 
 @code {
     private readonly PostModel _model = new();
-    private bool _isLoading;
-    private bool _isForbidden;
-    private string _forbiddenMessage = null!;
-    private List<ChannelAdministrator> _administratedChannels = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            _isLoading = true;
-            var channelData = SessionStorageProvider.SelectedChannelAdministratorData;
-
-            _administratedChannels = await ChannelService.ListAsync(new FilterBase<ChannelAdministrator>
-            {
-                Where = a => a.AdministratorId == LocalStorageProvider.Id && a.IsActive,
-                SortBy = a => a.Channel.Name
-            });
-            if (!_administratedChannels.Any())
-            {
-                _forbiddenMessage = NotificationStringsLoc[nameof(NotificationStrings.NoAdministratedChannels)];
-                _isForbidden = true;
-                return;
-            }
-
-            if (channelData == null)
-            {
-                _model.CreatorId = _administratedChannels.First().Id;
-            }
-            else
-            {
-                _model.CreatorId = _administratedChannels
-                    .FirstOrDefault(ch => ch.ChannelId == channelData.ChannelId)?.Id ?? _administratedChannels.First().Id;
-            }
-        }
-        finally
-        {
-            _isLoading = false;
-            await InvokeAsync(StateHasChanged);
-        }
-    }
 
 }

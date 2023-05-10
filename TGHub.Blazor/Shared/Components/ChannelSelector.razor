@@ -1,93 +1,116 @@
-﻿@using TGHub.Blazor.Resources
-@using TGHub.Domain.Entities
-@using TGHub.Application.Common.Filtering
-@using TGHub.Application.Common
-@using TGHub.Application.Common.SessionStorage
-@using TGHub.Application.Resources
+﻿@using TGHub.Application.Resources
 @using TGHub.Application.Services.Base
-
+@using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using TGHub.Application.Common
+@using TGHub.Application.Common.Filtering
+@using TGHub.Application.Common.SessionStorage
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject LocalStorageProvider LocalStorageProvider
 @inject SessionStorageProvider SessionStorageProvider
-@inject IService<ChannelAdministrator> ChannelAdministratorService
+@inject IServiceProvider ServiceProvider
 
-<div class="p-0.5 rounded-md bg-[@ColorStrings.C4]">
-    <BlazoredTypeahead SearchMethod="@SearchChannelAdministrators"
-                       TValue="@ChannelAdministrator"
-                       TItem="@ChannelAdministrator"
-                       Value="@_selectedChannel"
-                       ValueExpression="@(() => _selectedChannel)"
-                       ValueChanged="@OnValueChanged"
-                       MaximumSuggestions="@_administratedChannels.Count"
-                       EnableDropDown="@true"
-                       ShowDropDownOnFocus="@true"
-                       placeholder="@UiStringsLoc[nameof(UiStrings.SelectChannel)]">
-        <SelectedTemplate>
-            <div class="flex gap-2 items-center">
-                <img class="h-6 w-6 rounded-full" 
-                     src="@context.Channel.PhotoUrl" 
-                     alt="@(context.Channel.Name.First())">
-                @(context.Channel.Name)
-            </div>
-        </SelectedTemplate>
-        <HelpTemplate>
-            help
-        </HelpTemplate>
-        <ResultTemplate>
-            <div class="flex gap-2 items-center">
-                <img class="h-6 w-6 rounded-full" 
-                     src="@context.Channel.PhotoUrl" 
-                     alt="@(context.Channel.Name.First())">
-                @(context.Channel.Name)
-            </div>
-        </ResultTemplate>
-    </BlazoredTypeahead>
-</div>
+@if (AdministratedChannels != null)
+{
+    <div class="p-0.5 rounded-md bg-[@ColorStrings.C4]/80">
+        <BlazoredTypeahead SearchMethod="@SearchChannelAdministrators"
+                           TValue="@ChannelAdministrator"
+                           TItem="@ChannelAdministrator"
+                           Value="@Channel"
+                           ValueExpression="@(() => Channel)"
+                           ValueChanged="@OnValueChanged"
+                           MaximumSuggestions="@AdministratedChannels.Count"
+                           EnableDropDown="@true"
+                           ShowDropDownOnFocus="@true"
+                           placeholder="@UiStringsLoc[nameof(UiStrings.SelectChannel)]">
+            <SelectedTemplate>
+                <div class="flex gap-2 items-center text-white font-bold">
+                    <img class="h-6 w-6 rounded-full"
+                         src="@context.Channel.PhotoUrl"
+                         alt="@(context.Channel.Name.First())">
+                    @(context.Channel.Name)
+                </div>
+            </SelectedTemplate>
+            <HelpTemplate>
+                help
+            </HelpTemplate>
+            <ResultTemplate>
+                <div class="flex gap-2 items-center">
+                    <img class="h-6 w-6 rounded-full"
+                         src="@context.Channel.PhotoUrl"
+                         alt="@(context.Channel.Name.First())">
+                    @(context.Channel.Name)
+                </div>
+            </ResultTemplate>
+        </BlazoredTypeahead>
+    </div>
+}
 
 @code {
-    
-    private IList<ChannelAdministrator> _administratedChannels = new List<ChannelAdministrator>();
-    private ChannelAdministrator? _selectedChannel;
-    
-    protected override async Task OnInitializedAsync()
-    {
-        var administratedChannels = await ChannelAdministratorService
-            .ListAsync(new FilterBase<ChannelAdministrator>
-            {
-                Where = a => a.IsActive && a.Channel.IsActive && a.AdministratorId == LocalStorageProvider.Id
-            });
-        _administratedChannels = administratedChannels;
 
-        if (SessionStorageProvider.SelectedChannelAdministratorData != null)
+    [Parameter]
+    public bool SetGlobally { get; set; }
+
+    [Parameter]
+    public bool SetFromGlobal { get; set; }
+
+    [Parameter]
+    public IList<ChannelAdministrator>? AdministratedChannels { get; set; }
+
+    [Parameter]
+    public ChannelAdministrator? Channel { get; set; }
+
+    [Parameter]
+    public EventCallback<ChannelAdministrator?> ChannelChanged { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (AdministratedChannels == null)
         {
-            _selectedChannel = _administratedChannels
+            using var scope = ServiceProvider.CreateScope();
+            var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
+            var administratedChannels = await channelAdministratorService
+                .ListAsync(new FilterBase<ChannelAdministrator>
+                {
+                    Where = a => a.IsActive && a.Channel.IsActive && a.AdministratorId == LocalStorageProvider.Id
+                });
+            AdministratedChannels = administratedChannels;
+        }
+
+        if (SetFromGlobal && SessionStorageProvider.SelectedChannelAdministratorData != null)
+        {
+            Channel = AdministratedChannels
                 .FirstOrDefault(a => a.ChannelId == SessionStorageProvider.SelectedChannelAdministratorData.ChannelId);
         }
     }
 
     private async Task<IEnumerable<ChannelAdministrator>> SearchChannelAdministrators(string searchText)
     {
-        return await Task.FromResult(_administratedChannels
+        return await Task.FromResult(AdministratedChannels!
             .Where(a => a.Channel.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList());
     }
 
     private async Task OnValueChanged(ChannelAdministrator? selectedChannel)
     {
-        _selectedChannel = selectedChannel;
-        if (_selectedChannel == null)
+        Channel = selectedChannel;
+
+        if (SetGlobally)
         {
-            SessionStorageProvider.SelectedChannelAdministratorData = null;
-        }
-        else
-        {
-            SessionStorageProvider.SelectedChannelAdministratorData = new ChannelAdministratorSessionData
+            if (Channel == null)
             {
-                ChannelId = _selectedChannel.ChannelId,
-                Role = _selectedChannel.Role
-            };
+                SessionStorageProvider.SelectedChannelAdministratorData = null;
+            }
+            else
+            {
+                SessionStorageProvider.SelectedChannelAdministratorData = new ChannelAdministratorSessionData
+                {
+                    ChannelId = Channel.ChannelId,
+                    Role = Channel.Role
+                };
+            }
+            await SessionStorageProvider.PushAsync();
+            await SessionStorageProvider.NotifyDataChangedAsync();
         }
-        await SessionStorageProvider.PushAsync();
-        await SessionStorageProvider.NotifyDataChangedAsync();
     }
-    
+
 }

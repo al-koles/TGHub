@@ -1,8 +1,5 @@
 ﻿@using TGHub.Application.Resources
 @using TGHub.Blazor.Resources
-@using TGHub.Blazor.Shared.Buttons
-@using TGHub.Blazor.Shared.Components
-
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 
 <nav class="bg-[@ColorStrings.C3]/40 shadow-md">
@@ -34,7 +31,7 @@
                 </li>
             </ul>
         </div>
-        <ChannelSelector/>
+        <ChannelSelector SetGlobally="@true" SetFromGlobal="@true"/>
         <div class="flex flex-wrap items-center gap-10">
             <CultureSelector/>
             <div class="flex flex-wrap items-center">

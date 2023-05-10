@@ -7,17 +7,20 @@ namespace TGHub.Blazor.Pages.Posts.Models;
 public class PostModel : IMapWith<Post>
 {
     public int Id { get; set; }
+    
+    [Required]
+    public string Title { get; set; } = null!;
 
     [Required]
     public string Content { get; set; } = null!;
 
     [Required]
-    public DateTime ReleaseDateTime { get; set; }
+    public DateTime? ReleaseDateTime { get; set; }
 
     public long? TelegramId { get; set; }
 
     [Required]
-    public int CreatorId { get; set; }
+    public ChannelAdministrator Creator { get; set; }
 
     [Required] [ValidateComplexType]
     public List<PostButtonModel> Buttons { get; set; } = new();

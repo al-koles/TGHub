@@ -2,6 +2,7 @@
 
 public class Post : EntityBase
 {
+    public string Title { get; set; } = null!;
     public string Content { get; set; } = null!;
     public DateTime ReleaseDateTime { get; set; }
     public long? TelegramId { get; set; }
