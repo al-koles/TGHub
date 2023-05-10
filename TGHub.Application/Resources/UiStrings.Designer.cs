@@ -167,5 +167,14 @@ namespace TGHub.Application.Resources {
                 return ResourceManager.GetString("Reload", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a channel.
+        /// </summary>
+        public static string SelectChannel {
+            get {
+                return ResourceManager.GetString("SelectChannel", resourceCulture);
+            }
+        }
     }
 }

@@ -37,7 +37,8 @@ public class SessionStorageProvider
         var channelAdministrator = await _channelAdministratorService
             .FirstOrDefaultAsync(ch => ch.AdministratorId == _localStorageProvider.Id &&
                                       ch.ChannelId == selectedChannelId &&
-                                      ch.IsActive);
+                                      ch.IsActive &&
+                                      ch.Channel.IsActive);
         if (channelAdministrator == null)
         {
             SelectedChannelAdministratorData = null;

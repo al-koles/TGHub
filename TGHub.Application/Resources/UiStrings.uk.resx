@@ -153,4 +153,7 @@
   <data name="Reload" xml:space="preserve">
     <value>Перезавантажити</value>
   </data>
+  <data name="SelectChannel" xml:space="preserve">
+    <value>Виберіть канал</value>
+  </data>
 </root>

@@ -155,14 +155,13 @@ internal class TelegramChannelService : ITelegramChannelService
             try
             {
                 var file = await _telegramBotClient.GetFileAsync(tgChannel.Photo.BigFileId);
-                var path = Path.Combine(LogoPicturesFolderName,
-                    tgChannel.Id.ToString() + Path.GetExtension(file.FilePath));
-                var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
+                var fileName = tgChannel.Id.ToString() + Path.GetExtension(file.FilePath);
+                var path = Path.Combine(_webHostEnvironment.WebRootPath, LogoPicturesFolderName, fileName);
             
-                await using var stream = File.Create(fullPath);
+                await using var stream = File.Create(path);
                 await _telegramBotClient.DownloadFileAsync(file.FilePath!, stream);
 
-                dbChannel.PhotoUrl = path;
+                dbChannel.PhotoUrl = LogoPicturesFolderName + "/" + fileName;
             }
             catch (Exception e)
             {
