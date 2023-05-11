@@ -3,8 +3,10 @@
 @using AutoMapper
 @using TGHub.Application.Common.SessionStorage
 @using TGHub.Application.Services.Posts
+@using TGHub.Blazor.Pages.Posts.Modals
 @using TGHub.Blazor.Resources
 @using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using TGHub.Application.Common
 @using System.Globalization
@@ -41,9 +43,13 @@
     [SupplyParameterFromQuery]
     public string? Month { get; set; }
 
+    [CascadingParameter]
+    private IModalService Modal { get; set; }
+
     private int _year = DateTime.UtcNow.Year;
     private Month _month = (Month)DateTime.UtcNow.Month;
 
+    private List<Post> _posts = new();
     private List<CalendarEventModel> _events = new();
 
     protected override void OnInitialized()
@@ -68,6 +74,17 @@
 
     private void OnEventClick(int id)
     {
+        var post = _posts.FirstOrDefault(p => p.Id == id);
+        if (post != null)
+        {
+            var parameters = new ModalParameters()
+                .Add(nameof(PostInfoModal.PostInfo), post);
+            var options = new ModalOptions
+            {
+                Position = ModalPosition.Middle
+            };
+            Modal.Show<PostInfoModal>(post.Title, parameters, options);
+        }
     }
 
     private bool TryGetParameters(out int year, out Month month)
@@ -111,8 +128,8 @@
         }
         using var scope = ServiceProvider.CreateScope();
         var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
-        var posts = await postService.ListAsync(filter);
-        _events = Mapper.Map<List<CalendarEventModel>>(posts);
+        _posts = await postService.ListAsync(filter);
+        _events = Mapper.Map<List<CalendarEventModel>>(_posts);
         await InvokeAsync(StateHasChanged);
     }
 

@@ -17,6 +17,10 @@ public class PostService : Service<Post>, IPostService
         var query = DbContext.Posts
             .Include(p => p.Attachments)
             .Include(p => p.Buttons)
+            .Include(p => p.Creator)
+            .ThenInclude(c => c.Administrator)
+            .Include(p => p.Creator)
+            .ThenInclude(p => p.Channel)
             .AsNoTracking();
 
         if (filter == null)

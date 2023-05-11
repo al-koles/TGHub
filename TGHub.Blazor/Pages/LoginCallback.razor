@@ -1,14 +1,13 @@
 ﻿@page "/login-callback"
+@using TGHub.Telegram.Bot.Options
 @using Microsoft.Extensions.Options
 @using TGHub.Application.Common
 @using TGHub.Application.Services.Base
-@using TGHub.Blazor.Shared.Loaders
 @using TGHub.Domain.Entities
 @using AutoMapper
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Security.Cryptography
 @using System.Text
-@using TGHub.Telegram.Bot.Options
 
 @inject IOptionsSnapshot<TelegramBotOptions> BotOptions
 @inject NavigationManager NavigationManager
@@ -60,7 +59,7 @@
         {
             if (await IsAuthenticatedAsync())
             {
-                NavigationManager.NavigateTo($"/{RedirectUrl}", true);
+                NavigationManager.NavigateTo($"{RedirectUrl}", true);
                 return;
             }
             if (ValidateCallback())
@@ -69,7 +68,7 @@
                 try
                 {
                     await UpdateUserDataAndLoginAsync(userSession);
-                    NavigationManager.NavigateTo($"/{RedirectUrl}", true);
+                    NavigationManager.NavigateTo($"{RedirectUrl}", true);
                     ToastService.ShowSuccess($"Welcome back {FirstName}!");
                 }
                 catch (Exception e)

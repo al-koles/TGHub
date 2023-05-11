@@ -1,0 +1,20 @@
+﻿@using TGHub.Domain.Entities
+@using System.Globalization
+@using TGHub.Blazor.Resources
+<div class="text-lg">
+    Release at: @PostInfo.ReleaseDateTime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern)
+</div>
+<div class="flex gap-1">
+    Creator:
+    <UserTile User="@(PostInfo.Creator?.Administrator ?? new TgHubUser())"/>
+</div>
+<p class="bg-[@ColorStrings.C0] rounded-2xl">
+    @((MarkupString)PostInfo.Content)
+</p>
+
+@code {
+
+    [Parameter]
+    public Post PostInfo { get; set; } = new();
+
+}
