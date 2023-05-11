@@ -1,0 +1,20 @@
+﻿@using TGHub.Blazor.Resources
+@using TGHub.Application.Resources
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+<button type="submit"
+        disabled="@IsLoading"
+        class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
+                               hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
+    @UiStringsLoc[UiStrings.Submit]
+    @if (IsLoading)
+    {
+        <ElementLoader/>
+    }
+</button>
+
+@code {
+    
+    [Parameter]
+    public bool IsLoading { get; set; }
+    
+}

@@ -22,13 +22,13 @@ public class PostModel : IMapWith<Post>
     [Required]
     public string? ReleaseTime
     {
-        get => _releaseTime?.ToString();
+        get => _releaseTime?.ToString("HH:mm");
         set => _releaseTime = TimeOnly.TryParse(value ?? "", out var time) ? time : null;
     }
 
     public long? TelegramId { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "The Channel field is required.")]
     public ChannelAdministrator Creator { get; set; }
 
     [Required] [ValidateComplexType]

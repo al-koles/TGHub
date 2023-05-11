@@ -20,7 +20,7 @@
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
         <PageHeaderTitle Text="Posts"/>
-        <a href="@GetCreatePageUlr()"
+        <a href="@GetCreatePageUrl()"
                  class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
                         hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
             Create
@@ -110,10 +110,10 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private string GetCreatePageUlr()
+    private string GetCreatePageUrl()
     {
         var redirectUri = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
-        return $"posts/create?redirectUrl={redirectUri}";
+        return $"/posts/create?redirectUrl={redirectUri}";
     }
 
 }

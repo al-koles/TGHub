@@ -11,7 +11,7 @@
                 <NotAuthorized>
                     @if (context.User.Identity?.IsAuthenticated == false)
                     {
-                        var redirectUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+                        var redirectUrl = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
                         <Redirect To="@($"/login?redirectUrl={redirectUrl}")"/>
                     }
                     else
