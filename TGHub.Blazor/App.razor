@@ -4,29 +4,31 @@
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 
 <CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <Authorizing>@UiStringsLoc[nameof(UiStrings.Authorizing)]</Authorizing>
-                <NotAuthorized>
-                    @if (context.User.Identity?.IsAuthenticated == false)
-                    {
-                        var redirectUrl = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
-                        <Redirect To="@($"/login?redirectUrl={redirectUrl}")"/>
-                    }
-                    else
-                    {
-                        <p>@UiStringsLoc[nameof(UiStrings.AccessDenied)]</p>
-                    }
-                </NotAuthorized>
-            </AuthorizeRouteView>
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">@UiStringsLoc[nameof(UiStrings.NotFound)]</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
+    <CascadingBlazoredModal>
+        <Router AppAssembly="@typeof(App).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <Authorizing>@UiStringsLoc[nameof(UiStrings.Authorizing)]</Authorizing>
+                    <NotAuthorized>
+                        @if (context.User.Identity?.IsAuthenticated == false)
+                        {
+                            var redirectUrl = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
+                            <Redirect To="@($"/login?redirectUrl={redirectUrl}")"/>
+                        }
+                        else
+                        {
+                            <p>@UiStringsLoc[nameof(UiStrings.AccessDenied)]</p>
+                        }
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+                <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+            </Found>
+            <NotFound>
+                <PageTitle>Not found</PageTitle>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p role="alert">@UiStringsLoc[nameof(UiStrings.NotFound)]</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </CascadingBlazoredModal>
 </CascadingAuthenticationState>

@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Blazored.Modal;
 using Blazored.SessionStorage;
 using Blazored.Toast;
 using TGHub.Application;
@@ -24,6 +25,7 @@ builder.Services.AddTelegramBotClient();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredToast();
+builder.Services.AddBlazoredModal();
 builder.Services.AddApplication();
 builder.Services.AddSqlDb(builder.Configuration["ConnectionStrings:DefaultConnection"]);
 builder.Services.AddAutoMapper(opt =>

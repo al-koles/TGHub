@@ -1,24 +1,29 @@
 ﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
-@using System.Globalization
 @using TGHub.Blazor.Resources
-<div class="relative h-full w-full">
-    <div class="p-2 absolute w-full h-full top-0 left-0 flex flex-col items-center">
-        <div class="text-center">
-            <div class="inline block rounded-full w-6 h-6 flex items-center justify-center
+@using TGHub.Blazor.Shared.Components.Calendar.Modals
+@using System.Globalization
+@inject NavigationManager NavigationManager
+
+<div class="relative h-full w-full text-sm">
+    <div class="p-1 absolute w-full h-full top-0 left-0 flex flex-col items-center">
+        <div class="flex items-center w-full justify-center">
+            <div class="rounded-full w-5 h-5 flex items-center justify-center
                         @(Date == DateTime.Today ? $"bg-[{ColorStrings.C5}]/30" : "")
                         hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5] hover:cursor-pointer">
-                @Date.Day
+                <div @onclick="@OnDayClick">
+                    @Date.Day
+                </div>
             </div>
             @if (Date.Day == 1)
             {
-                <span> (@(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Date.Month)))</span>
+                <div>(@(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Date.Month)))</div>
             }
         </div>
         <div class="grow w-full overflow-y-auto mt-1">
             <div class="w-[95%] flex flex-col gap-1 py-1 pl-1">
                 @foreach (var calendarEvent in Events)
                 {
-                    <CalendarEvent Event="@calendarEvent"/>
+                    <CalendarEvent Event="@calendarEvent" Click="@EventClick"/>
                 }
             </div>
         </div>
@@ -26,10 +31,31 @@
 </div>
 
 @code {
+
     [Parameter]
     public DateTime Date { get; set; }
 
     [Parameter]
     public List<CalendarEventModel> Events { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<int> EventClick { get; set; }
+
+    [CascadingParameter]
+    private IModalService Modal { get; set; }
+
+    private void OnDayClick()
+    {
+        var parameters = new ModalParameters()
+            .Add(nameof(DayModal.Date), Date)
+            .Add(nameof(DayModal.Events), Events)
+            .Add(nameof(DayModal.EventClick), EventClick);
+        var options = new ModalOptions
+        {
+            Position = ModalPosition.Middle
+        };
+        Modal.Show<DayModal>(Date.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern),
+            parameters, options);
+    }
 
 }

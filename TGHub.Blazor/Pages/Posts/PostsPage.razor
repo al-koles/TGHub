@@ -1,33 +1,33 @@
 ﻿@attribute [Authorize]
 @page "/posts"
+@using AutoMapper
+@using TGHub.Application.Common.SessionStorage
 @using TGHub.Application.Services.Posts
 @using TGHub.Blazor.Resources
 @using TGHub.Blazor.Shared.Components.Calendar.Models
 @using TGHub.Domain.Enums
-@using AutoMapper
-@using TGHub.Application.Common.SessionStorage
 @using TGHub.Application.Common
 @using System.Globalization
 @using Calendar = TGHub.Blazor.Shared.Components.Calendar.Calendar
 
-@inject IPostService PostService
 @inject IMapper Mapper
 @inject NavigationManager NavigationManager
 @inject IToastService ToastService
 @inject SessionStorageProvider SessionStorageProvider
 @inject LocalStorageProvider LocalStorageProvider
+@inject IServiceProvider ServiceProvider
 
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
         <PageHeaderTitle Text="Posts"/>
         <a href="@GetCreatePageUrl()"
-                 class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
+           class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
                         hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
             Create
         </a>
     </div>
     <div class="grow w-full">
-        <Calendar Events="@_events" Year="@_year" Month="@_month"/>
+        <Calendar Events="@_events" Year="@_year" Month="@_month" EventClick="@OnEventClick"/>
     </div>
 </div>
 
@@ -64,6 +64,10 @@
         _month = month;
 
         await RefreshEventsAsync();
+    }
+
+    private void OnEventClick(int id)
+    {
     }
 
     private bool TryGetParameters(out int year, out Month month)
@@ -105,7 +109,9 @@
         {
             filter.ChannelId = SessionStorageProvider.SelectedChannelAdministratorData.ChannelId;
         }
-        var posts = await PostService.ListAsync(filter);
+        using var scope = ServiceProvider.CreateScope();
+        var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+        var posts = await postService.ListAsync(filter);
         _events = Mapper.Map<List<CalendarEventModel>>(posts);
         await InvokeAsync(StateHasChanged);
     }

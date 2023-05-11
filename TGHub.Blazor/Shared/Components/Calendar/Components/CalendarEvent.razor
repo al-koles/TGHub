@@ -1,8 +1,8 @@
 ﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
 @using TGHub.Blazor.Resources
-
-<div class="rounded bg-[@ColorStrings.C4]/30 flex gap-1 text-sm p-0.5 w-full overflow-x-hidden
-            hover:cursor-pointer hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5]">
+<div class="rounded bg-[@ColorStrings.C4]/30 flex gap-1 p-0.5 w-full overflow-x-hidden
+            hover:cursor-pointer hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5]"
+     @onclick="@(async () => await Click.InvokeAsync(Event.Id))">
     <p>
         @Event.ReleaseDateTime.ToString("HH:mm")
     </p>
@@ -15,5 +15,11 @@
 
     [Parameter]
     public CalendarEventModel Event { get; set; } = new();
+
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
+    [Parameter]
+    public EventCallback<int> Click { get; set; }
 
 }
