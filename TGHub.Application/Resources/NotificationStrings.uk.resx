@@ -123,6 +123,9 @@
   <data name="NoAdministratedChannels" xml:space="preserve">
     <value>&lt;p&gt;Адміністрованих каналів не виявлено. Перейдіть у Telegram і додайте &lt;a target="_blank"  href="https://t.me/tghub_manager_bot"&gt;@tghub_manager_bot&lt;/a&gt; до будь-якого каналу, яким ви керуєте&lt;/p&gt;</value>
   </data>
+  <data name="SubmitError" xml:space="preserve">
+    <value>Сталася помилка. Спробуйте ще раз</value>
+  </data>
   <data name="Test" xml:space="preserve">
     <value>Привіт Світ!</value>
   </data>

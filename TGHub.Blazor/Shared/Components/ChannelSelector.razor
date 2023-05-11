@@ -63,7 +63,7 @@
     [Parameter]
     public EventCallback<ChannelAdministrator?> ChannelChanged { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         if (AdministratedChannels == null)
         {
@@ -81,6 +81,7 @@
         {
             Channel = AdministratedChannels
                 .FirstOrDefault(a => a.ChannelId == SessionStorageProvider.SelectedChannelAdministratorData.ChannelId);
+            await ChannelChanged.InvokeAsync(Channel);
         }
     }
 
@@ -93,6 +94,7 @@
     private async Task OnValueChanged(ChannelAdministrator? selectedChannel)
     {
         Channel = selectedChannel;
+        await ChannelChanged.InvokeAsync(Channel);
 
         if (SetGlobally)
         {

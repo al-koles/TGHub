@@ -1,15 +1,14 @@
 ﻿@attribute [Authorize]
 @page "/posts"
 @using TGHub.Application.Services.Posts
-@using TGHub.Blazor.Shared.Buttons
-@using TGHub.Blazor.Shared.Components
+@using TGHub.Blazor.Resources
 @using TGHub.Blazor.Shared.Components.Calendar.Models
 @using TGHub.Domain.Enums
-@using TGHub.Blazor.Shared.Components.Calendar
 @using AutoMapper
 @using TGHub.Application.Common.SessionStorage
 @using TGHub.Application.Common
 @using System.Globalization
+@using Calendar = TGHub.Blazor.Shared.Components.Calendar.Calendar
 
 @inject IPostService PostService
 @inject IMapper Mapper
@@ -21,7 +20,11 @@
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
         <PageHeaderTitle Text="Posts"/>
-        <ActiveButton Text="Create"/>
+        <a href="@GetCreatePageUlr()"
+                 class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
+                        hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
+            Create
+        </a>
     </div>
     <div class="grow w-full">
         <Calendar Events="@_events" Year="@_year" Month="@_month"/>
@@ -92,11 +95,7 @@
         var filter = new PostFilter
         {
             From = from,
-            To = to,
-            Where = p => p.ReleaseDateTime >= from && p.ReleaseDateTime <= to &&
-                         (SessionStorageProvider.SelectedChannelAdministratorData == null
-                             ? p.Creator.Channel.Administrators.Any(a => a.AdministratorId == LocalStorageProvider.Id)
-                             : p.Creator.ChannelId == SessionStorageProvider.SelectedChannelAdministratorData!.ChannelId)
+            To = to
         };
         if (SessionStorageProvider.SelectedChannelAdministratorData == null)
         {
@@ -109,6 +108,12 @@
         var posts = await PostService.ListAsync(filter);
         _events = Mapper.Map<List<CalendarEventModel>>(posts);
         await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetCreatePageUlr()
+    {
+        var redirectUri = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
+        return $"posts/create?redirectUrl={redirectUri}";
     }
 
 }

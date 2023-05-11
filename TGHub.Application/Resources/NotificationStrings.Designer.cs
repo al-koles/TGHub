@@ -79,6 +79,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error submitting. Please try again.
+        /// </summary>
+        public static string SubmitError {
+            get {
+                return ResourceManager.GetString("SubmitError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello world.
         /// </summary>
         public static string Test {

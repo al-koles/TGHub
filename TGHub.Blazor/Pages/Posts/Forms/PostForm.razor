@@ -1,14 +1,32 @@
-﻿@using TGHub.Blazor.Pages.Posts.Models
+﻿@using AutoMapper
+@using TGHub.Application.Services.Posts
+@using TGHub.Blazor.Pages.Posts.Models
 @using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using TGHub.Application.Resources
+@inject IMapper Mapper
+@inject IPostService PostService
+@inject NavigationManager NavigationManager
+@inject IToastService ToastService
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject ILogger<PostForm> Logger
+
 <div class="rounded-3xl w-full h-full px-8 py-4 bg-[@ColorStrings.C1]/40">
     <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
         <ObjectGraphDataAnnotationsValidator/>
         <div class="flex flex-col gap-3">
             <div class="flex justify-between items-center">
                 <PageHeaderTitle Text="Create Post"/>
-                <button type="submit" class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
-                                                                hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
+                <button type="submit"
+                        disabled="@_isLoading"
+                        class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
+                               hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
                     Submit
+                    @if (_isLoading)
+                    {
+                        <ElementLoader/>
+                    }
                 </button>
             </div>
 
@@ -36,7 +54,7 @@
 
             <div class="flex flex-col">
                 <label class="font-bold">Release</label>
-                <div class="flex items-center gap-4">
+                <div class="flex gap-4">
                     <div class="flex flex-col">
                         <label class="font-bold">Date</label>
                         <div>
@@ -45,8 +63,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
                             </svg>
                             <InputDate class="@($"px-2 py-0.5 rounded-full focus:outline-[{ColorStrings.C5}]")"
-                                       @bind-Value="Model.ReleaseDateTime"/>
+                                       @bind-Value="@Model.ReleaseDate"/>
                         </div>
+                        <ValidationMessage For="@(() => Model.ReleaseDate)"/>
                     </div>
                     <div class="flex flex-col">
                         <label class="font-bold">Time</label>
@@ -55,12 +74,12 @@
                                  class="w-6 h-6 inline text-[@ColorStrings.C5]">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            <input type="time" class="@($"px-2 py-0.5 rounded-full focus:outline-[{ColorStrings.C5}]")"
-                                   @bind="Model.ReleaseDateTime"/>
+                            <InputText type="time" class="@($"px-2 py-0.5 rounded-full focus:outline-[{ColorStrings.C5}]")"
+                                   @bind-Value="@Model.ReleaseTime"/>
                         </div>
+                        <ValidationMessage For="@(() => Model.ReleaseTime)"/>
                     </div>
                 </div>
-                <ValidationMessage For="@(() => Model.ReleaseDateTime)"/>
             </div>
         </div>
     </EditForm>
@@ -74,8 +93,41 @@
     [Parameter]
     public bool IsEdit { get; set; }
 
+    [Parameter]
+    public string RedirectUrl { get; set; } = null!;
+
+    private bool _isLoading;
+
     private async Task OnValidSubmit()
     {
+        if (_isLoading)
+        {
+            return;
+        }
+        _isLoading = true;
+        await InvokeAsync(StateHasChanged);
+        try
+        {
+            var post = Mapper.Map<Post>(Model);
+            if (IsEdit)
+            {
+                await PostService.UpdateAsync(post);
+            }
+            else
+            {
+                await PostService.CreateAsync(post);
+            }
+            NavigationManager.NavigateTo(RedirectUrl ?? "/");
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError(NotificationStringsLoc[nameof(NotificationStrings.SubmitError)]);
+            Logger.LogError(e, "Submit failed");
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
 }

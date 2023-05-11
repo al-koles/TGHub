@@ -142,11 +142,11 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Messages.
+        ///   Looks up a localized string similar to Posts.
         /// </summary>
-        public static string NavMessages {
+        public static string NavPosts {
             get {
-                return ResourceManager.GetString("NavMessages", resourceCulture);
+                return ResourceManager.GetString("NavPosts", resourceCulture);
             }
         }
         

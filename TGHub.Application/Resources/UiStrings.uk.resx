@@ -144,8 +144,8 @@
   <data name="NavLottery" xml:space="preserve">
     <value>Розіграші</value>
   </data>
-  <data name="NavMessages" xml:space="preserve">
-    <value>Повідомлення</value>
+  <data name="NavPosts" xml:space="preserve">
+    <value>Пости</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>Вибачте, за цією адресою нічого немає.</value>
