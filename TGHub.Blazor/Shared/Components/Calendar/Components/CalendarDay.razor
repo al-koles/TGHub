@@ -1,19 +1,26 @@
 ﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
 @using System.Globalization
+@using TGHub.Blazor.Resources
 <div class="relative h-full w-full">
-    <div class="p-2 absolute w-full h-full top-0 left-0 overflow-y-auto overflow-x-hidden">
+    <div class="p-2 absolute w-full h-full top-0 left-0 flex flex-col items-center">
         <div class="text-center">
-            @Date.Day
+            <div class="inline block rounded-full w-6 h-6 flex items-center justify-center
+                        @(Date == DateTime.Today ? $"bg-[{ColorStrings.C5}]/30" : "")
+                        hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5] hover:cursor-pointer">
+                @Date.Day
+            </div>
             @if (Date.Day == 1)
             {
                 <span> (@(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Date.Month)))</span>
             }
         </div>
-        <div>
-            @foreach (var calendarEvent in Events)
-            {
-                <CalendarEvent Event="@calendarEvent"/>
-            }
+        <div class="grow w-full overflow-y-auto mt-1">
+            <div class="w-[95%] flex flex-col gap-1 py-1 pl-1">
+                @foreach (var calendarEvent in Events)
+                {
+                    <CalendarEvent Event="@calendarEvent"/>
+                }
+            </div>
         </div>
     </div>
 </div>

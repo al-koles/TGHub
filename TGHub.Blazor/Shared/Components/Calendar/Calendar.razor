@@ -22,7 +22,8 @@
             <tr>
                 @foreach (var day in days)
                 {
-                    var events = Events.Where(e => e.ReleaseDateTime == day).ToList();
+                    var events = Events.Where(e => e.ReleaseDateTime.Date == day)
+                        .OrderBy(e => e.ReleaseDateTime).ToList();
                     <td class="border w-[14%]">
                         <CalendarDay Date="@day" Events="@events"/>
                     </td>

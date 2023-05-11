@@ -1,12 +1,14 @@
 ﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Blazor.Resources
 
-<div class="rounded bg-green-200">
-    <h4>
-        @Event.Name
-    </h4>
+<div class="rounded bg-[@ColorStrings.C4]/30 flex gap-1 text-sm p-0.5 w-full overflow-x-hidden
+            hover:cursor-pointer hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5]">
     <p>
         @Event.ReleaseDateTime.ToString("HH:mm")
     </p>
+    <h4>
+        @Event.Title
+    </h4>
 </div>
 
 @code {
