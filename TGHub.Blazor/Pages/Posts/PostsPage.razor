@@ -6,10 +6,10 @@
 @using TGHub.Blazor.Pages.Posts.Modals
 @using TGHub.Blazor.Resources
 @using TGHub.Blazor.Shared.Components.Calendar.Models
-@using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using TGHub.Application.Common
 @using System.Globalization
+@using TGHub.Application.Resources
 @using Calendar = TGHub.Blazor.Shared.Components.Calendar.Calendar
 
 @inject IMapper Mapper
@@ -18,6 +18,7 @@
 @inject SessionStorageProvider SessionStorageProvider
 @inject LocalStorageProvider LocalStorageProvider
 @inject IServiceProvider ServiceProvider
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
@@ -29,7 +30,7 @@
         </a>
     </div>
     <div class="grow w-full">
-        <Calendar Events="@_events" Year="@_year" Month="@_month" EventClick="@OnEventClick"/>
+        <Calendar Events="@_events" Year="@_year" Month="@_month" EventClick="@OnEventClickAsync"/>
     </div>
 </div>
 
@@ -49,7 +50,6 @@
     private int _year = DateTime.UtcNow.Year;
     private Month _month = (Month)DateTime.UtcNow.Month;
 
-    private List<Post> _posts = new();
     private List<CalendarEventModel> _events = new();
 
     protected override void OnInitialized()
@@ -72,9 +72,12 @@
         await RefreshEventsAsync();
     }
 
-    private void OnEventClick(int id)
+    private async Task OnEventClickAsync(int id)
     {
-        var post = _posts.FirstOrDefault(p => p.Id == id);
+        using var scope = ServiceProvider.CreateScope();
+        var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+
+        var post = await postService.FirstOrDefaultAsync(p => p.Id == id);
         if (post != null)
         {
             var parameters = new ModalParameters()
@@ -84,6 +87,10 @@
                 Position = ModalPosition.Middle
             };
             Modal.Show<PostInfoModal>(post.Title, parameters, options);
+        }
+        else
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.NotFound]);
         }
     }
 
@@ -128,8 +135,8 @@
         }
         using var scope = ServiceProvider.CreateScope();
         var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
-        _posts = await postService.ListAsync(filter);
-        _events = Mapper.Map<List<CalendarEventModel>>(_posts);
+        var posts = await postService.ListAsync(filter);
+        _events = Mapper.Map<List<CalendarEventModel>>(posts);
         await InvokeAsync(StateHasChanged);
     }
 

@@ -34,14 +34,11 @@ public class Service<TEntity> : IService<TEntity> where TEntity : class, IEntity
 
     public virtual Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>>? predicate = null)
     {
-        var query = DbContext.Set<TEntity>().AsNoTracking();
+        var query = DbContext.Set<TEntity>();
 
-        if (predicate == null)
-        {
-            return query.FirstOrDefaultAsync();
-        }
-
-        return query.FirstOrDefaultAsync(predicate);
+        return predicate == null
+            ? query.FirstOrDefaultAsync()
+            : query.FirstOrDefaultAsync(predicate);
     }
 
     public virtual async Task<int> CreateAsync(TEntity entity)

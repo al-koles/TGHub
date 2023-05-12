@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 using TGHub.Application.Common;
+using TGHub.Application.Common.Jobs;
 using TGHub.Application.Common.SessionStorage;
 using TGHub.Application.Services.Base;
 using TGHub.Application.Services.ChannelAdministrators;
@@ -24,6 +26,18 @@ public static class DependencyInjection
         services.AddTransient<IChannelService, ChannelService>();
         services.AddTransient<IPostService, PostService>();
         services.AddTransient<IService<ChannelAdministrator>, ChannelAdministratorService>();
+
+        services.AddQuartz(q =>
+        {
+            q.UseMicrosoftDependencyInjectionJobFactory();
+
+            q.AddJob<SendPostJob>(opt =>
+            {
+                opt.WithIdentity(SendPostJob.Key);
+                opt.StoreDurably();
+            });
+        });
+        services.AddQuartzServer(opt => { opt.WaitForJobsToComplete = true; });
 
         return services;
     }

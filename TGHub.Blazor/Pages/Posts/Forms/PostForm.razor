@@ -4,6 +4,8 @@
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Application.Resources
+@using Quartz
+@using TGHub.Application.Common.Jobs
 @inject IMapper Mapper
 @inject IPostService PostService
 @inject NavigationManager NavigationManager
@@ -11,6 +13,7 @@
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 @inject ILogger<PostForm> Logger
+@inject ISchedulerFactory SchedulerFactory
 
 <div class="rounded-3xl w-full h-full px-8 py-4 bg-[@ColorStrings.C1]/40">
     <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
@@ -103,7 +106,9 @@
             }
             else
             {
-                await PostService.CreateAsync(post);
+                var id = await PostService.CreateAsync(post);
+                post.Id = id;
+                await ConfigureTriggerAsync(post);
             }
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
@@ -115,6 +120,29 @@
         finally
         {
             _isLoading = false;
+        }
+    }
+
+    private async Task ConfigureTriggerAsync(Post post)
+    {
+        var scheduler = await SchedulerFactory.GetScheduler();
+        var triggerKey = new TriggerKey(post.Id.ToString(), "posts");
+        var newTrigger = TriggerBuilder.Create()
+            .WithIdentity(triggerKey)
+            .ForJob(SendPostJob.Key)
+            .StartAt(post.ReleaseDateTime)
+            .UsingJobData(new JobDataMap
+            { { nameof(SendPostJob.PostId), post.Id } })
+            .Build();
+
+        var trigger = await scheduler.GetTrigger(triggerKey);
+        if (trigger == null)
+        {
+            await scheduler.ScheduleJob(newTrigger);
+        }
+        else
+        {
+            await scheduler.RescheduleJob(triggerKey, newTrigger);
         }
     }
 

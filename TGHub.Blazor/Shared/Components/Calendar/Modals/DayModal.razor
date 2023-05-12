@@ -34,7 +34,7 @@
     {
         var currentUrl = new Uri(NavigationManager.Uri).GetComponents(UriComponents.Path, UriFormat.UriEscaped);
         var redirectUrl = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
-        var defaultDate = Uri.EscapeDataString(Date.ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern));
+        var defaultDate = Uri.EscapeDataString(DateOnly.FromDateTime(Date).ToShortDateString());
         _createNewUrl = $"/{currentUrl}/create?redirectUrl={redirectUrl}&defaultDate={defaultDate}";
     }
 

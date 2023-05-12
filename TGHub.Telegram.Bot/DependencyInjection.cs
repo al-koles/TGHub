@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
+using TGHub.Application.Interfaces;
 using TGHub.Telegram.Bot.Options;
 using TGHub.Telegram.Bot.TelegramChannels;
 

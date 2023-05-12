@@ -7,7 +7,8 @@ public class Lottery : EntityBase
     public DateTime FromDateTime { get; set; }
     public DateTime ToDateTime { get; set; }
     public int WinnersCount { get; set; }
-    public long? TelegramId { get; set; }
+    public long? LotteryTelegramId { get; set; }
+    public long? ResultTelegramId { get; set; }
 
     public int CreatorId { get; set; }
     public ChannelAdministrator Creator { get; set; } = null!;

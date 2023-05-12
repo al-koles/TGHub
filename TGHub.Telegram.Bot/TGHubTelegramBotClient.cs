@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot;
-using TGHub.Application.Common.Exceptions;
+using Telegram.Bot.Types;
+using TGHub.Application.Interfaces;
 using TGHub.Telegram.Bot.TelegramChannels;
 
 namespace TGHub.Telegram.Bot;
@@ -18,5 +19,11 @@ internal class TgHubTelegramBotClient : ITgHubTelegramBotClient
     public Task CreateOrUpdateChannelFromTg(long channelTgId)
     {
         return _tgChannelService.CreateOrUpdateChannelFromTgAsync(channelTgId);
+    }
+
+    public async Task<long> SendMessageToChannel(long channelTgId, string message)
+    {
+        var post = await _telegramBotClient.SendTextMessageAsync(new ChatId(channelTgId), message);
+        return post.MessageId;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using TGHub.Application.Common.Filtering;
 using TGHub.Application.Interfaces;
 using TGHub.Application.Services.Base;
@@ -15,12 +16,6 @@ public class PostService : Service<Post>, IPostService
     public override Task<List<Post>> ListAsync(FilterBase<Post>? filter = null)
     {
         var query = DbContext.Posts
-            .Include(p => p.Attachments)
-            .Include(p => p.Buttons)
-            .Include(p => p.Creator)
-            .ThenInclude(c => c.Administrator)
-            .Include(p => p.Creator)
-            .ThenInclude(p => p.Channel)
             .AsNoTracking();
 
         if (filter == null)
@@ -60,5 +55,20 @@ public class PostService : Service<Post>, IPostService
         }
 
         return query.Sort(filter).ToListAsync();
+    }
+
+    public override Task<Post?> FirstOrDefaultAsync(Expression<Func<Post, bool>>? predicate = null)
+    {
+        var query = DbContext.Posts
+            .Include(p => p.Attachments)
+            .Include(p => p.Buttons)
+            .Include(p => p.Creator)
+            .ThenInclude(c => c.Administrator)
+            .Include(p => p.Creator)
+            .ThenInclude(p => p.Channel);
+
+        return predicate == null
+            ? query.FirstOrDefaultAsync()
+            : query.FirstOrDefaultAsync(predicate);
     }
 }
