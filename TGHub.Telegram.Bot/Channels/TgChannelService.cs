@@ -1,37 +1,35 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TGHub.Application;
 using TGHub.Application.Common.Exceptions;
 using TGHub.Application.Common.Filtering;
+using TGHub.Application.Interfaces;
 using TGHub.Application.Services.Base;
 using TGHub.Application.Services.Channels;
 using TGHub.Domain.Entities;
 using TGHub.Domain.Enums;
-using File = System.IO.File;
 
-namespace TGHub.Telegram.Bot.TelegramChannels;
+namespace TGHub.Telegram.Bot.Channels;
 
-internal class TelegramChannelService : ITelegramChannelService
+internal class TgChannelService : ITgChannelService
 {
     private readonly IChannelService _channelService;
-    private readonly ILogger<TelegramChannelService> _logger;
+    private readonly IFileStorage _fileStorage;
+    private readonly ILogger<TgChannelService> _logger;
     private readonly ITelegramBotClient _telegramBotClient;
     private readonly IService<TgHubUser> _userService;
-    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public TelegramChannelService(ITelegramBotClient telegramBotClient, IChannelService channelService,
-        ILogger<TelegramChannelService> logger, IService<TgHubUser> userService, IWebHostEnvironment webHostEnvironment)
+    public TgChannelService(ITelegramBotClient telegramBotClient, IChannelService channelService,
+        ILogger<TgChannelService> logger, IService<TgHubUser> userService, IFileStorage fileStorage)
     {
         _telegramBotClient = telegramBotClient;
         _channelService = channelService;
         _logger = logger;
         _userService = userService;
-        _webHostEnvironment = webHostEnvironment;
+        _fileStorage = fileStorage;
     }
-
-    public const string LogoPicturesFolderName = "channel_logo_pictures";
 
     public async Task CreateOrUpdateChannelFromTgAsync(long channelTgId)
     {
@@ -155,13 +153,13 @@ internal class TelegramChannelService : ITelegramChannelService
             try
             {
                 var file = await _telegramBotClient.GetFileAsync(tgChannel.Photo.BigFileId);
-                var fileName = tgChannel.Id.ToString() + Path.GetExtension(file.FilePath);
-                var path = Path.Combine(_webHostEnvironment.WebRootPath, LogoPicturesFolderName, fileName);
-            
-                await using var stream = File.Create(path);
-                await _telegramBotClient.DownloadFileAsync(file.FilePath!, stream);
+                var fileName = tgChannel.Id + Path.GetExtension(file.FilePath);
 
-                dbChannel.PhotoUrl = LogoPicturesFolderName + "/" + fileName;
+                await using var stream = new MemoryStream();
+                await _telegramBotClient.DownloadFileAsync(file.FilePath!, stream);
+                await _fileStorage.UploadAsync(stream, fileName, Constants.ChannelLogoPicturesFolderName);
+
+                dbChannel.PhotoUrl = Constants.ChannelLogoPicturesFolderName + "/" + fileName;
             }
             catch (Exception e)
             {

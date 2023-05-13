@@ -5,7 +5,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TGHub.Application.Services.Channels;
-using TGHub.Telegram.Bot.TelegramChannels;
+using TGHub.Telegram.Bot.Channels;
 
 namespace TGHub.Telegram.Bot;
 
@@ -16,15 +16,15 @@ public class BotController : ControllerBase
     private readonly IChannelService _channelService;
     private readonly ILogger<BotController> _logger;
     private readonly ITelegramBotClient _telegramBotClient;
-    private readonly ITelegramChannelService _telegramChannelService;
+    private readonly ITgChannelService _tgChannelService;
 
     public BotController(ITelegramBotClient telegramBotClient, IChannelService channelService,
-        ILogger<BotController> logger, ITelegramChannelService telegramChannelService)
+        ILogger<BotController> logger, ITgChannelService tgChannelService)
     {
         _telegramBotClient = telegramBotClient;
         _channelService = channelService;
         _logger = logger;
-        _telegramChannelService = telegramChannelService;
+        _tgChannelService = tgChannelService;
     }
 
     [HttpPost]
@@ -103,7 +103,7 @@ public class BotController : ControllerBase
             {
                 if (member.NewChatMember.Status == ChatMemberStatus.Administrator)
                 {
-                    await _telegramChannelService.CreateOrUpdateChannelFromTgAsync(member.Chat.Id);
+                    await _tgChannelService.CreateOrUpdateChannelFromTgAsync(member.Chat.Id);
                 }
                 else
                 {
@@ -112,7 +112,7 @@ public class BotController : ControllerBase
             }
             else if (member.Chat.Type == ChatType.Supergroup)
             {
-                await _telegramChannelService.UpdateCommentsGroupAsync(member.Chat.Id);
+                await _tgChannelService.UpdateCommentsGroupAsync(member.Chat.Id);
             }
         }
         catch (Exception e)

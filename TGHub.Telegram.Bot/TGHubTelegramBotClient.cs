@@ -1,29 +1,28 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Types;
-using TGHub.Application.Interfaces;
-using TGHub.Telegram.Bot.TelegramChannels;
+﻿using TGHub.Application.Interfaces;
+using TGHub.Domain.Entities;
+using TGHub.Telegram.Bot.Channels;
+using TGHub.Telegram.Bot.Posts;
 
 namespace TGHub.Telegram.Bot;
 
 internal class TgHubTelegramBotClient : ITgHubTelegramBotClient
 {
-    private readonly ITelegramBotClient _telegramBotClient;
-    private readonly ITelegramChannelService _tgChannelService;
+    private readonly ITgSendService _tgSendService;
+    private readonly ITgChannelService _tgTgChannelService;
 
-    public TgHubTelegramBotClient(ITelegramBotClient telegramBotClient, ITelegramChannelService tgChannelService)
+    public TgHubTelegramBotClient(ITgChannelService tgTgChannelService, ITgSendService tgSendService)
     {
-        _telegramBotClient = telegramBotClient;
-        _tgChannelService = tgChannelService;
+        _tgTgChannelService = tgTgChannelService;
+        _tgSendService = tgSendService;
     }
 
     public Task CreateOrUpdateChannelFromTg(long channelTgId)
     {
-        return _tgChannelService.CreateOrUpdateChannelFromTgAsync(channelTgId);
+        return _tgTgChannelService.CreateOrUpdateChannelFromTgAsync(channelTgId);
     }
 
-    public async Task<long> SendMessageToChannel(long channelTgId, string message)
+    public Task<long> SendPostAsync(Post post)
     {
-        var post = await _telegramBotClient.SendTextMessageAsync(new ChatId(channelTgId), message);
-        return post.MessageId;
+        return _tgSendService.SendPostAsync(post);
     }
 }

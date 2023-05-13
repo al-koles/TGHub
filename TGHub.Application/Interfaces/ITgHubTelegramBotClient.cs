@@ -1,7 +1,9 @@
-﻿namespace TGHub.Application.Interfaces;
+﻿using TGHub.Domain.Entities;
+
+namespace TGHub.Application.Interfaces;
 
 public interface ITgHubTelegramBotClient
 {
     Task CreateOrUpdateChannelFromTg(long channelTgId);
-    Task<long> SendMessageToChannel(long channelTgId, string message);
+    Task<long> SendPostAsync(Post post);
 }

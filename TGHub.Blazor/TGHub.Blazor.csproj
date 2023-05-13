@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TGHub.Application\TGHub.Application.csproj" />
+    <ProjectReference Include="..\TGHub.ServerFileStorage\TGHub.ServerFileStorage.csproj" />
     <ProjectReference Include="..\TGHub.SqlDb\TGHub.SqlDb.csproj" />
     <ProjectReference Include="..\TGHub.Telegram.Bot\TGHub.Telegram.Bot.csproj" />
     <ProjectReference Include="..\TGHub.WebApiCore\TGHub.WebApiCore.csproj" />
@@ -41,10 +42,6 @@
       <LastGenOutput>ColorStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\channel_logo_pictures" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
-﻿namespace TGHub.Telegram.Bot.TelegramChannels;
+﻿namespace TGHub.Telegram.Bot.Channels;
 
-public interface ITelegramChannelService
+public interface ITgChannelService
 {
     Task CreateOrUpdateChannelFromTgAsync(long channelTgId);
     Task UpdateCommentsGroupAsync(long commentsGroupTelegramId);

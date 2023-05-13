@@ -10,9 +10,9 @@ namespace TGHub.Application.Common.Jobs;
 public class SendPostJob : IJob
 {
     public static readonly JobKey Key = new("SendPostJob");
-    private readonly ITgHubTelegramBotClient _telegramBotClient;
     private readonly ILogger<SendPostJob> _logger;
     private readonly IPostService _postService;
+    private readonly ITgHubTelegramBotClient _telegramBotClient;
 
     public SendPostJob(ITgHubTelegramBotClient telegramBotClient, ILogger<SendPostJob> logger,
         IPostService postService)
@@ -21,7 +21,7 @@ public class SendPostJob : IJob
         _logger = logger;
         _postService = postService;
     }
-    
+
     public int PostId { get; set; }
 
     public async Task Execute(IJobExecutionContext context)
@@ -33,10 +33,10 @@ public class SendPostJob : IJob
             {
                 throw new NotFoundException(nameof(Post), PostId);
             }
-            
-            var postId = await _telegramBotClient.SendMessageToChannel(post.Creator.Channel.TelegramId, post.Content);
 
-            post.TelegramId = postId;
+            var postTgId = await _telegramBotClient.SendPostAsync(post);
+
+            post.TelegramId = postTgId;
             await _postService.UpdateAsync(post);
         }
         catch (Exception e)

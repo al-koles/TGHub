@@ -6,6 +6,7 @@ using TGHub.Application;
 using TGHub.Application.Common.Mappings;
 using TGHub.Blazor.Data;
 using TGHub.Blazor.Extensions;
+using TGHub.ServerFileStorage;
 using TGHub.SqlDb;
 using TGHub.Telegram.Bot;
 using TGHub.WebApiCore.Controllers.Culture;
@@ -22,6 +23,7 @@ builder.Services.AddControllers()
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddOptions(builder.Configuration);
 builder.Services.AddTelegramBotClient();
+builder.Services.AddServerFileStorage();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredToast();
