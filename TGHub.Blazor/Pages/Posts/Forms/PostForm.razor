@@ -39,11 +39,8 @@
                 <ValidationMessage For="@(() => Model.Title)"/>
             </div>
 
-            <div class="flex flex-col">
-                <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Content)]</label>
-                <InputTextArea class="@($"min-h-[5rem] rounded-2xl w-full p-2 focus:outline-[{ColorStrings.C5}]")"
-                               @bind-Value="@Model.Content"/>
-                <ValidationMessage For="@(() => Model.Content)"/>
+            <div>
+                <CustomInputFiles Files="@Model.Attachments"/>
             </div>
 
             <div class="flex gap-4">
@@ -71,6 +68,13 @@
                     </div>
                     <ValidationMessage For="@(() => Model.ReleaseTime)"/>
                 </div>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Content)]</label>
+                <InputTextArea class="@($"min-h-[5rem] rounded-2xl w-full p-2 focus:outline-[{ColorStrings.C5}]")"
+                               @bind-Value="@Model.Content"/>
+                <ValidationMessage For="@(() => Model.Content)"/>
             </div>
         </div>
     </EditForm>

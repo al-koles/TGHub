@@ -1,0 +1,51 @@
+﻿@attribute [Authorize]
+@page "/posts/edit/{id:int}"
+@using TGHub.Application.Services.Posts
+@using TGHub.Blazor.Pages.Posts.Forms
+@using TGHub.Blazor.Pages.Posts.Models
+@using TGHub.Application.Resources
+@using AutoMapper
+@using Moq
+
+@inject IPostService PostService
+@inject IToastService ToastService
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject NavigationManager NavigationManager
+@inject IMapper Mapper
+
+<div class="h-full">
+    <PostForm Model="@_model" IsEdit="@true" RedirectUrl="@RedirectUrl"/>
+</div>
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? RedirectUrl { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private readonly PostModel _model = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var post = await PostService.FirstOrDefaultAsync(p => p.Id == Id);
+        if (post == null)
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.NotFound]);
+            NavigationManager.NavigateTo(RedirectUrl ?? "/");
+            return;
+        }
+
+        Mapper.Map(post, _model);
+
+        _model.Attachments = post.Attachments.Select(a =>
+        {
+            var mockFile = new Mock<IBrowserFile>();
+            mockFile.Setup(file => file.Name).Returns(a.FileName);
+            return mockFile.Object;
+        }).ToList();
+    }
+
+}

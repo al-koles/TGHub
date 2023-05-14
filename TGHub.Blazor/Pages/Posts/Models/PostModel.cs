@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using Microsoft.AspNetCore.Components.Forms;
 using TGHub.Application.Common.Mappings;
 using TGHub.Domain.Entities;
 
@@ -7,6 +8,7 @@ namespace TGHub.Blazor.Pages.Posts.Models;
 
 public class PostModel : IMapWith<Post>
 {
+    private TimeOnly? _releaseTime;
     public int Id { get; set; }
 
     [Required]
@@ -18,7 +20,6 @@ public class PostModel : IMapWith<Post>
     [Required]
     public DateOnly? ReleaseDate { get; set; }
 
-    private TimeOnly? _releaseTime;
     [Required]
     public string? ReleaseTime
     {
@@ -35,7 +36,7 @@ public class PostModel : IMapWith<Post>
     public List<PostButtonModel> Buttons { get; set; } = new();
 
     [Required] [ValidateComplexType]
-    public List<PostAttachmentModel> Attachments { get; set; } = new();
+    public List<IBrowserFile> Attachments { get; set; } = new();
 
     public void Mapping(Profile profile)
     {
@@ -45,7 +46,9 @@ public class PostModel : IMapWith<Post>
             .ForMember(dst => dst.CreatorId,
                 opt => opt.MapFrom(srs => srs.Creator.Id))
             .ForMember(dst => dst.ReleaseDateTime,
-                opt => opt.MapFrom(srs => srs.ReleaseDate!.Value.ToDateTime(srs._releaseTime!.Value)));
+                opt => opt.MapFrom(srs => srs.ReleaseDate!.Value.ToDateTime(srs._releaseTime!.Value)))
+            .ForMember(dst => dst.Attachments,
+                opt => opt.MapFrom(srs => srs.Attachments.Select(a => new PostAttachment { FileName = a.Name }).ToList()));
 
         profile.CreateMap<Post, PostModel>()
             .ForMember(dst => dst.ReleaseDate,
