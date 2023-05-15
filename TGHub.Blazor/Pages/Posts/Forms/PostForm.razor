@@ -39,8 +39,9 @@
                 <ValidationMessage For="@(() => Model.Title)"/>
             </div>
 
-            <div>
-                <CustomInputFiles Files="@Model.Attachments"/>
+            <div class="flex flex-col">
+                <CustomInputFiles @bind-Files="@Model.Attachments"/>
+                <ValidationMessage For="@(() => Model.Attachments)"/>
             </div>
 
             <div class="flex gap-4">

@@ -35,7 +35,7 @@ public class PostModel : IMapWith<Post>
     [Required] [ValidateComplexType]
     public List<PostButtonModel> Buttons { get; set; } = new();
 
-    [Required] [ValidateComplexType]
+    [Required] [MinLength(2)]
     public List<IBrowserFile> Attachments { get; set; } = new();
 
     public void Mapping(Profile profile)
