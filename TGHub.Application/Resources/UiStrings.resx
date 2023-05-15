@@ -120,6 +120,12 @@
   <data name="AccessDenied" xml:space="preserve">
     <value>You don't have access to this resource.</value>
   </data>
+  <data name="Attachments" xml:space="preserve">
+    <value>Attachments</value>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
   <data name="Authorizing" xml:space="preserve">
     <value>Authorizing...</value>
   </data>
@@ -131,6 +137,9 @@
   </data>
   <data name="CreatePost" xml:space="preserve">
     <value>Create Post</value>
+  </data>
+  <data name="Document" xml:space="preserve">
+    <value>Documents</value>
   </data>
   <data name="ExceptionDev" xml:space="preserve">
     <value>An unhandled exception has occurred. See browser dev tools for details.</value>
@@ -159,6 +168,9 @@
   <data name="NotFound" xml:space="preserve">
     <value>Sorry, there's nothing at this address.</value>
   </data>
+  <data name="PhotoVideo" xml:space="preserve">
+    <value>Photo&amp;Video</value>
+  </data>
   <data name="ReleaseDate" xml:space="preserve">
     <value>Release Date</value>
   </data>
@@ -170,6 +182,9 @@
   </data>
   <data name="SelectChannel" xml:space="preserve">
     <value>Select a channel</value>
+  </data>
+  <data name="SelectFileFormat" xml:space="preserve">
+    <value>Select files format</value>
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>

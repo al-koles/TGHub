@@ -120,6 +120,12 @@
   <data name="AccessDenied" xml:space="preserve">
     <value>Ви не маєте доступу до цього ресурсу.</value>
   </data>
+  <data name="Attachments" xml:space="preserve">
+    <value>Прикріплення</value>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Аудіо</value>
+  </data>
   <data name="Authorizing" xml:space="preserve">
     <value>Авторизація...</value>
   </data>
@@ -131,6 +137,9 @@
   </data>
   <data name="CreatePost" xml:space="preserve">
     <value>Створити Пост</value>
+  </data>
+  <data name="Document" xml:space="preserve">
+    <value>Документи</value>
   </data>
   <data name="ExceptionDev" xml:space="preserve">
     <value>Виникла необроблена помилка. Докладніше див. у інструментах розробника браузера.</value>
@@ -159,6 +168,9 @@
   <data name="NotFound" xml:space="preserve">
     <value>Вибачте, за цією адресою нічого немає.</value>
   </data>
+  <data name="PhotoVideo" xml:space="preserve">
+    <value>Фото та відео</value>
+  </data>
   <data name="ReleaseDate" xml:space="preserve">
     <value>Дата Релізу</value>
   </data>
@@ -170,6 +182,9 @@
   </data>
   <data name="SelectChannel" xml:space="preserve">
     <value>Виберіть канал</value>
+  </data>
+  <data name="SelectFileFormat" xml:space="preserve">
+    <value>Виберіть формат файлів</value>
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Зберегти</value>

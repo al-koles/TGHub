@@ -70,6 +70,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attachments.
+        /// </summary>
+        public static string Attachments {
+            get {
+                return ResourceManager.GetString("Attachments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio.
+        /// </summary>
+        public static string Audio {
+            get {
+                return ResourceManager.GetString("Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorizing....
         /// </summary>
         public static string Authorizing {
@@ -102,6 +120,15 @@ namespace TGHub.Application.Resources {
         public static string CreatePost {
             get {
                 return ResourceManager.GetString("CreatePost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documents.
+        /// </summary>
+        public static string Document {
+            get {
+                return ResourceManager.GetString("Document", resourceCulture);
             }
         }
         
@@ -187,6 +214,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Photo&amp;Video.
+        /// </summary>
+        public static string PhotoVideo {
+            get {
+                return ResourceManager.GetString("PhotoVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Release Date.
         /// </summary>
         public static string ReleaseDate {
@@ -219,6 +255,15 @@ namespace TGHub.Application.Resources {
         public static string SelectChannel {
             get {
                 return ResourceManager.GetString("SelectChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select files format.
+        /// </summary>
+        public static string SelectFileFormat {
+            get {
+                return ResourceManager.GetString("SelectFileFormat", resourceCulture);
             }
         }
         
