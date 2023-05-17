@@ -1,33 +1,90 @@
 ﻿@using TGHub.Blazor.Resources
-<div class="w-[6rem] h-[6rem] flex flex-col items-center gap-1 relative pt-2 @(IsValid ? "" : "bg-red-500/20")">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-         class="w-10 h-10 shrink-0 text-[@ColorStrings.C4]/70">
-        <path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625z"/>
-        <path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z"/>
-    </svg>
-    <div class="text-xs break-words w-full overflow-y-auto">
-        @File.Name
-    </div>
-    <div class="absolute top-0 right-0">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-             class="w-6 h-6 text-[#d1807b] hover:text-[#d1807b]/70"
-             @onclick="@(async () => await FileDeleteClick.InvokeAsync(File))">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+<div class="w-[6rem] h-[6rem] flex flex-col items-center gap-1 relative p-1 rounded
+            @(IsValid ? "" : "outline outline-1 outline-red-500")">
+    @if (Model.UploadStatus == FileUploadStatus.Uploaded)
+    {
+        @if (!string.IsNullOrEmpty(Model.Url))
+        {
+            <img src="@Model.Url" alt="@Path.GetExtension(Model.File.Name)" class="w-10 h-10 shrink-0"/>
+        }
+        else
+        {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                 class="w-10 h-10 shrink-0 text-[@ColorStrings.C4]/70">
+                <path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625z"/>
+                <path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z"/>
+            </svg>
+        }
+        <div class="text-xs break-words w-full overflow-y-auto">
+            @Model.File.Name
+        </div>
+        <div class="absolute top-0 right-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                 class="w-6 h-6 text-[#d1807b] hover:text-[#d1807b]/70"
+                 @onclick="@(async () => await DeleteClick.InvokeAsync(Model))">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+    }
+    else
+    {
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+             class="w-10 h-10 shrink-0 text-[@ColorStrings.C4]/70">
+            <path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625z"/>
+            <path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z"/>
         </svg>
-    </div>
+        <div class="text-xs break-words w-full overflow-y-auto">
+            @Model.File.Name
+        </div>
+        <div class="absolute top-0 left-0 w-full h-full bg-[@ColorStrings.C1]/70
+                    flex flex-col items-center justify-center gap-1"
+             @onclick:stopPropagation>
+            @if (Model.UploadStatus == FileUploadStatus.Uploading)
+            {
+                <div class="animate-spin h-5 w-5 rounded-full border-double border-[@ColorStrings.C5] border-l-4" viewBox="0 0 24 24">
+                </div>
+                <div>@((int)Math.Round((double)Model.BytesUploaded / Model.File.Size * 100))%</div>
+                <div @onclick="@(() => CancelClick.InvokeAsync(Model))"
+                     class="hover:cursor-pointer">
+                    Cancel
+                </div>
+            }
+            else
+            {
+                <div>Error</div>
+                <div @onclick="@(async () => await RetryUploadClick.InvokeAsync(Model))"
+                     class="hover:cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                </div>
+                <div class="absolute top-0 right-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                         class="w-6 h-6 text-[#d1807b] hover:text-[#d1807b]/70"
+                         @onclick="@(async () => await DeleteClick.InvokeAsync(Model))">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            }
+        </div>
+    }
 </div>
 
 @code {
 
     [Parameter]
-    public IBrowserFile File { get; set; }
+    public CustomInputFileModel Model { get; set; } = new();
 
     [Parameter]
-    public EventCallback<IBrowserFile> FileDeleteClick { get; set; }
+    public EventCallback<CustomInputFileModel> DeleteClick { get; set; }
     
     [Parameter]
-    public bool IsValid { get; set; }
+    public EventCallback<CustomInputFileModel> RetryUploadClick { get; set; }
 
-    private ElementReference _imageRef;
+    [Parameter]
+    public EventCallback<CustomInputFileModel> CancelClick { get; set; }
+
+    [Parameter]
+    public bool IsValid { get; set; }
 
 }

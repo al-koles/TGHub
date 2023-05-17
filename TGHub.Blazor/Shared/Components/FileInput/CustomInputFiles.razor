@@ -1,40 +1,49 @@
-﻿@using System.Linq.Expressions
+﻿@using TGHub.Application.Interfaces
+@using TGHub.Application.Resources
 @using TGHub.Blazor.Resources
+@using System.Linq.Expressions
+@inject IFileStorage FileStorage
+@inject ILogger<CustomInputFiles> Logger
+@inject IToastService ToastService
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 <div class="relative min-h-[7rem] max-h-[10rem] rounded-xl bg-white py-1 pl-1 pr-2
             outline-1 @(_isValid == null ? "" : _isValid.Value ? $"outline outline-[{ColorStrings.C5}]" : "outline outline-red-500")">
     <div class="flex flex-wrap gap-2 max-h-[9.5rem] overflow-y-auto py-2 pl-2 pr-1"
          @ondragover="@OnFileDragStart">
         @foreach (var file in Files)
         {
-            <CustomInputFilesItem File="@file" FileDeleteClick="@Remove" IsValid="@(!InvalidFiles.Contains(file))"/>
+            <CustomInputFilesItem Model="@file"
+                                  DeleteClick="@RemoveAsync"
+                                  CancelClick="@CancelUpload"
+                                  IsValid="@(!InvalidFiles.Contains(file))"
+                                  RetryUploadClick="@UploadFileAsync"/>
         }
         <div class="relative w-[6rem] h-[6rem]
                         border-4 border-slate-400/70 hover:border-slate-400 border-dashed rounded-xl 
                         flex items-center justify-center
                         text-slate-400/70 hover:text-slate-400">
             <div class="text-2xl">+</div>
-            <InputFile OnChange="@OnChange"
+            <InputFile OnChange="@OnAddFilesAsync"
                        accept="@AllowedFileFormats"
                        class="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"/>
         </div>
     </div>
-    @if (_isInputVisible || !Files.Any())
-    {
-        <div class="absolute top-0 left-0 w-full h-full 
+    <div class="absolute top-0 left-0 w-full h-full 
                     @(_isValid == null ? "border-slate-400/70" : _isValid.Value ? $"border-[{ColorStrings.C5}]" : "border-red-500") border-4 border-dashed rounded-xl 
                     flex items-center justify-center bg-white
-                    text-slate-400/70 hover:text-slate-400">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                 class="w-10 h-10">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15"/>
-            </svg>
-            <InputFile OnChange="@OnChange"
-                       multiple
-                       accept="@AllowedFileFormats"
-                       @ondragleave="@OnFileDragEnd"
-                       class="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"/>
-        </div>
-    }
+                    text-slate-400/70 hover:text-slate-400"
+         hidden="@(!_isInputVisible && Files.Any())">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="w-10 h-10">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15"/>
+        </svg>
+        <InputFile OnChange="@OnAddFilesAsync"
+                   multiple
+                   accept="@AllowedFileFormats"
+                   @ondragleave="@OnFileDragEnd"
+                   class="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"/>
+    </div>
 </div>
 
 @code {
@@ -43,19 +52,22 @@
     private EditContext? EditContext { get; set; }
 
     [Parameter]
-    public List<IBrowserFile> Files { get; set; } = new();
-    
-    [Parameter]
-    public List<IBrowserFile> InvalidFiles { get; set; } = new();
+    public List<CustomInputFileModel> Files { get; set; } = new();
 
     [Parameter]
-    public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }
+    public List<CustomInputFileModel> InvalidFiles { get; set; } = new();
 
     [Parameter]
-    public Expression<Func<List<IBrowserFile>>>? FilesExpression { get; set; }
+    public EventCallback<List<CustomInputFileModel>> FilesChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<List<CustomInputFileModel>>>? FilesExpression { get; set; }
 
     [Parameter]
     public string AllowedFileFormats { get; set; } = string.Empty;
+
+    [Parameter]
+    public string UploadDirectory { get; set; } = Guid.NewGuid().ToString();
 
     private bool? _isValid;
     private bool _isInputVisible;
@@ -88,16 +100,6 @@
         StateHasChanged();
     }
 
-    private void OnChange(InputFileChangeEventArgs args)
-    {
-        var files = Files.Concat(args.GetMultipleFiles().Where(inputFile => Files.All(f => f.Name != inputFile.Name)));
-        Files = new List<IBrowserFile>();
-        Files.AddRange(files);
-        _isInputVisible = false;
-        FilesChanged.InvokeAsync(Files);
-        EditContext?.NotifyFieldChanged(_fieldIdentifier);
-    }
-
     private void OnFileDragStart()
     {
         _isInputVisible = true;
@@ -108,11 +110,102 @@
         _isInputVisible = false;
     }
 
-    private void Remove(IBrowserFile file)
+    private async Task OnAddFilesAsync(InputFileChangeEventArgs args)
     {
-        Files.Remove(file);
-        FilesChanged.InvokeAsync(Files);
+        _isInputVisible = false;
+
+        var filesToUpload = args.GetMultipleFiles(args.FileCount)
+            .Where(inputFile => Files.All(f => f.File.Name != inputFile.Name))
+            .Select(inputFile => new CustomInputFileModel
+            {
+                File = inputFile,
+                UploadStatus = FileUploadStatus.Uploading
+            })
+            .ToList();
+
+        Files = Files.Concat(filesToUpload).ToList();
+        await FilesChanged.InvokeAsync(Files);
+
         EditContext?.NotifyFieldChanged(_fieldIdentifier);
+        StateHasChanged();
+
+        if (filesToUpload.Any())
+        {
+            await UploadFilesAsync(filesToUpload);
+        }
+    }
+
+    private void CancelUpload(CustomInputFileModel file)
+    {
+        file.UploadCancellationTokenSource.Cancel();
+    }
+
+    private async Task RemoveAsync(CustomInputFileModel file)
+    {
+        Files = Files.Where(f => f != file).ToList();
+        await FilesChanged.InvokeAsync(Files);
+        EditContext?.NotifyFieldChanged(_fieldIdentifier);
+        StateHasChanged();
+
+        await DeleteFileAsync(file);
+    }
+
+    private async Task UploadFilesAsync(List<CustomInputFileModel> files)
+    {
+        await Task.WhenAll(files.Select(UploadFileAsync));
+    }
+
+    private async Task UploadFileAsync(CustomInputFileModel file)
+    {
+        try
+        {
+            file.UploadStatus = FileUploadStatus.Uploading;
+            await InvokeAsync(StateHasChanged);
+
+            await using var stream = file.File.OpenReadStream(104857600);
+            var progress = new Progress<long>(bytesUploaded =>
+            {
+                file.BytesUploaded = bytesUploaded;
+                StateHasChanged();
+            });
+            await FileStorage.UploadAsync(stream, file.File.Name, UploadDirectory,
+                progress, file.UploadCancellationTokenSource.Token);
+            file.UploadStatus = FileUploadStatus.Uploaded;
+            file.Url = $"{UploadDirectory}/{file.File.Name}";
+        }
+        catch (OperationCanceledException)
+        {
+            await RemoveAsync(file);
+        }
+        catch (Exception e)
+        {
+            var message = string.Format(
+                NotificationStringsLoc[NotificationStrings.FileUploadError],
+                file.File.Name);
+            ToastService.ShowError(message);
+            Logger.LogError(e, message);
+            file.UploadStatus = FileUploadStatus.UploadError;
+        }
+        finally
+        {
+            file.UploadCancellationTokenSource.Dispose();
+            StateHasChanged();
+        }
+    }
+
+    private async Task DeleteFileAsync(CustomInputFileModel attachmentModel)
+    {
+        try
+        {
+            await FileStorage.DeleteAsync(attachmentModel.File.Name, UploadDirectory);
+        }
+        catch (Exception e)
+        {
+            var message = string.Format(
+                NotificationStringsLoc[NotificationStrings.FileDeleteError],
+                attachmentModel.File.Name);
+            Logger.LogError(e, message);
+        }
     }
 
 }

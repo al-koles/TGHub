@@ -46,24 +46,25 @@
             <div class="flex flex-col">
                 <div class="flex gap-4">
                     <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Attachments)]</label>
-                    @if (!Model.Attachments.Any())
-                    {
-                        <label>
-                            @UiStringsLoc[UiStrings.SelectFileFormat]:
-                            <InputSelect TValue="@MediaGroupFormat" Value="@_attachmentsFormat" ValueExpression="@(() => _attachmentsFormat)"
-                                         ValueChanged="@OnAttachmentsFormatChanged">
-                                @foreach (var attachmentFormat in Enum.GetValues<MediaGroupFormat>())
-                                {
-                                    <option value="@attachmentFormat">@UiStringsLoc[attachmentFormat.ToString()]</option>
-                                }
-                            </InputSelect>
-                        </label>
-                    }
+                    <label>
+                        @UiStringsLoc[UiStrings.SelectFileFormat]:
+                        <InputSelect TValue="@MediaGroupFormat"
+                                     Value="@_attachmentsFormat"
+                                     ValueExpression="@(() => _attachmentsFormat)"
+                                     ValueChanged="@OnAttachmentsFormatChanged">
+                            @foreach (var attachmentFormat in Enum.GetValues<MediaGroupFormat>())
+                            {
+                                <option value="@attachmentFormat">@UiStringsLoc[attachmentFormat.ToString()]</option>
+                            }
+                        </InputSelect>
+                    </label>
                 </div>
                 <CustomInputFiles Files="@Model.Attachments"
+                                  InvalidFiles="@_invalidExtensionFiles"
                                   FilesExpression="@(() => Model.Attachments)"
                                   FilesChanged="@OnAttachmentsChanged"
-                                  AllowedFileFormats="@_attachmentsFormatsString"/>
+                                  AllowedFileFormats="@_attachmentsFormatsString"
+                                  UploadDirectory="@(Path.Combine(Constants.PostAttachmentsFolderName, Model.AttachmentsFolderId.ToString()))"/>
                 <ValidationMessage For="@(() => Model.Attachments)"/>
                 <div class="text-red-500">@_attachmentsValidationMessage</div>
             </div>
@@ -118,8 +119,8 @@
 
     private bool _isLoading;
     private string _attachmentsFormatsString = string.Empty;
+    private List<CustomInputFileModel> _invalidExtensionFiles = new();
     private string _attachmentsValidationMessage = string.Empty;
-    private List<IBrowserFile> _invalidExtensionFiles = new();
     private MediaGroupFormat _attachmentsFormat = MediaGroupFormat.PhotoVideo;
 
     protected override void OnParametersSet()
@@ -127,7 +128,7 @@
         if (Model.Attachments.Any())
         {
             _attachmentsFormat = AttachmentFormatsHelper
-                .GetMediaGroupFormat(Path.GetExtension(Model.Attachments.First().Name));
+                .GetMediaGroupFormat(Path.GetExtension(Model.Attachments.First().File.Name));
         }
         _attachmentsFormatsString = _attachmentsFormat.GetFileFormats();
     }
@@ -157,7 +158,6 @@
                 var id = await PostService.CreateAsync(post);
                 post.Id = id;
             }
-            await UploadFilesAsync(post.Id);
             await ConfigureTriggerAsync(post);
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
@@ -177,9 +177,13 @@
     {
         _attachmentsFormat = attachmentsFormat;
         _attachmentsFormatsString = attachmentsFormat.GetFileFormats();
+        if (Model.Attachments.Any())
+        {
+            ValidateAttachments();
+        }
     }
 
-    private void OnAttachmentsChanged(List<IBrowserFile> attachments)
+    private void OnAttachmentsChanged(List<CustomInputFileModel> attachments)
     {
         Model.Attachments = attachments;
         ValidateAttachments();
@@ -210,33 +214,29 @@
 
     private bool ValidateAttachments()
     {
-        _invalidExtensionFiles = Model.Attachments.GetInvalidExtensionFiles(_attachmentsFormat);
-        if (_invalidExtensionFiles.Any())
+        if (_attachmentsFormat != MediaGroupFormat.Document)
         {
-            _attachmentsValidationMessage = string.Format(UiStringsLoc[UiStrings.InvalidExtensionFiles],
-                string.Join(", ", _invalidExtensionFiles.Select(f => f.Name)));
-            StateHasChanged();
-            return false;
+            _invalidExtensionFiles = Model.Attachments
+                .Where(a =>
+                    _attachmentsFormat != AttachmentFormatsHelper.GetMediaGroupFormat(Path.GetExtension(a.File.Name)))
+                .ToList();
+            if (_invalidExtensionFiles.Any())
+            {
+                _attachmentsValidationMessage = string.Format(UiStringsLoc[UiStrings.InvalidExtensionFiles],
+                    string.Join(", ", _invalidExtensionFiles.Select(a => a.File.Name)));
+                StateHasChanged();
+                return false;
+            }
         }
+        return GetValidExtensionsState();
+    }
+
+    private bool GetValidExtensionsState()
+    {
         _invalidExtensionFiles.Clear();
         _attachmentsValidationMessage = string.Empty;
         StateHasChanged();
         return true;
-    }
-
-    private async Task UploadFilesAsync(int postId)
-    {
-        var directory = Path.Combine(Constants.PostAttachmentsFolderName, postId.ToString());
-        foreach (var file in Model.Attachments)
-        {
-            await UploadFileAsync(file, directory);
-        }
-    }
-
-    private async Task UploadFileAsync(IBrowserFile file, string directory)
-    {
-        await using var stream = file.OpenReadStream();
-        await FileStorage.UploadAsync(stream, file.Name, directory);
     }
 
 }

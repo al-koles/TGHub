@@ -61,6 +61,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error deleting file ({0}).
+        /// </summary>
+        public static string FileDeleteError {
+            get {
+                return ResourceManager.GetString("FileDeleteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error uploading file ({0}).
+        /// </summary>
+        public static string FileUploadError {
+            get {
+                return ResourceManager.GetString("FileUploadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello.
         /// </summary>
         public static string Greeting {

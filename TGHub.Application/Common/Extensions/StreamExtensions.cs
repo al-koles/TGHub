@@ -17,7 +17,7 @@ public static class StreamExtensions
             cancellationToken.ThrowIfCancellationRequested();
             totalRead += bytesRead;
             await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken);
-            progress.Report((long)Math.Round((double)totalRead / source.Length));
+            progress.Report(totalRead);
         }
     }
 }

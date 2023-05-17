@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using TGHub.Application.Common.Extensions;
 using TGHub.Application.Interfaces;
 
 namespace TGHub.ServerFileStorage;
@@ -10,14 +11,6 @@ internal class ServerFileStorageService : IFileStorage
     public ServerFileStorageService(IWebHostEnvironment webHostEnvironment)
     {
         _webHostEnvironment = webHostEnvironment;
-    }
-
-    public async Task UploadAsync(Stream stream, string fileName, string? directory = null)
-    {
-        var path = GetPath(fileName, directory);
-
-        await using var fileStream = File.Create(path);
-        await stream.CopyToAsync(fileStream);
     }
 
     public Task<Stream> DownloadAsync(string fileName, string? directory = null)
@@ -33,6 +26,22 @@ internal class ServerFileStorageService : IFileStorage
 
         File.Delete(path);
         return Task.CompletedTask;
+    }
+
+    public async Task UploadAsync(Stream stream, string fileName, string? directory = null,
+        IProgress<long>? progress = null, CancellationToken cancellationToken = default)
+    {
+        var path = GetPath(fileName, directory);
+
+        await using var fileStream = File.Create(path);
+        if (progress == null)
+        {
+            await stream.CopyToAsync(fileStream, cancellationToken);
+        }
+        else
+        {
+            await stream.CopyToWithProgressAsync(fileStream, progress, cancellationToken: cancellationToken);
+        }
     }
 
     private string GetPath(string fileName, string? directory)

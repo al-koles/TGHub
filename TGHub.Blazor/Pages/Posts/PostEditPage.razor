@@ -6,6 +6,7 @@
 @using TGHub.Application.Resources
 @using AutoMapper
 @using Moq
+@using TGHub.Application
 
 @inject IPostService PostService
 @inject IToastService ToastService
@@ -44,7 +45,11 @@
         {
             var mockFile = new Mock<IBrowserFile>();
             mockFile.Setup(file => file.Name).Returns(a.FileName);
-            return mockFile.Object;
+            return new CustomInputFileModel
+            {
+                File = mockFile.Object,
+                Url = $"/{Constants.PostAttachmentsFolderName}/{post.AttachmentsFolderId}/{a.FileName}"
+            };
         }).ToList();
     }
 

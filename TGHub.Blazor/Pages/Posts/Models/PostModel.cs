@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
-using Microsoft.AspNetCore.Components.Forms;
 using TGHub.Application.Common.Mappings;
 using TGHub.Blazor.Data;
+using TGHub.Blazor.Shared.Components.FileInput;
 using TGHub.Domain.Entities;
 
 namespace TGHub.Blazor.Pages.Posts.Models;
@@ -39,7 +39,7 @@ public class PostModel : IMapWith<Post>
     public List<PostButtonModel> Buttons { get; set; } = new();
 
     [Required]
-    public List<IBrowserFile> Attachments { get; set; } = new();
+    public List<CustomInputFileModel> Attachments { get; set; } = new();
 
     public void Mapping(Profile profile)
     {
@@ -51,10 +51,10 @@ public class PostModel : IMapWith<Post>
             .ForMember(dst => dst.ReleaseDateTime,
                 opt => opt.MapFrom(srs => srs.ReleaseDate!.Value.ToDateTime(srs._releaseTime!.Value)))
             .ForMember(dst => dst.Attachments,
-                opt => opt.MapFrom(srs => srs.Attachments.Select(f => new PostAttachment
+                opt => opt.MapFrom(srs => srs.Attachments.Select(a => new PostAttachment
                 {
-                    FileName = f.Name, 
-                    Type = AttachmentFormatsHelper.GetAttachmentType(Path.GetExtension(f.Name))
+                    FileName = a.File.Name,
+                    Type = AttachmentFormatsHelper.GetAttachmentType(Path.GetExtension(a.File.Name))
                 }).ToList()));
 
         profile.CreateMap<Post, PostModel>()

@@ -9,7 +9,7 @@ public static class AttachmentFormatsHelper
     public const string VideoFormats = ".mp4";
     public const string PhotoVideoFormats = ".jpeg,.jpg,.png,.mp4";
     public const string AudioFormats = ".mp3";
-    public const string DocumentFormats = "";
+    public const string DocumentFormats = "*";
 
     public static string GetFileFormats(this MediaGroupFormat mediaGroupFormat)
     {
@@ -64,10 +64,5 @@ public static class AttachmentFormatsHelper
         }
 
         return AttachmentType.Document;
-    }
-
-    public static List<IBrowserFile> GetInvalidExtensionFiles(this List<IBrowserFile> files, MediaGroupFormat mediaGroupFormat)
-    {
-        return files.Where(f => GetMediaGroupFormat(Path.GetExtension(f.Name)) != mediaGroupFormat).ToList();
     }
 }
