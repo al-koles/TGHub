@@ -147,6 +147,9 @@
   <data name="ExceptionProd" xml:space="preserve">
     <value>Сталася помилка. Перезавантажте сторінку.</value>
   </data>
+  <data name="InvalidExtensionFiles" xml:space="preserve">
+    <value>Деякі з вибраних файлів ({0}) мають невалідний формат. Видаліть їх перед надсиланням.</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Мова</value>
   </data>

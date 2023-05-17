@@ -37,13 +37,14 @@ internal class ServerFileStorageService : IFileStorage
 
     private string GetPath(string fileName, string? directory)
     {
-        var path = fileName;
+        var path = _webHostEnvironment.WebRootPath;
         if (directory != null)
         {
-            path = Path.Combine(directory, fileName);
+            path = Path.Combine(path, directory);
+            Directory.CreateDirectory(path);
         }
 
-        path = Path.Combine(_webHostEnvironment.WebRootPath, path);
+        path = Path.Combine(path, fileName);
 
         return path;
     }

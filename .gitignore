@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /.idea/config
 /.idea/.idea.TGHub/.idea
 /TGHub.Blazor/wwwroot/channel_logo_pictures
+/TGHub.Blazor/wwwroot/post_attachments

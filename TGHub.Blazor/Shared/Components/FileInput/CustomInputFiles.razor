@@ -6,7 +6,7 @@
          @ondragover="@OnFileDragStart">
         @foreach (var file in Files)
         {
-            <CustomInputFilesItem File="@file" FileDeleteClick="@Remove"/>
+            <CustomInputFilesItem File="@file" FileDeleteClick="@Remove" IsValid="@(!InvalidFiles.Contains(file))"/>
         }
         <div class="relative w-[6rem] h-[6rem]
                         border-4 border-slate-400/70 hover:border-slate-400 border-dashed rounded-xl 
@@ -44,6 +44,9 @@
 
     [Parameter]
     public List<IBrowserFile> Files { get; set; } = new();
+    
+    [Parameter]
+    public List<IBrowserFile> InvalidFiles { get; set; } = new();
 
     [Parameter]
     public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }

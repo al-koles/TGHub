@@ -1,8 +1,9 @@
-﻿using TGHub.Domain.Enums;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using TGHub.Domain.Enums;
 
 namespace TGHub.Blazor.Data;
 
-public static class AttachmentFormats
+public static class AttachmentFormatsHelper
 {
     public const string PhotoFormats = ".jpeg,.jpg,.png";
     public const string VideoFormats = ".mp4";
@@ -35,9 +36,9 @@ public static class AttachmentFormats
         return MediaGroupFormat.Document;
     }
 
-    public static MediaGroupFormat GetMediaGroupFormat(AttachmentType contentType)
+    public static MediaGroupFormat GetMediaGroupFormat(this AttachmentType attachmentType)
     {
-        return contentType switch
+        return attachmentType switch
         {
             AttachmentType.Photo or AttachmentType.Video => MediaGroupFormat.PhotoVideo,
             AttachmentType.Audio => MediaGroupFormat.Audio,
@@ -63,5 +64,10 @@ public static class AttachmentFormats
         }
 
         return AttachmentType.Document;
+    }
+
+    public static List<IBrowserFile> GetInvalidExtensionFiles(this List<IBrowserFile> files, MediaGroupFormat mediaGroupFormat)
+    {
+        return files.Where(f => GetMediaGroupFormat(Path.GetExtension(f.Name)) != mediaGroupFormat).ToList();
     }
 }

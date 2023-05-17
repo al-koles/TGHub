@@ -151,6 +151,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Some of selected files ({0}) have invalid extension. Remove them before submit..
+        /// </summary>
+        public static string InvalidExtensionFiles {
+            get {
+                return ResourceManager.GetString("InvalidExtensionFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string Language {

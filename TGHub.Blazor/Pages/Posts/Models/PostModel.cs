@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components.Forms;
 using TGHub.Application.Common.Mappings;
+using TGHub.Blazor.Data;
 using TGHub.Domain.Entities;
 
 namespace TGHub.Blazor.Pages.Posts.Models;
@@ -29,6 +30,8 @@ public class PostModel : IMapWith<Post>
 
     public long? TelegramId { get; set; }
 
+    public Guid AttachmentsFolderId { get; set; } = Guid.NewGuid();
+
     [Required(ErrorMessage = "The Channel field is required.")]
     public ChannelAdministrator Creator { get; set; }
 
@@ -48,7 +51,11 @@ public class PostModel : IMapWith<Post>
             .ForMember(dst => dst.ReleaseDateTime,
                 opt => opt.MapFrom(srs => srs.ReleaseDate!.Value.ToDateTime(srs._releaseTime!.Value)))
             .ForMember(dst => dst.Attachments,
-                opt => opt.MapFrom(srs => srs.Attachments.Select(a => new PostAttachment { FileName = a.Name }).ToList()));
+                opt => opt.MapFrom(srs => srs.Attachments.Select(f => new PostAttachment
+                {
+                    FileName = f.Name, 
+                    Type = AttachmentFormatsHelper.GetAttachmentType(Path.GetExtension(f.Name))
+                }).ToList()));
 
         profile.CreateMap<Post, PostModel>()
             .ForMember(dst => dst.ReleaseDate,

@@ -7,6 +7,8 @@ public class Post : EntityBase
     public DateTime ReleaseDateTime { get; set; }
     public long? TelegramId { get; set; }
 
+    public Guid AttachmentsFolderId { get; set; } = Guid.NewGuid();
+
     public int CreatorId { get; set; }
     public ChannelAdministrator Creator { get; set; } = null!;
 

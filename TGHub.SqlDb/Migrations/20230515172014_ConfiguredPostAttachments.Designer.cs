@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TGHub.SqlDb;
 
@@ -11,9 +12,10 @@ using TGHub.SqlDb;
 namespace TGHub.SqlDb.Migrations
 {
     [DbContext(typeof(TgHubDbContext))]
-    partial class TgHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230515172014_ConfiguredPostAttachments")]
+    partial class ConfiguredPostAttachments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,9 +269,6 @@ namespace TGHub.SqlDb.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<Guid>("AttachmentsFolderId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .IsRequired()

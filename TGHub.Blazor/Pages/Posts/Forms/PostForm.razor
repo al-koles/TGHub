@@ -6,7 +6,9 @@
 @using TGHub.Application.Services.Posts
 @using TGHub.Application.Resources
 @using Quartz
+@using TGHub.Application
 @using TGHub.Application.Common.Jobs
+@using TGHub.Application.Interfaces
 @inject IMapper Mapper
 @inject IPostService PostService
 @inject NavigationManager NavigationManager
@@ -15,6 +17,7 @@
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 @inject ILogger<PostForm> Logger
 @inject ISchedulerFactory SchedulerFactory
+@inject IFileStorage FileStorage
 
 <div class="rounded-3xl w-full h-full px-8 py-4 bg-[@ColorStrings.C1]/40">
     <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
@@ -41,19 +44,28 @@
             </div>
 
             <div class="flex flex-col">
-                <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Attachments)]</label>
-                <label>
-                    @UiStringsLoc[UiStrings.SelectFileFormat]
-                    <InputSelect TValue="@MediaGroupFormat" Value="@AttachmentsFormat" ValueExpression="@(() => AttachmentsFormat)"
-                                 ValueChanged="@OnAttachmentsFormatChanged">
-                        @foreach (var attachmentFormat in Enum.GetValues<MediaGroupFormat>())
-                        {
-                            <option value="@attachmentFormat">@UiStringsLoc[attachmentFormat.ToString()]</option>
-                        }
-                    </InputSelect>
-                </label>
-                <CustomInputFiles @bind-Files="@Model.Attachments" AllowedFileFormats="@_attachmentsFormatsString"/>
+                <div class="flex gap-4">
+                    <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Attachments)]</label>
+                    @if (!Model.Attachments.Any())
+                    {
+                        <label>
+                            @UiStringsLoc[UiStrings.SelectFileFormat]:
+                            <InputSelect TValue="@MediaGroupFormat" Value="@_attachmentsFormat" ValueExpression="@(() => _attachmentsFormat)"
+                                         ValueChanged="@OnAttachmentsFormatChanged">
+                                @foreach (var attachmentFormat in Enum.GetValues<MediaGroupFormat>())
+                                {
+                                    <option value="@attachmentFormat">@UiStringsLoc[attachmentFormat.ToString()]</option>
+                                }
+                            </InputSelect>
+                        </label>
+                    }
+                </div>
+                <CustomInputFiles Files="@Model.Attachments"
+                                  FilesExpression="@(() => Model.Attachments)"
+                                  FilesChanged="@OnAttachmentsChanged"
+                                  AllowedFileFormats="@_attachmentsFormatsString"/>
                 <ValidationMessage For="@(() => Model.Attachments)"/>
+                <div class="text-red-500">@_attachmentsValidationMessage</div>
             </div>
 
             <div class="flex gap-4">
@@ -104,16 +116,20 @@
     [Parameter]
     public string RedirectUrl { get; set; } = null!;
 
-    [Parameter]
-    public MediaGroupFormat AttachmentsFormat { get; set; } = MediaGroupFormat.PhotoVideo;
-
     private bool _isLoading;
-    private MediaGroupFormat _mediaGroupFormat;
     private string _attachmentsFormatsString = string.Empty;
+    private string _attachmentsValidationMessage = string.Empty;
+    private List<IBrowserFile> _invalidExtensionFiles = new();
+    private MediaGroupFormat _attachmentsFormat = MediaGroupFormat.PhotoVideo;
 
     protected override void OnParametersSet()
     {
-        _attachmentsFormatsString = AttachmentsFormat.GetFileFormats();
+        if (Model.Attachments.Any())
+        {
+            _attachmentsFormat = AttachmentFormatsHelper
+                .GetMediaGroupFormat(Path.GetExtension(Model.Attachments.First().Name));
+        }
+        _attachmentsFormatsString = _attachmentsFormat.GetFileFormats();
     }
 
     private async Task OnValidSubmit()
@@ -122,11 +138,16 @@
         {
             return;
         }
+        if (!ValidateAttachments())
+        {
+            return;
+        }
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
         try
         {
             var post = Mapper.Map<Post>(Model);
+
             if (IsEdit)
             {
                 await PostService.UpdateAsync(post);
@@ -135,8 +156,9 @@
             {
                 var id = await PostService.CreateAsync(post);
                 post.Id = id;
-                await ConfigureTriggerAsync(post);
             }
+            await UploadFilesAsync(post.Id);
+            await ConfigureTriggerAsync(post);
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
         catch (Exception e)
@@ -147,13 +169,20 @@
         finally
         {
             _isLoading = false;
+            StateHasChanged();
         }
     }
 
     private void OnAttachmentsFormatChanged(MediaGroupFormat attachmentsFormat)
     {
-        AttachmentsFormat = attachmentsFormat;
+        _attachmentsFormat = attachmentsFormat;
         _attachmentsFormatsString = attachmentsFormat.GetFileFormats();
+    }
+
+    private void OnAttachmentsChanged(List<IBrowserFile> attachments)
+    {
+        Model.Attachments = attachments;
+        ValidateAttachments();
     }
 
     private async Task ConfigureTriggerAsync(Post post)
@@ -177,6 +206,37 @@
         {
             await scheduler.RescheduleJob(triggerKey, newTrigger);
         }
+    }
+
+    private bool ValidateAttachments()
+    {
+        _invalidExtensionFiles = Model.Attachments.GetInvalidExtensionFiles(_attachmentsFormat);
+        if (_invalidExtensionFiles.Any())
+        {
+            _attachmentsValidationMessage = string.Format(UiStringsLoc[UiStrings.InvalidExtensionFiles],
+                string.Join(", ", _invalidExtensionFiles.Select(f => f.Name)));
+            StateHasChanged();
+            return false;
+        }
+        _invalidExtensionFiles.Clear();
+        _attachmentsValidationMessage = string.Empty;
+        StateHasChanged();
+        return true;
+    }
+
+    private async Task UploadFilesAsync(int postId)
+    {
+        var directory = Path.Combine(Constants.PostAttachmentsFolderName, postId.ToString());
+        foreach (var file in Model.Attachments)
+        {
+            await UploadFileAsync(file, directory);
+        }
+    }
+
+    private async Task UploadFileAsync(IBrowserFile file, string directory)
+    {
+        await using var stream = file.OpenReadStream();
+        await FileStorage.UploadAsync(stream, file.Name, directory);
     }
 
 }
