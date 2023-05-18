@@ -9,6 +9,7 @@
 @using TGHub.Application
 @using TGHub.Application.Common.Jobs
 @using TGHub.Application.Interfaces
+@using TGHub.Domain.Enums
 @inject IMapper Mapper
 @inject IPostService PostService
 @inject NavigationManager NavigationManager
@@ -49,8 +50,8 @@
                     <label>
                         @UiStringsLoc[UiStrings.SelectFileFormat]:
                         <InputSelect TValue="@MediaGroupFormat"
-                                     Value="@_attachmentsFormat"
-                                     ValueExpression="@(() => _attachmentsFormat)"
+                                     Value="@Model.AttachmentsFormat"
+                                     ValueExpression="@(() => Model.AttachmentsFormat)"
                                      ValueChanged="@OnAttachmentsFormatChanged">
                             @foreach (var attachmentFormat in Enum.GetValues<MediaGroupFormat>())
                             {
@@ -121,16 +122,10 @@
     private string _attachmentsFormatsString = string.Empty;
     private List<CustomInputFileModel> _invalidExtensionFiles = new();
     private string _attachmentsValidationMessage = string.Empty;
-    private MediaGroupFormat _attachmentsFormat = MediaGroupFormat.PhotoVideo;
 
     protected override void OnParametersSet()
     {
-        if (Model.Attachments.Any())
-        {
-            _attachmentsFormat = AttachmentFormatsHelper
-                .GetMediaGroupFormat(Path.GetExtension(Model.Attachments.First().File.Name));
-        }
-        _attachmentsFormatsString = _attachmentsFormat.GetFileFormats();
+        _attachmentsFormatsString = Model.AttachmentsFormat.GetFileFormats();
     }
 
     private async Task OnValidSubmit()
@@ -175,7 +170,7 @@
 
     private void OnAttachmentsFormatChanged(MediaGroupFormat attachmentsFormat)
     {
-        _attachmentsFormat = attachmentsFormat;
+        Model.AttachmentsFormat = attachmentsFormat;
         _attachmentsFormatsString = attachmentsFormat.GetFileFormats();
         if (Model.Attachments.Any())
         {
@@ -214,11 +209,11 @@
 
     private bool ValidateAttachments()
     {
-        if (_attachmentsFormat != MediaGroupFormat.Document)
+        if (Model.AttachmentsFormat != MediaGroupFormat.Document)
         {
             _invalidExtensionFiles = Model.Attachments
                 .Where(a =>
-                    _attachmentsFormat != AttachmentFormatsHelper.GetMediaGroupFormat(Path.GetExtension(a.File.Name)))
+                    Model.AttachmentsFormat != AttachmentFormatsHelper.GetMediaGroupFormat(Path.GetExtension(a.File.Name)))
                 .ToList();
             if (_invalidExtensionFiles.Any())
             {

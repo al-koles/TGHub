@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using TGHub.Domain.Enums;
+﻿using TGHub.Domain.Enums;
 
 namespace TGHub.Blazor.Data;
 
@@ -46,7 +45,7 @@ public static class AttachmentFormatsHelper
         };
     }
 
-    public static AttachmentType GetAttachmentType(string fileFormat)
+    public static AttachmentType GetInAlbumType(string fileFormat)
     {
         if (PhotoFormats.Contains(fileFormat))
         {
@@ -58,11 +57,6 @@ public static class AttachmentFormatsHelper
             return AttachmentType.Video;
         }
 
-        if (AudioFormats.Contains(fileFormat))
-        {
-            return AttachmentType.Audio;
-        }
-
-        return AttachmentType.Document;
+        throw new Exception($"Format ({fileFormat}) is not in album format");
     }
 }

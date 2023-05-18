@@ -18,94 +18,138 @@ internal class TgSendService : ITgSendService
         _fileStorage = fileStorage;
     }
 
-    public async Task<long> SendPostAsync(Post post)
+    public async Task<int> SendPostAsync(Post post)
     {
-        var pathBase = Path.Combine(Constants.PostAttachmentsFolderName, post.Id.ToString());
+        var filesPath = Path.Combine(Constants.PostAttachmentsFolderName, post.AttachmentsFolderId.ToString());
         var attachments = post.Attachments.ToArray();
         var channelTgId = post.Creator.Channel.TelegramId;
-        long messageId;
 
         if (attachments.Length > 1)
         {
-            var media = new List<IAlbumInputMedia>();
-            var streams = new List<Stream>();
-            for (var i = 0; i < attachments.Length; i++)
+            return await SendAsMediaGroupAsync(post, filesPath);
+        }
+
+        if (post.Attachments.Count == 1)
+        {
+            return await SendAsSingleAttachmentAsync(post, filesPath);
+        }
+
+        var textMessage = await _telegramBotClient.SendTextMessageAsync(channelTgId, post.Content);
+        return textMessage.MessageId;
+    }
+
+    private async Task<int> SendAsMediaGroupAsync(Post post, string filesPath)
+    {
+        var attachments = post.Attachments.ToArray();
+        var channelTgId = post.Creator.Channel.TelegramId;
+
+        var media = new List<IAlbumInputMedia>();
+        var streams = new List<Stream>();
+
+        try
+        {
+            if (post.AttachmentsFormat == MediaGroupFormat.PhotoVideo)
             {
-                var stream = await _fileStorage.DownloadAsync(attachments[i].FileName, pathBase);
-                streams.Add(stream);
-                var inputFileStream = new InputFileStream(stream, attachments[i].FileName);
-
-                InputMedia? inputMedia = null;
-                switch (attachments[i].Type)
+                var isCaptionSet = false;
+                foreach (var attachment in attachments)
                 {
-                    case AttachmentType.Photo:
-                        var inputPhoto = new InputMediaPhoto(inputFileStream);
-                        media.Add(inputPhoto);
-                        inputMedia = inputPhoto;
-                        break;
-                    case AttachmentType.Video:
-                        var inputVideo = new InputMediaVideo(inputFileStream);
-                        media.Add(inputVideo);
-                        inputMedia = inputVideo;
-                        break;
-                    case AttachmentType.Document:
-                        var inputDoc = new InputMediaDocument(inputFileStream);
-                        media.Add(inputDoc);
-                        inputMedia = inputDoc;
-                        break;
+                    var stream = await _fileStorage.DownloadAsync(attachment.FileName, filesPath);
+                    streams.Add(stream);
+                    var inputFileStream = new InputFileStream(stream, attachment.FileName);
+
+                    InputMedia? inputMedia;
+                    switch (attachment.Type)
+                    {
+                        case AttachmentType.Photo:
+                            var inputPhoto = new InputMediaPhoto(inputFileStream);
+                            media.Add(inputPhoto);
+                            inputMedia = inputPhoto;
+                            break;
+                        default:
+                            var inputVideo = new InputMediaVideo(inputFileStream);
+                            media.Add(inputVideo);
+                            inputMedia = inputVideo;
+                            break;
+                    }
+
+                    if (!isCaptionSet)
+                    {
+                        inputMedia.Caption = post.Content;
+                        isCaptionSet = true;
+                    }
+                }
+            }
+            else if (post.AttachmentsFormat == MediaGroupFormat.Audio)
+            {
+                var inputAudios = new List<InputMediaAudio>();
+                foreach (var attachment in attachments)
+                {
+                    var stream = await _fileStorage.DownloadAsync(attachment.FileName, filesPath);
+                    streams.Add(stream);
+
+                    var inputAudio = new InputMediaAudio(new InputFileStream(stream, attachment.FileName));
+                    media.Add(inputAudio);
+                    inputAudios.Add(inputAudio);
                 }
 
-                if (i == 0 && inputMedia != null)
+                inputAudios.Last().Caption = post.Content;
+            }
+            else
+            {
+                var inputDocuments = new List<InputMediaDocument>();
+                foreach (var attachment in attachments)
                 {
-                    inputMedia.Caption = post.Content;
+                    var stream = await _fileStorage.DownloadAsync(attachment.FileName, filesPath);
+                    streams.Add(stream);
+
+                    var inputDocument = new InputMediaDocument(new InputFileStream(stream, attachment.FileName));
+                    media.Add(inputDocument);
+                    inputDocuments.Add(inputDocument);
                 }
+
+                inputDocuments.Last().Caption = post.Content;
             }
 
             var mediaGroup = await _telegramBotClient.SendMediaGroupAsync(channelTgId, media);
-            messageId = mediaGroup.First().MessageId;
-
-            foreach (var stream in streams)
-            {
-                await stream.DisposeAsync();
-            }
-
-            var streamDisposeTasks = streams.Select(async s => { await s.DisposeAsync(); }).ToList();
-            await Task.WhenAll(streamDisposeTasks);
+            return mediaGroup.First().MessageId;
         }
-        else if (post.Attachments.Count == 1)
+        finally
         {
-            var attachment = post.Attachments.First();
-            await using var stream = await _fileStorage.DownloadAsync(attachment.FileName, pathBase);
-            var inputFileStream = new InputFileStream(stream, attachment.FileName);
-
-            switch (attachment.Type)
-            {
-                case AttachmentType.Photo:
-                    var photoMessage =
-                        await _telegramBotClient.SendPhotoAsync(channelTgId, inputFileStream, caption: post.Content);
-                    messageId = photoMessage.MessageId;
-                    break;
-                case AttachmentType.Video:
-                    var videoMessage =
-                        await _telegramBotClient.SendVideoAsync(channelTgId, inputFileStream, caption: post.Content);
-                    messageId = videoMessage.MessageId;
-                    break;
-                case AttachmentType.Document:
-                    var documentMessage =
-                        await _telegramBotClient.SendDocumentAsync(channelTgId, inputFileStream, caption: post.Content);
-                    messageId = documentMessage.MessageId;
-                    break;
-                default:
-                    messageId = 0;
-                    break;
-            }
+            await Task.WhenAll(streams.Select(async s => { await s.DisposeAsync(); }));
         }
-        else
+    }
+
+    private async Task<int> SendAsSingleAttachmentAsync(Post post, string filesPath)
+    {
+        var attachment = post.Attachments.First();
+        var channelTgId = post.Creator.Channel.TelegramId;
+        await using var stream = await _fileStorage.DownloadAsync(attachment.FileName, filesPath);
+        var inputFileStream = new InputFileStream(stream, attachment.FileName);
+
+        switch (post.AttachmentsFormat)
         {
-            var textMessage = await _telegramBotClient.SendTextMessageAsync(channelTgId, post.Content);
-            messageId = textMessage.MessageId;
+            case MediaGroupFormat.PhotoVideo:
+                switch (attachment.Type)
+                {
+                    case AttachmentType.Photo:
+                        var photoMessage =
+                            await _telegramBotClient.SendPhotoAsync(channelTgId, inputFileStream,
+                                caption: post.Content);
+                        return photoMessage.MessageId;
+                    default:
+                        var videoMessage =
+                            await _telegramBotClient.SendVideoAsync(channelTgId, inputFileStream,
+                                caption: post.Content);
+                        return videoMessage.MessageId;
+                }
+            case MediaGroupFormat.Audio:
+                var audioMessage =
+                    await _telegramBotClient.SendAudioAsync(channelTgId, inputFileStream, caption: post.Content);
+                return audioMessage.MessageId;
+            default:
+                var documentMessage =
+                    await _telegramBotClient.SendDocumentAsync(channelTgId, inputFileStream, caption: post.Content);
+                return documentMessage.MessageId;
         }
-
-        return messageId;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace TGHub.Blazor.Data;
+﻿namespace TGHub.Domain.Enums;
 
 public enum MediaGroupFormat
 {

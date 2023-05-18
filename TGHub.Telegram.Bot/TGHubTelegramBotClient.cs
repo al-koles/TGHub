@@ -21,7 +21,7 @@ internal class TgHubTelegramBotClient : ITgHubTelegramBotClient
         return _tgTgChannelService.CreateOrUpdateChannelFromTgAsync(channelTgId);
     }
 
-    public Task<long> SendPostAsync(Post post)
+    public Task<int> SendPostAsync(Post post)
     {
         return _tgSendService.SendPostAsync(post);
     }
