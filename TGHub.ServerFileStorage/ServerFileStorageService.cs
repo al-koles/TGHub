@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using TGHub.Application;
 using TGHub.Application.Common.Extensions;
 using TGHub.Application.Interfaces;
 
@@ -44,9 +45,16 @@ internal class ServerFileStorageService : IFileStorage
         }
     }
 
+    public Stream OpenUploadStream(string fileName, string? directory = null)
+    {
+        var path = GetPath(fileName, directory);
+
+        return File.Create(path);
+    }
+
     private string GetPath(string fileName, string? directory)
     {
-        var path = _webHostEnvironment.WebRootPath;
+        var path = Path.Combine(_webHostEnvironment.ContentRootPath, Constants.FilesFolderName);
         if (directory != null)
         {
             path = Path.Combine(path, directory);

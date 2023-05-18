@@ -2,11 +2,14 @@
 @using TGHub.Application.Resources
 @using TGHub.Blazor.Resources
 @using System.Linq.Expressions
+@using Blazored.LocalStorage
+@using TGHub.Application.Common
 @inject IFileStorage FileStorage
 @inject ILogger<CustomInputFiles> Logger
 @inject IToastService ToastService
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject LocalStorageProvider LocalStorageProvider
 <div class="relative min-h-[7rem] max-h-[10rem] rounded-xl bg-white py-1 pl-1 pr-2
             outline-1 @(_isValid == null ? "" : _isValid.Value ? $"outline outline-[{ColorStrings.C5}]" : "outline outline-red-500")">
     <div class="flex flex-wrap gap-2 max-h-[9.5rem] overflow-y-auto py-2 pl-2 pr-1"
@@ -171,7 +174,7 @@
             await FileStorage.UploadAsync(stream, file.File.Name, UploadDirectory,
                 progress, file.UploadCancellationTokenSource.Token);
             file.UploadStatus = FileUploadStatus.Uploaded;
-            file.Url = $"{UploadDirectory}/{file.File.Name}";
+            file.Url = $"api/files?fileName={file.File.Name}&directory={Uri.EscapeDataString(UploadDirectory)}&token={LocalStorageProvider.Token}";
         }
         catch (OperationCanceledException)
         {

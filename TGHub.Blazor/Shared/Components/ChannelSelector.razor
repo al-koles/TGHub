@@ -5,6 +5,7 @@
 @using TGHub.Application.Common
 @using TGHub.Application.Common.Filtering
 @using TGHub.Application.Common.SessionStorage
+@using TGHub.Application
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject LocalStorageProvider LocalStorageProvider
 @inject SessionStorageProvider SessionStorageProvider
@@ -26,7 +27,7 @@
             <SelectedTemplate>
                 <div class="flex gap-2 items-center text-white font-bold">
                     <img class="h-6 w-6 rounded-full"
-                         src="@context.Channel.PhotoUrl"
+                         src="@GetChannelLogoUrl(context.Channel.LogoFileName ?? string.Empty)"
                          alt="@(context.Channel.Name.First())">
                     @(context.Channel.Name)
                 </div>
@@ -37,7 +38,7 @@
             <ResultTemplate>
                 <div class="flex gap-2 items-center">
                     <img class="h-6 w-6 rounded-full"
-                         src="@context.Channel.PhotoUrl"
+                         src="@GetChannelLogoUrl(context.Channel.LogoFileName ?? string.Empty)"
                          alt="@(context.Channel.Name.First())">
                     @(context.Channel.Name)
                 </div>
@@ -113,6 +114,11 @@
             await SessionStorageProvider.PushAsync();
             await SessionStorageProvider.NotifyDataChangedAsync();
         }
+    }
+
+    private string GetChannelLogoUrl(string fileName)
+    {
+        return $"api/files?fileName={fileName}&directory={Constants.ChannelLogoPicturesFolderName}&token={LocalStorageProvider.Token}";
     }
 
 }

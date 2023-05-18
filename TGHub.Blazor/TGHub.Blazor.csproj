@@ -45,17 +45,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\post_attachments\19\-9dTIfERZAY8pXGJC-8.jpg" />
-    <_ContentIncludedByDefault Remove="wwwroot\post_attachments\19\background (1).jpg" />
-    <_ContentIncludedByDefault Remove="wwwroot\post_attachments\21\-9dTIfERZAY8pXGJC-8.jpg" />
-    <_ContentIncludedByDefault Remove="wwwroot\post_attachments\85b6f04d-03e6-479c-8217-ec3b7ceefadf\-9dTIfERZAY8pXGJC-8.jpg" />
-    <_ContentIncludedByDefault Remove="wwwroot\post_attachments\85b6f04d-03e6-479c-8217-ec3b7ceefadf\background (1).jpg" />
-    <_ContentIncludedByDefault Remove="wwwroot\post_attachments\9332cfee-9a40-4abe-93d7-dd678b527357\-9dTIfERZAY8pXGJC-8.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\post_attachments" />
-  </ItemGroup>
-
 </Project>

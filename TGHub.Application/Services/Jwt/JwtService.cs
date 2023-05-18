@@ -35,9 +35,10 @@ public class JwtService : IJwtService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var parsedToken = tokenHandler.ReadJwtToken(token);
-        var userSession = new LocalStorageProvider().FillWithClaims(parsedToken.Claims.ToList());
+        var localStorageProvider = new LocalStorageProvider().FillWithClaims(parsedToken.Claims.ToList());
+        localStorageProvider.Token = token;
 
-        return (userSession, parsedToken.Claims.ToList());
+        return (localStorageProvider, parsedToken.Claims.ToList());
     }
 
     public bool ValidateToken(string token)

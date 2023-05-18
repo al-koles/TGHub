@@ -9,15 +9,11 @@ public class LocalStorageProvider : IMapWith<TgHubUser>
 {
     public int Id { get; set; }
     public long TelegramId { get; set; }
-
+    public string Token { get; set; } = null!;
     public string? FirstName { get; set; }
-
     public string? LastName { get; set; }
-
     public string? UserName { get; set; }
-
     public string? PhotoUrl { get; set; }
-
     public string? AuthDate { get; set; }
 
     public void Mapping(Profile profile)
@@ -58,6 +54,7 @@ public class LocalStorageProvider : IMapWith<TgHubUser>
     {
         localStorageProvider.Id = Id;
         localStorageProvider.TelegramId = TelegramId;
+        localStorageProvider.Token = Token;
         localStorageProvider.FirstName = FirstName;
         localStorageProvider.LastName = LastName;
         localStorageProvider.UserName = UserName;

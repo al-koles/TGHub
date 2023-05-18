@@ -155,11 +155,11 @@ internal class TgChannelService : ITgChannelService
                 var file = await _telegramBotClient.GetFileAsync(tgChannel.Photo.BigFileId);
                 var fileName = tgChannel.Id + Path.GetExtension(file.FilePath);
 
-                await using var stream = new MemoryStream();
+                await using var stream = _fileStorage
+                    .OpenUploadStream(fileName, Constants.ChannelLogoPicturesFolderName);
                 await _telegramBotClient.DownloadFileAsync(file.FilePath!, stream);
-                await _fileStorage.UploadAsync(stream, fileName, Constants.ChannelLogoPicturesFolderName);
 
-                dbChannel.PhotoUrl = Constants.ChannelLogoPicturesFolderName + "/" + fileName;
+                dbChannel.LogoFileName = fileName;
             }
             catch (Exception e)
             {

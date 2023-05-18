@@ -39,8 +39,8 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
             return NotAuthenticated;
         }
 
-        var (userSession, claims) = _jwtService.ParseToken(token);
-        userSession.CopyTo(_localStorageProvider);
+        var (localStorageProvider, claims) = _jwtService.ParseToken(token);
+        localStorageProvider.CopyTo(_localStorageProvider);
 
         await _sessionStorageProvider.FetchAsync();
 
