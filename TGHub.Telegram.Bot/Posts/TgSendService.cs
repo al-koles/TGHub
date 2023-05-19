@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using TGHub.Application;
 using TGHub.Application.Interfaces;
 using TGHub.Domain.Entities;
@@ -34,7 +35,8 @@ internal class TgSendService : ITgSendService
             return await SendAsSingleAttachmentAsync(post, filesPath);
         }
 
-        var textMessage = await _telegramBotClient.SendTextMessageAsync(channelTgId, post.Content);
+        var textMessage = await _telegramBotClient
+            .SendTextMessageAsync(channelTgId, post.Content, replyMarkup: GetKeyboardMarkup(post));
         return textMessage.MessageId;
     }
 
@@ -111,6 +113,12 @@ internal class TgSendService : ITgSendService
             }
 
             var mediaGroup = await _telegramBotClient.SendMediaGroupAsync(channelTgId, media);
+            if (post.Buttons.Any())
+            {
+                await _telegramBotClient.SendTextMessageAsync(channelTgId, ".",
+                    replyToMessageId: mediaGroup.First().MessageId, replyMarkup: GetKeyboardMarkup(post));
+            }
+
             return mediaGroup.First().MessageId;
         }
         finally
@@ -134,22 +142,30 @@ internal class TgSendService : ITgSendService
                     case AttachmentType.Photo:
                         var photoMessage =
                             await _telegramBotClient.SendPhotoAsync(channelTgId, inputFileStream,
-                                caption: post.Content);
+                                caption: post.Content, replyMarkup: GetKeyboardMarkup(post));
                         return photoMessage.MessageId;
                     default:
                         var videoMessage =
                             await _telegramBotClient.SendVideoAsync(channelTgId, inputFileStream,
-                                caption: post.Content);
+                                caption: post.Content, replyMarkup: GetKeyboardMarkup(post));
                         return videoMessage.MessageId;
                 }
             case MediaGroupFormat.Audio:
                 var audioMessage =
-                    await _telegramBotClient.SendAudioAsync(channelTgId, inputFileStream, caption: post.Content);
+                    await _telegramBotClient.SendAudioAsync(channelTgId, inputFileStream, caption: post.Content,
+                        replyMarkup: GetKeyboardMarkup(post));
                 return audioMessage.MessageId;
             default:
                 var documentMessage =
-                    await _telegramBotClient.SendDocumentAsync(channelTgId, inputFileStream, caption: post.Content);
+                    await _telegramBotClient.SendDocumentAsync(channelTgId, inputFileStream, caption: post.Content,
+                        replyMarkup: GetKeyboardMarkup(post));
                 return documentMessage.MessageId;
         }
+    }
+
+    private InlineKeyboardMarkup GetKeyboardMarkup(Post post)
+    {
+        return new InlineKeyboardMarkup(
+            post.Buttons.Select(b => new[] { InlineKeyboardButton.WithUrl(b.Content, b.Link) }));
     }
 }

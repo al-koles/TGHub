@@ -49,6 +49,9 @@ public class BotController : ControllerBase
                 case UpdateType.MyChatMember:
                     await MyChatMember(update);
                     break;
+                case UpdateType.CallbackQuery:
+                    await CallbackQuery(update);
+                    break;
             }
         }
         catch (Exception e)
@@ -119,5 +122,10 @@ public class BotController : ControllerBase
         {
             _logger.LogError(e, "Error on member update");
         }
+    }
+
+    private async Task CallbackQuery(Update update)
+    {
+        
     }
 }

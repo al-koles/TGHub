@@ -97,6 +97,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Buttons.
+        /// </summary>
+        public static string Buttons {
+            get {
+                return ResourceManager.GetString("Buttons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t attach buttons to post with several attachments. Buttons will be sent in separate post..
+        /// </summary>
+        public static string ButtonsWarning {
+            get {
+                return ResourceManager.GetString("ButtonsWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Channel.
         /// </summary>
         public static string Channel {
@@ -291,6 +309,15 @@ namespace TGHub.Application.Resources {
         public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Url.
+        /// </summary>
+        public static string Url {
+            get {
+                return ResourceManager.GetString("Url", resourceCulture);
             }
         }
     }

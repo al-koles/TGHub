@@ -6,11 +6,7 @@ namespace TGHub.Blazor.Pages.Posts.Models;
 
 public class PostButtonModel : IMapWith<PostButton>
 {
-    public int Id { get; set; }
+    [Required] public string Content { get; set; } = null!;
 
-    [Required]
-    public string Content { get; set; } = null!;
-
-    [Required]
-    [Url] public string Link { get; set; } = null!;
+    [Required] [Url] public string Link { get; set; } = null!;
 }
