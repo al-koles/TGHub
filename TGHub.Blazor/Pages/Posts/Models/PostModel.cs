@@ -63,6 +63,8 @@ public class PostModel : IMapWith<Post>
             .ForMember(dst => dst.ReleaseDate,
                 opt => opt.MapFrom(srs => DateOnly.FromDateTime(srs.ReleaseDateTime)))
             .ForMember(dst => dst.ReleaseTime,
-                opt => opt.MapFrom(srs => TimeOnly.FromDateTime(srs.ReleaseDateTime)));
+                opt => opt.MapFrom(srs => TimeOnly.FromDateTime(srs.ReleaseDateTime)))
+            .ForMember(dst => dst.Attachments,
+                opt => opt.Ignore());
     }
 }
