@@ -10,7 +10,6 @@
 @using TGHub.Application
 @using TGHub.Application.Interfaces
 @inject IMapper Mapper
-@inject IPostService PostService
 @inject NavigationManager NavigationManager
 @inject IToastService ToastService
 @inject IStringLocalizer<UiStrings> UiStringsLoc
@@ -18,6 +17,7 @@
 @inject ILogger<PostForm> Logger
 @inject ISchedulerFactory SchedulerFactory
 @inject IFileStorage FileStorage
+@inject IServiceProvider ServiceProvider
 
 <div class="rounded-3xl w-full h-full px-8 py-4 bg-[@ColorStrings.C1]/40">
     <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
@@ -161,16 +161,18 @@
         {
             var post = Mapper.Map<Post>(Model);
 
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
             if (IsEdit)
             {
-                await PostService.UpdateAsync(post);
+                await postService.UpdateAsync(post);
             }
             else
             {
-                var id = await PostService.CreateAsync(post);
+                var id = await postService.CreateAsync(post);
                 post.Id = id;
             }
-            await PostService.ScheduleAsync(post);
+            await postService.ScheduleAsync(post);
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
         catch (Exception e)
