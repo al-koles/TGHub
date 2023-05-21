@@ -1,7 +1,7 @@
 ﻿@using TGHub.Domain.Entities
 <div class="rounded-full border flex h-12 overflow-hidden">
     <img src="@User.PhotoUrl"
-         alt="@User.FirstName?.First()"
+         alt="@User.FirstName?.FirstOrDefault()"
          class="w-16 h-12 rounded-full"/>
     <div class="flex flex-col grow pr-4">
         <div class="text-bold">@User.FirstName @User.LastName</div>

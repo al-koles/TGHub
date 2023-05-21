@@ -141,11 +141,29 @@
   <data name="Content" xml:space="preserve">
     <value>Content</value>
   </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
   <data name="CreatePost" xml:space="preserve">
     <value>Create Post</value>
   </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
   <data name="Document" xml:space="preserve">
     <value>Documents</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="EditPost" xml:space="preserve">
+    <value>Edit Post</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
   </data>
   <data name="ExceptionDev" xml:space="preserve">
     <value>An unhandled exception has occurred. See browser dev tools for details.</value>
@@ -177,8 +195,17 @@
   <data name="NotFound" xml:space="preserve">
     <value>Sorry, there's nothing at this address.</value>
   </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
   <data name="PhotoVideo" xml:space="preserve">
     <value>Photo&amp;Video</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Posts</value>
+  </data>
+  <data name="ReleaseAt" xml:space="preserve">
+    <value>Release at:</value>
   </data>
   <data name="ReleaseDate" xml:space="preserve">
     <value>Release Date</value>
@@ -195,8 +222,17 @@
   <data name="SelectFileFormat" xml:space="preserve">
     <value>Select files format</value>
   </data>
+  <data name="SendNow" xml:space="preserve">
+    <value>Send to Telegram now</value>
+  </data>
+  <data name="SendStatus" xml:space="preserve">
+    <value>Send status</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Title</value>

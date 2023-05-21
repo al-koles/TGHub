@@ -10,6 +10,7 @@ public class CalendarEventModel : IMapWith<Lottery>
     public long? TelegramId { get; set; }
     public string Title { get; set; } = null!;
     public DateTime ReleaseDateTime { get; set; }
+    public CalendarEventStatus Status { get; set; }
 
     public void Mapping(Profile profile)
     {

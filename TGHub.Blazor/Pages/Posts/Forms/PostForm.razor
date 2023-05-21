@@ -8,7 +8,6 @@
 @using TGHub.Application.Resources
 @using Quartz
 @using TGHub.Application
-@using TGHub.Application.Common.Jobs
 @using TGHub.Application.Interfaces
 @inject IMapper Mapper
 @inject IPostService PostService
@@ -25,12 +24,12 @@
         <ObjectGraphDataAnnotationsValidator/>
         <div class="flex flex-col gap-3">
             <div class="flex justify-between items-center">
-                <PageHeaderTitle Text="@UiStringsLoc[nameof(UiStrings.CreatePost)]"/>
+                <PageHeaderTitle Text="@UiStringsLoc[IsEdit ? UiStrings.EditPost : UiStrings.CreatePost]"/>
                 <SubmitButton IsLoading="@_isLoading"/>
             </div>
 
             <div class="flex flex-col">
-                <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Channel)]</label>
+                <label class="font-bold">@UiStringsLoc[UiStrings.Channel]</label>
                 <div class="flex">
                     <ChannelSelector @bind-Channel="@Model.Creator" SetFromGlobal="@(!IsEdit)"/>
                 </div>
@@ -38,7 +37,7 @@
             </div>
 
             <div class="flex flex-col">
-                <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Title)]</label>
+                <label class="font-bold">@UiStringsLoc[UiStrings.Title]</label>
                 <InputText class="@($"rounded-full w-full p-2 focus:outline-[{ColorStrings.C5}]")"
                            @bind-Value="@Model.Title"/>
                 <ValidationMessage For="@(() => Model.Title)"/>
@@ -46,7 +45,7 @@
 
             <div class="flex flex-col">
                 <div class="flex gap-4">
-                    <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Attachments)]</label>
+                    <label class="font-bold">@UiStringsLoc[UiStrings.Attachments]</label>
                     <label>
                         @UiStringsLoc[UiStrings.SelectFileFormat]:
                         <InputSelect TValue="@MediaGroupFormat"
@@ -90,7 +89,7 @@
 
             <div class="flex gap-4">
                 <div class="flex flex-col">
-                    <label class="font-bold">@UiStringsLoc[nameof(UiStrings.ReleaseDate)]</label>
+                    <label class="font-bold">@UiStringsLoc[UiStrings.ReleaseDate]</label>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                              class="w-6 h-6 inline text-[@ColorStrings.C5]">
@@ -102,7 +101,7 @@
                     <ValidationMessage For="@(() => Model.ReleaseDate)"/>
                 </div>
                 <div class="flex flex-col">
-                    <label class="font-bold">@UiStringsLoc[nameof(UiStrings.ReleaseTime)]</label>
+                    <label class="font-bold">@UiStringsLoc[UiStrings.ReleaseTime]</label>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                              class="w-6 h-6 inline text-[@ColorStrings.C5]">
@@ -116,7 +115,7 @@
             </div>
 
             <div class="flex flex-col">
-                <label class="font-bold">@UiStringsLoc[nameof(UiStrings.Content)]</label>
+                <label class="font-bold">@UiStringsLoc[UiStrings.Content]</label>
                 <InputTextArea class="@($"min-h-[5rem] rounded-2xl w-full p-2 focus:outline-[{ColorStrings.C5}]")"
                                @bind-Value="@Model.Content"/>
                 <ValidationMessage For="@(() => Model.Content)"/>
@@ -171,12 +170,12 @@
                 var id = await PostService.CreateAsync(post);
                 post.Id = id;
             }
-            await ConfigureTriggerAsync(post);
+            await PostService.ScheduleAsync(post);
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
         catch (Exception e)
         {
-            ToastService.ShowError(NotificationStringsLoc[nameof(NotificationStrings.SubmitError)]);
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.SubmitError]);
             Logger.LogError(e, "Submit failed");
         }
         finally
@@ -200,29 +199,6 @@
     {
         Model.Attachments = attachments;
         ValidateAttachments();
-    }
-
-    private async Task ConfigureTriggerAsync(Post post)
-    {
-        var scheduler = await SchedulerFactory.GetScheduler();
-        var triggerKey = new TriggerKey(post.Id.ToString(), "posts");
-        var newTrigger = TriggerBuilder.Create()
-            .WithIdentity(triggerKey)
-            .ForJob(SendPostJob.Key)
-            .StartAt(post.ReleaseDateTime)
-            .UsingJobData(new JobDataMap
-            { { nameof(SendPostJob.PostId), post.Id } })
-            .Build();
-
-        var trigger = await scheduler.GetTrigger(triggerKey);
-        if (trigger == null)
-        {
-            await scheduler.ScheduleJob(newTrigger);
-        }
-        else
-        {
-            await scheduler.RescheduleJob(triggerKey, newTrigger);
-        }
     }
 
     private bool ValidateAttachments()

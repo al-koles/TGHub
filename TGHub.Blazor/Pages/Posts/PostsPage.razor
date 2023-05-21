@@ -2,6 +2,7 @@
 @page "/posts"
 @using AutoMapper
 @using TGHub.Application.Common.SessionStorage
+@using TGHub.Application.Resources
 @using TGHub.Application.Services.Posts
 @using TGHub.Blazor.Pages.Posts.Modals
 @using TGHub.Blazor.Resources
@@ -9,7 +10,6 @@
 @using TGHub.Domain.Enums
 @using TGHub.Application.Common
 @using System.Globalization
-@using TGHub.Application.Resources
 @using Calendar = TGHub.Blazor.Shared.Components.Calendar.Calendar
 
 @inject IMapper Mapper
@@ -19,14 +19,19 @@
 @inject LocalStorageProvider LocalStorageProvider
 @inject IServiceProvider ServiceProvider
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject IStringLocalizer<UiStrings> UiStringsLoc
 
+@if (_isLoading)
+{
+    <PageLoader/>
+}
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
-        <PageHeaderTitle Text="Posts"/>
+        <PageHeaderTitle Text="@UiStringsLoc[UiStrings.Posts]"/>
         <a href="@GetCreatePageUrl()"
            class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
                         hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
-            Create
+            @UiStringsLoc[UiStrings.Create]
         </a>
     </div>
     <div class="grow w-full">
@@ -51,6 +56,7 @@
     private Month _month = (Month)DateTime.UtcNow.Month;
 
     private List<CalendarEventModel> _events = new();
+    private bool _isLoading;
 
     protected override void OnInitialized()
     {
@@ -86,11 +92,14 @@
             {
                 Position = ModalPosition.Middle
             };
-            Modal.Show<PostInfoModal>(post.Title, parameters, options);
+            var modal = Modal.Show<PostInfoModal>(post.Title, parameters, options);
+            await modal.Result;
+            await RefreshEventsAsync();
         }
         else
         {
             ToastService.ShowError(NotificationStringsLoc[NotificationStrings.NotFound]);
+            await RefreshEventsAsync();
         }
     }
 
@@ -109,35 +118,45 @@
 
     private async Task RefreshEventsAsync()
     {
-        var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
-        var lastDayOfWeek = firstDayOfWeek + 6;
-
-        var from = new DateTime(_year, (int)_month, 1);
-        var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
-        from = from.AddDays(-1 * daysToFirstDayOfWeek);
-
-        var to = new DateTime(_year, (int)_month, 1).AddMonths(1).AddDays(-1);
-        var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
-        to = to.AddDays(daysToWeekEndCount);
-
-        var filter = new PostFilter
+        try
         {
-            From = from,
-            To = to
-        };
-        if (SessionStorageProvider.SelectedChannelAdministratorData == null)
-        {
-            filter.ChannelAdministratorId = LocalStorageProvider.Id;
+            _isLoading = true;
+            StateHasChanged();
+            var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+            var lastDayOfWeek = firstDayOfWeek + 6;
+
+            var from = new DateTime(_year, (int)_month, 1);
+            var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
+            from = from.AddDays(-1 * daysToFirstDayOfWeek);
+
+            var to = new DateTime(_year, (int)_month, 1).AddMonths(1).AddDays(-1);
+            var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
+            to = to.AddDays(daysToWeekEndCount);
+
+            var filter = new PostFilter
+            {
+                From = from,
+                To = to
+            };
+            if (SessionStorageProvider.SelectedChannelAdministratorData == null)
+            {
+                filter.ChannelAdministratorId = LocalStorageProvider.Id;
+            }
+            else
+            {
+                filter.ChannelId = SessionStorageProvider.SelectedChannelAdministratorData.ChannelId;
+            }
+            using var scope = ServiceProvider.CreateScope();
+            var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+            var posts = await postService.ListAsync(filter);
+            _events = Mapper.Map<List<CalendarEventModel>>(posts);
+            await InvokeAsync(StateHasChanged);
         }
-        else
+        finally
         {
-            filter.ChannelId = SessionStorageProvider.SelectedChannelAdministratorData.ChannelId;
+            _isLoading = false;
+            StateHasChanged();
         }
-        using var scope = ServiceProvider.CreateScope();
-        var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
-        var posts = await postService.ListAsync(filter);
-        _events = Mapper.Map<List<CalendarEventModel>>(posts);
-        await InvokeAsync(StateHasChanged);
     }
 
     private string GetCreatePageUrl()

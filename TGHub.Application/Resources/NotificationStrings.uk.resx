@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DeleteError" xml:space="preserve">
+    <value>Помилка сталася при видаленні. Будь ласка спробуйте ще раз</value>
+  </data>
   <data name="FileDeleteError" xml:space="preserve">
     <value>Помилка при видаленні файла ({0})</value>
   </data>
@@ -131,6 +134,15 @@
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>Не знайдено. Спробуйте перезавантажити сторінку</value>
+  </data>
+  <data name="PostDeleted" xml:space="preserve">
+    <value>Пост "{0}" видалено</value>
+  </data>
+  <data name="PostSent" xml:space="preserve">
+    <value>Пост "{0}" надіслано до Telegram каналу "{1}"</value>
+  </data>
+  <data name="SendError" xml:space="preserve">
+    <value>Поилка сталася при відправці. Будь ласка спробуйте ще раз</value>
   </data>
   <data name="SubmitError" xml:space="preserve">
     <value>Сталася помилка. Спробуйте ще раз</value>

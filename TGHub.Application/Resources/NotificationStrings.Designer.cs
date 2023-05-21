@@ -61,6 +61,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error deleting. Please try again.
+        /// </summary>
+        public static string DeleteError {
+            get {
+                return ResourceManager.GetString("DeleteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error deleting file ({0}).
         /// </summary>
         public static string FileDeleteError {
@@ -102,6 +111,33 @@ namespace TGHub.Application.Resources {
         public static string NotFound {
             get {
                 return ResourceManager.GetString("NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post &quot;{0}&quot; was deleted.
+        /// </summary>
+        public static string PostDeleted {
+            get {
+                return ResourceManager.GetString("PostDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post &quot;{0}&quot; was sent to telegram channel &quot;{1}&quot;.
+        /// </summary>
+        public static string PostSent {
+            get {
+                return ResourceManager.GetString("PostSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error sending. Please try again.
+        /// </summary>
+        public static string SendError {
+            get {
+                return ResourceManager.GetString("SendError", resourceCulture);
             }
         }
         

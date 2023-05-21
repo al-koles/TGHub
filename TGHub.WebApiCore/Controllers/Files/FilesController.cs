@@ -28,7 +28,7 @@ public class FilesController : Controller
         try
         {
             var file = await _fileStorage.DownloadAsync(fileName, directory);
-            return Ok(file);
+            return File(file, "application/octet-stream", fileName);
         }
         catch
         {

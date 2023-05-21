@@ -8,7 +8,7 @@
         <Router AppAssembly="@typeof(App).Assembly">
             <Found Context="routeData">
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                    <Authorizing>@UiStringsLoc[nameof(UiStrings.Authorizing)]</Authorizing>
+                    <Authorizing>@UiStringsLoc[UiStrings.Authorizing]</Authorizing>
                     <NotAuthorized>
                         @if (context.User.Identity?.IsAuthenticated == false)
                         {
@@ -17,7 +17,7 @@
                         }
                         else
                         {
-                            <p>@UiStringsLoc[nameof(UiStrings.AccessDenied)]</p>
+                            <p>@UiStringsLoc[UiStrings.AccessDenied]</p>
                         }
                     </NotAuthorized>
                 </AuthorizeRouteView>
@@ -26,7 +26,7 @@
             <NotFound>
                 <PageTitle>Not found</PageTitle>
                 <LayoutView Layout="@typeof(MainLayout)">
-                    <p role="alert">@UiStringsLoc[nameof(UiStrings.NotFound)]</p>
+                    <p role="alert">@UiStringsLoc[UiStrings.NotFound]</p>
                 </LayoutView>
             </NotFound>
         </Router>

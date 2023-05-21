@@ -16,7 +16,9 @@
             </div>
             @if (Date.Day == 1)
             {
-                <div>(@(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Date.Month)))</div>
+                <div>
+                    @(Date.Date.ToString(CultureInfo.CurrentCulture.DateTimeFormat.MonthDayPattern).Replace("1", ""))
+                </div>
             }
         </div>
         <div class="grow w-full overflow-y-auto mt-1">

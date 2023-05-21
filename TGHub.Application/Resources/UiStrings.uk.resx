@@ -141,11 +141,29 @@
   <data name="Content" xml:space="preserve">
     <value>Зміст</value>
   </data>
+  <data name="Create" xml:space="preserve">
+    <value>Створити</value>
+  </data>
   <data name="CreatePost" xml:space="preserve">
     <value>Створити Пост</value>
   </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Автор</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
   <data name="Document" xml:space="preserve">
     <value>Документи</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Редагувати</value>
+  </data>
+  <data name="EditPost" xml:space="preserve">
+    <value>Редагувати пост</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Помилка</value>
   </data>
   <data name="ExceptionDev" xml:space="preserve">
     <value>Виникла необроблена помилка. Докладніше див. у інструментах розробника браузера.</value>
@@ -177,8 +195,17 @@
   <data name="NotFound" xml:space="preserve">
     <value>Вибачте, за цією адресою нічого немає.</value>
   </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Очікує</value>
+  </data>
   <data name="PhotoVideo" xml:space="preserve">
     <value>Фото та відео</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Пости</value>
+  </data>
+  <data name="ReleaseAt" xml:space="preserve">
+    <value>Дата релізу:</value>
   </data>
   <data name="ReleaseDate" xml:space="preserve">
     <value>Дата Релізу</value>
@@ -195,8 +222,17 @@
   <data name="SelectFileFormat" xml:space="preserve">
     <value>Виберіть формат файлів</value>
   </data>
+  <data name="SendNow" xml:space="preserve">
+    <value>Відправити до Telegram зараз</value>
+  </data>
+  <data name="SendStatus" xml:space="preserve">
+    <value>Статус відправки</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Зберегти</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Відправлено</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Назва</value>
