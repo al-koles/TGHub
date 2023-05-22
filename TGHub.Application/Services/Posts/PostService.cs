@@ -1,8 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Quartz;
 using TGHub.Application.Common.Filtering;
-using TGHub.Application.Common.Jobs;
 using TGHub.Application.Interfaces;
 using TGHub.Application.Services.Base;
 using TGHub.Domain.Entities;
@@ -11,11 +9,8 @@ namespace TGHub.Application.Services.Posts;
 
 public class PostService : Service<Post>, IPostService
 {
-    private readonly ISchedulerFactory _schedulerFactory;
-
-    public PostService(ITgHubDbContext dbContext, ISchedulerFactory schedulerFactory) : base(dbContext)
+    public PostService(ITgHubDbContext dbContext) : base(dbContext)
     {
-        _schedulerFactory = schedulerFactory;
     }
 
     public override Task<List<Post>> ListAsync(FilterBase<Post>? filter = null)
@@ -75,36 +70,5 @@ public class PostService : Service<Post>, IPostService
         return predicate == null
             ? query.FirstOrDefaultAsync()
             : query.FirstOrDefaultAsync(predicate);
-    }
-
-    public async Task ScheduleAsync(Post post)
-    {
-        var scheduler = await _schedulerFactory.GetScheduler();
-        var triggerKey = new TriggerKey(post.Id.ToString(), "posts");
-        var newTrigger = TriggerBuilder.Create()
-            .WithIdentity(triggerKey)
-            .ForJob(SendPostJob.Key)
-            .StartAt(post.ReleaseDateTime)
-            .UsingJobData(new JobDataMap
-                { { nameof(SendPostJob.PostId), post.Id } })
-            .Build();
-
-        var trigger = await scheduler.GetTrigger(triggerKey);
-        if (trigger == null)
-        {
-            await scheduler.ScheduleJob(newTrigger);
-        }
-        else
-        {
-            await scheduler.RescheduleJob(triggerKey, newTrigger);
-        }
-    }
-
-    public async Task UnscheduleAsync(Post post)
-    {
-        var scheduler = await _schedulerFactory.GetScheduler();
-        var triggerKey = new TriggerKey(post.Id.ToString(), "posts");
-
-        await scheduler.UnscheduleJob(triggerKey);
     }
 }

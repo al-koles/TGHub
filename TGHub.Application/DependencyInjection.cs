@@ -25,6 +25,7 @@ public static class DependencyInjection
         services.AddTransient<IService<TgHubUser>, Service<TgHubUser>>();
         services.AddTransient<IChannelService, ChannelService>();
         services.AddTransient<IPostService, PostService>();
+        services.AddTransient<IPostScheduleService, PostScheduleService>();
         services.AddTransient<IService<ChannelAdministrator>, ChannelAdministratorService>();
 
         services.AddQuartz(q =>

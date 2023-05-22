@@ -1,9 +1,9 @@
-﻿@using TGHub.Blazor.Extensions
+﻿@using TGHub.Application.Resources
+@using TGHub.Application.Services.Posts
+@using TGHub.Blazor.Pages.Posts.Components
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
-@using TGHub.Application.Resources
-@using TGHub.Application.Services.Posts
 @using TGHub.Application.Common
 @using TGHub.Application.Interfaces
 @using System.Globalization
@@ -21,28 +21,7 @@
         <label class="font-bold mr-1">
             @UiStringsLoc[UiStrings.SendStatus]:
         </label>
-        @{
-            string sendStatusColorCssClass;
-            string sendStatusText;
-            switch (PostInfo.GetSendStatus())
-            {
-                case PostSendStatus.Pending:
-                    sendStatusColorCssClass = "indigo-300";
-                    sendStatusText = UiStringsLoc[UiStrings.Pending];
-                    break;
-                case PostSendStatus.Success:
-                    sendStatusColorCssClass = "green-300";
-                    sendStatusText = UiStringsLoc[UiStrings.Success];
-                    break;
-                default:
-                    sendStatusColorCssClass = "red-300";
-                    sendStatusText = UiStringsLoc[UiStrings.Error];
-                    break;
-            }
-            <div class="text-@sendStatusColorCssClass border-2 border-@sendStatusColorCssClass px-1 py-0.5 inline-block uppercase text-xs font-bold">
-                @sendStatusText
-            </div>
-        }
+        <PostStatus PostInfo="@PostInfo"/>
     </div>
     @if (CanEditOrSend)
     {
@@ -211,11 +190,15 @@
             var tgClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
             var tgId = await tgClient.SendPostAsync(PostInfo);
 
-            var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
             PostInfo.ReleaseDateTime = DateTime.UtcNow;
             PostInfo.TelegramId = tgId;
+
+            var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
             await postService.UpdateAsync(PostInfo);
-            await postService.UnscheduleAsync(PostInfo);
+
+            var postScheduleService = scope.ServiceProvider.GetRequiredService<IPostScheduleService>();
+            await postScheduleService.UnscheduleAsync(PostInfo);
+
             ToastService.ShowSuccess(string.Format(NotificationStringsLoc[NotificationStrings.PostSent],
                 PostInfo.Title, PostInfo.Creator.Channel.Name));
         }
@@ -237,9 +220,10 @@
         {
             await using var scope = ServiceProvider.CreateAsyncScope();
             var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+            var postScheduleService = scope.ServiceProvider.GetRequiredService<IPostScheduleService>();
 
             await postService.DeleteAsync(PostInfo);
-            await postService.UnscheduleAsync(PostInfo);
+            await postScheduleService.UnscheduleAsync(PostInfo);
             ToastService.ShowSuccess(string.Format(NotificationStringsLoc[NotificationStrings.PostDeleted],
                 PostInfo.Title));
             await BlazoredModal.CloseAsync();

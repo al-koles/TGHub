@@ -322,6 +322,78 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed To Send.
+        /// </summary>
+        public static string PostStatusFailedToSend {
+            get {
+                return ResourceManager.GetString("PostStatusFailedToSend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ERROR. Post failed to send to Telegram. Edit post to reschedule or send it with &quot;Send&quot; button click.
+        /// </summary>
+        public static string PostStatusFailedToSendDescription {
+            get {
+                return ResourceManager.GetString("PostStatusFailedToSendDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Scheduled.
+        /// </summary>
+        public static string PostStatusNotScheduled {
+            get {
+                return ResourceManager.GetString("PostStatusNotScheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING. Post is NOT scheduled and will NOT be sent to Telegram at specified time. Try update to schedule.
+        /// </summary>
+        public static string PostStatusNotScheduledDescription {
+            get {
+                return ResourceManager.GetString("PostStatusNotScheduledDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled.
+        /// </summary>
+        public static string PostStatusScheduled {
+            get {
+                return ResourceManager.GetString("PostStatusScheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post is scheduled and will be sent to Telegram at specified time.
+        /// </summary>
+        public static string PostStatusScheduledDescription {
+            get {
+                return ResourceManager.GetString("PostStatusScheduledDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sent.
+        /// </summary>
+        public static string PostStatusSent {
+            get {
+                return ResourceManager.GetString("PostStatusSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post was successfully sent to Telegram.
+        /// </summary>
+        public static string PostStatusSentDescription {
+            get {
+                return ResourceManager.GetString("PostStatusSentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Release at:.
         /// </summary>
         public static string ReleaseAt {

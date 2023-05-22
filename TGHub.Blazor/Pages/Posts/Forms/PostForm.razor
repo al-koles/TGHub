@@ -179,7 +179,8 @@
                 var id = await postService.CreateAsync(post);
                 post.Id = id;
             }
-            await postService.ScheduleAsync(post);
+            var postScheduleService = scope.ServiceProvider.GetRequiredService<IPostScheduleService>();
+            await postScheduleService.ScheduleAsync(post);
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
         catch (Exception e)

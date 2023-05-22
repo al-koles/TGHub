@@ -90,7 +90,8 @@
                 .Add(nameof(PostInfoModal.PostInfo), post);
             var options = new ModalOptions
             {
-                Position = ModalPosition.Middle
+                Position = ModalPosition.Middle,
+                Size = ModalSize.Large
             };
             var modal = Modal.Show<PostInfoModal>(post.Title, parameters, options);
             await modal.Result;

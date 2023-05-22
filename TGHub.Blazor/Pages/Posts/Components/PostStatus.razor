@@ -1,0 +1,60 @@
+﻿@using TGHub.Application.Services.Posts
+@using TGHub.Domain.Entities
+@using TGHub.Application.Resources
+@inject IPostScheduleService PostScheduleService
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+
+<div class="text-@_color border-2 border-@_color px-1 py-0.5 inline-block uppercase text-xs font-bold"
+     title="@_statusDescription">
+    @_status
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Post? PostInfo { get; set; }
+
+    [Parameter]
+    public PostSendStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<PostSendStatus> StatusChanged { get; set; }
+
+    private string _status = null!;
+    private string _statusDescription = null!;
+    private string _color = null!;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (PostInfo != null)
+        {
+            Status = await PostScheduleService.GetSendStatusAsync(PostInfo);
+            switch (Status)
+            {
+                case PostSendStatus.Sent:
+                    _status = UiStringsLoc[UiStrings.PostStatusSent];
+                    _statusDescription = UiStringsLoc[UiStrings.PostStatusSentDescription];
+                    _color = "green-400";
+                    break;
+                case PostSendStatus.FailedToSend:
+                    _status = UiStringsLoc[UiStrings.PostStatusFailedToSend];
+                    _statusDescription = UiStringsLoc[UiStrings.PostStatusFailedToSendDescription];
+                    _color = "red-400";
+                    break;
+                case PostSendStatus.Scheduled:
+                    _status = UiStringsLoc[UiStrings.PostStatusScheduled];
+                    _statusDescription = UiStringsLoc[UiStrings.PostStatusScheduledDescription];
+                    _color = "indigo-400";
+                    break;
+                case PostSendStatus.NotScheduled:
+                    _status = UiStringsLoc[UiStrings.PostStatusNotScheduled];
+                    _statusDescription = UiStringsLoc[UiStrings.PostStatusNotScheduledDescription];
+                    _color = "yellow-400";
+                    break;
+            }
+            await StatusChanged.InvokeAsync(Status);
+        }
+    }
+
+}

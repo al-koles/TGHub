@@ -204,6 +204,30 @@
   <data name="Posts" xml:space="preserve">
     <value>Posts</value>
   </data>
+  <data name="PostStatusFailedToSend" xml:space="preserve">
+    <value>Failed To Send</value>
+  </data>
+  <data name="PostStatusFailedToSendDescription" xml:space="preserve">
+    <value>ERROR. Post failed to send to Telegram. Edit post to reschedule or send it with "Send" button click</value>
+  </data>
+  <data name="PostStatusNotScheduled" xml:space="preserve">
+    <value>Not Scheduled</value>
+  </data>
+  <data name="PostStatusNotScheduledDescription" xml:space="preserve">
+    <value>WARNING. Post is NOT scheduled and will NOT be sent to Telegram at specified time. Try update to schedule</value>
+  </data>
+  <data name="PostStatusScheduled" xml:space="preserve">
+    <value>Scheduled</value>
+  </data>
+  <data name="PostStatusScheduledDescription" xml:space="preserve">
+    <value>Post is scheduled and will be sent to Telegram at specified time</value>
+  </data>
+  <data name="PostStatusSent" xml:space="preserve">
+    <value>Sent</value>
+  </data>
+  <data name="PostStatusSentDescription" xml:space="preserve">
+    <value>Post was successfully sent to Telegram</value>
+  </data>
   <data name="ReleaseAt" xml:space="preserve">
     <value>Release at:</value>
   </data>

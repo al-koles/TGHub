@@ -204,6 +204,30 @@
   <data name="Posts" xml:space="preserve">
     <value>Пости</value>
   </data>
+  <data name="PostStatusFailedToSend" xml:space="preserve">
+    <value>Помилка відправки</value>
+  </data>
+  <data name="PostStatusFailedToSendDescription" xml:space="preserve">
+    <value>ПОМИЛКА. Не вдалося надіслати пост в Telegram. Відредагуйте публікацію, щоб запланувати її, або надішліть до Telegram зараз, натиснувши кнопку «Надіслати».</value>
+  </data>
+  <data name="PostStatusNotScheduled" xml:space="preserve">
+    <value>Не заплановано</value>
+  </data>
+  <data name="PostStatusNotScheduledDescription" xml:space="preserve">
+    <value>УВАГА. Пост НЕ запланований і НЕ буде надісланий до Telegram у вказаний час. Спробуйте оновити щоб запланувати</value>
+  </data>
+  <data name="PostStatusScheduled" xml:space="preserve">
+    <value>Заплановано</value>
+  </data>
+  <data name="PostStatusScheduledDescription" xml:space="preserve">
+    <value>Пост заплановано та буде надіслано до Telegram у вказаний час</value>
+  </data>
+  <data name="PostStatusSent" xml:space="preserve">
+    <value>Відправлено</value>
+  </data>
+  <data name="PostStatusSentDescription" xml:space="preserve">
+    <value>Пост успішно відправлено до Telegram</value>
+  </data>
   <data name="ReleaseAt" xml:space="preserve">
     <value>Дата релізу:</value>
   </data>
