@@ -4,8 +4,8 @@
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using AutoMapper
-@using TGHub.Application.Services.Posts
 @using TGHub.Application.Resources
+@using TGHub.Application.Services.Posts
 @using Quartz
 @using TGHub.Application
 @using TGHub.Application.Interfaces
@@ -159,16 +159,23 @@
         await InvokeAsync(StateHasChanged);
         try
         {
-            var post = Mapper.Map<Post>(Model);
-
             await using var scope = ServiceProvider.CreateAsyncScope();
             var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+            Post? post;
             if (IsEdit)
             {
+                post = await postService.FirstOrDefaultAsync(p => p.Id == Model.Id);
+                if (post == null)
+                {
+                    ToastService.ShowError(NotificationStringsLoc[NotificationStrings.MissingPost]);
+                    return;
+                }
+                Mapper.Map(Model, post);
                 await postService.UpdateAsync(post);
             }
             else
             {
+                post = Mapper.Map<Post>(Model);
                 var id = await postService.CreateAsync(post);
                 post.Id = id;
             }

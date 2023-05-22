@@ -97,6 +97,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing post &quot;{0}&quot;. May be it was deleted.
+        /// </summary>
+        public static string MissingPost {
+            get {
+                return ResourceManager.GetString("MissingPost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;No your administrated channels detected. Go to Telegram and add &lt;a target=&quot;_blank&quot; href=&quot;https://t.me/tghub_manager_bot&quot;&gt;@tghub_manager_bot&lt;/a&gt; to any of your administrated channels&lt;/p&gt;.
         /// </summary>
         public static string NoAdministratedChannels {
