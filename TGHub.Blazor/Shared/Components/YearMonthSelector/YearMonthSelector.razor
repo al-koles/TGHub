@@ -1,0 +1,104 @@
+﻿@using TGHub.Domain.Enums
+@using TGHub.Blazor.Resources
+<div class="flex gap-2 items-center">
+    <div class="text-[@ColorStrings.C3]/80 hover:text-[@ColorStrings.C3] cursor-pointer"
+         @onclick="@OnLeftClick">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="w-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+        </svg>
+    </div>
+    <input type="month" value="@GetValue()" @onchange="@OnMonthChanged"
+           class="py-1 px-2 rounded-full focus:outline-[@ColorStrings.C5]"/>
+    <div class="text-[@ColorStrings.C3]/80 hover:text-[@ColorStrings.C3] cursor-pointer"
+         @onclick="@OnRightClick">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="w-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+        </svg>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public YearMonthSelectorModel Value { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<YearMonthSelectorModel> ValueChanged { get; set; }
+
+    private async Task OnMonthChanged(ChangeEventArgs args)
+    {
+        if (TryParse(args.Value?.ToString() ?? "", out var year, out var month))
+        {
+            Value = new YearMonthSelectorModel
+            {
+                Year = year,
+                Month = month
+            };
+            await ValueChanged.InvokeAsync(Value);
+        }
+    }
+
+    private string GetValue()
+    {
+        var month = ((int)Value.Month).ToString();
+        if (month.Length == 1)
+        {
+            month = "0" + month;
+        }
+        var res = $"{Value.Year}-{month}";
+        return res;
+    }
+
+    private bool TryParse(string str, out int year, out Month month)
+    {
+        var parts = str.Split('-');
+        if (parts.Length != 2)
+        {
+            year = Value.Year;
+            month = Value.Month;
+            return false;
+        }
+        var yearParsed = int.TryParse(parts[0], out year);
+        var monthParsed = Enum.TryParse(parts[1], out month);
+        return yearParsed && monthParsed;
+    }
+
+    private async Task OnLeftClick()
+    {
+        var month = Value.Month;
+        var year = Value.Year;
+        if (month == Month.January)
+        {
+            year--;
+        }
+        month = (int)month > 1 ? month - 1 : Month.December;
+
+        Value = new YearMonthSelectorModel
+        {
+            Year = year,
+            Month = month
+        };
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private async Task OnRightClick()
+    {
+        var month = Value.Month;
+        var year = Value.Year;
+        if (month == Month.December)
+        {
+            year++;
+        }
+        month = (int)month < 12 ? month + 1 : Month.January;
+
+        Value = new YearMonthSelectorModel
+        {
+            Year = year,
+            Month = month
+        };
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+}

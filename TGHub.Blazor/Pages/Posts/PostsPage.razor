@@ -25,6 +25,9 @@
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
         <PageHeaderTitle Text="@UiStringsLoc[UiStrings.Posts]"/>
+        <div>
+            <YearMonthSelector Value="@(new YearMonthSelectorModel(){Year = _year, Month = _month})" ValueChanged="@OnYearMonthChanged"/>
+        </div>
         <a href="@GetCreatePageUrl()"
            class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
                         hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
@@ -98,6 +101,13 @@
             ToastService.ShowError(NotificationStringsLoc[NotificationStrings.NotFound]);
             await RefreshEventsAsync();
         }
+    }
+
+    private void OnYearMonthChanged(YearMonthSelectorModel yearMonthSelectorModel)
+    {
+        _year = yearMonthSelectorModel.Year;
+        _month = yearMonthSelectorModel.Month;
+        NavigationManager.NavigateTo($"/posts?year={_year}&month={(int)_month}");
     }
 
     private bool TryGetParameters(out int year, out Month month)
