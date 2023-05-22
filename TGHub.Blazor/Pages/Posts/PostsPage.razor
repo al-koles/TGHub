@@ -7,6 +7,7 @@
 @using TGHub.Blazor.Pages.Posts.Modals
 @using TGHub.Blazor.Resources
 @using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using TGHub.Application.Common
 @using System.Globalization
@@ -21,10 +22,6 @@
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 
-@if (_isLoading)
-{
-    <PageLoader/>
-}
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
         <PageHeaderTitle Text="@UiStringsLoc[UiStrings.Posts]"/>
@@ -56,7 +53,6 @@
     private Month _month = (Month)DateTime.UtcNow.Month;
 
     private List<CalendarEventModel> _events = new();
-    private bool _isLoading;
 
     protected override void OnInitialized()
     {
@@ -119,51 +115,56 @@
 
     private async Task RefreshEventsAsync()
     {
-        try
+        StateHasChanged();
+        var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+        var lastDayOfWeek = firstDayOfWeek + 6;
+
+        var from = new DateTime(_year, (int)_month, 1);
+        var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
+        from = from.AddDays(-1 * daysToFirstDayOfWeek);
+
+        var to = new DateTime(_year, (int)_month, 1).AddMonths(1).AddDays(-1);
+        var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
+        to = to.AddDays(daysToWeekEndCount);
+
+        var filter = new PostFilter
         {
-            _isLoading = true;
-            StateHasChanged();
-            var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
-            var lastDayOfWeek = firstDayOfWeek + 6;
-
-            var from = new DateTime(_year, (int)_month, 1);
-            var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
-            from = from.AddDays(-1 * daysToFirstDayOfWeek);
-
-            var to = new DateTime(_year, (int)_month, 1).AddMonths(1).AddDays(-1);
-            var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
-            to = to.AddDays(daysToWeekEndCount);
-
-            var filter = new PostFilter
-            {
-                From = from,
-                To = to
-            };
-            if (SessionStorageProvider.SelectedChannelAdministratorData == null)
-            {
-                filter.ChannelAdministratorId = LocalStorageProvider.Id;
-            }
-            else
-            {
-                filter.ChannelId = SessionStorageProvider.SelectedChannelAdministratorData.ChannelId;
-            }
-            using var scope = ServiceProvider.CreateScope();
-            var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
-            var posts = await postService.ListAsync(filter);
-            _events = Mapper.Map<List<CalendarEventModel>>(posts);
-            await InvokeAsync(StateHasChanged);
-        }
-        finally
+            From = from,
+            To = to
+        };
+        if (SessionStorageProvider.SelectedChannelAdministratorData == null)
         {
-            _isLoading = false;
-            StateHasChanged();
+            filter.ChannelAdministratorId = LocalStorageProvider.Id;
         }
+        else
+        {
+            filter.ChannelId = SessionStorageProvider.SelectedChannelAdministratorData.ChannelId;
+        }
+        using var scope = ServiceProvider.CreateScope();
+        var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+        var posts = await postService.ListAsync(filter);
+        _events = Mapper.Map<List<CalendarEventModel>>(posts);
+        await RefreshEventsStatusesAsync(posts);
+        await InvokeAsync(StateHasChanged);
     }
 
     private string GetCreatePageUrl()
     {
         var redirectUri = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
         return $"/posts/create?redirectUrl={redirectUri}";
+    }
+
+    private async Task RefreshEventsStatusesAsync(List<Post> posts)
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var postScheduleService = scope.ServiceProvider.GetRequiredService<IPostScheduleService>();
+
+        await Task.WhenAll(_events.Select(async e =>
+        {
+            var post = posts.First(p => p.Id == e.Id);
+            var postStatus = await postScheduleService.GetSendStatusAsync(post);
+            e.Status = Mapper.Map<CalendarEventStatus>(postStatus);
+        }));
     }
 
 }

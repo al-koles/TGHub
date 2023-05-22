@@ -1,14 +1,16 @@
 ﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
 @using TGHub.Blazor.Resources
-<div class="rounded bg-[@ColorStrings.C4]/30 flex gap-1 p-0.5 w-full overflow-x-hidden
+<div class="relative rounded bg-[@ColorStrings.C4]/30 flex gap-1 p-0.5 w-full overflow-x-hidden
             hover:cursor-pointer hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5]"
      @onclick="@(async () => await Click.InvokeAsync(Event.Id))">
-    <p>
+    <p class="ml-1">
         @Event.ReleaseDateTime.ToString("HH:mm")
     </p>
-    <h4>
+    <h3 class="line-clamp-2">
         @Event.Title
-    </h4>
+    </h3>
+    <div class="absolute top-0 left-0 h-full w-1 bg-@_color">
+    </div>
 </div>
 
 @code {
@@ -21,5 +23,26 @@
 
     [Parameter]
     public EventCallback<int> Click { get; set; }
+    
+    private string _color = null!;
+
+    protected override void OnParametersSet()
+    {
+        switch (Event.Status)
+        {
+            case CalendarEventStatus.Succeed:
+                _color = "green-400";
+                break;
+            case CalendarEventStatus.Error:
+                _color = "red-400";
+                break;
+            case CalendarEventStatus.Pending:
+                _color = "indigo-400";
+                break;
+            case CalendarEventStatus.Warning:
+                _color = "yellow-400";
+                break;
+        }
+    }
 
 }
