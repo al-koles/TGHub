@@ -1,5 +1,7 @@
 ﻿using Quartz;
-using TGHub.Application.Common.Jobs;
+using TGHub.Application.Services.Posts.Data;
+using TGHub.Application.Services.Posts.Interfaces;
+using TGHub.Application.Services.Posts.Jobs;
 using TGHub.Domain.Entities;
 
 namespace TGHub.Application.Services.Posts;

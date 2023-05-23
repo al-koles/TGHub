@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TGHub.Application.Common.Filtering;
 using TGHub.Application.Interfaces;
 using TGHub.Application.Services.Base;
+using TGHub.Application.Services.Posts.Data;
+using TGHub.Application.Services.Posts.Interfaces;
 using TGHub.Domain.Entities;
 
 namespace TGHub.Application.Services.Posts;

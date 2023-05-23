@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using TGHub.Application.Common.Mappings;
-using TGHub.Application.Services.Posts;
+using TGHub.Application.Services.Posts.Data;
 using TGHub.Blazor.Shared.Components.Calendar.Models;
 using TGHub.Domain.Entities;
 

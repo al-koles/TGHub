@@ -1,4 +1,4 @@
-﻿namespace TGHub.Application.Services.Posts;
+﻿namespace TGHub.Application.Services.Posts.Data;
 
 public enum PostSendStatus
 {

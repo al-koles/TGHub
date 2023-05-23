@@ -65,5 +65,6 @@ app.MapFallbackToPage("/_Host");
 app.MapControllers();
 
 await app.MigrateDbContextIfNecessaryAsync<TgHubDbContext>();
+await app.SchedulePostsAsync();
 
 app.Run();

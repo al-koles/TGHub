@@ -2,10 +2,10 @@
 using Quartz;
 using TGHub.Application.Common.Exceptions;
 using TGHub.Application.Interfaces;
-using TGHub.Application.Services.Posts;
+using TGHub.Application.Services.Posts.Interfaces;
 using TGHub.Domain.Entities;
 
-namespace TGHub.Application.Common.Jobs;
+namespace TGHub.Application.Services.Posts.Jobs;
 
 public class SendPostJob : IJob
 {

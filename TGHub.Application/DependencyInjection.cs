@@ -2,13 +2,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using TGHub.Application.Common;
-using TGHub.Application.Common.Jobs;
 using TGHub.Application.Common.SessionStorage;
 using TGHub.Application.Services.Base;
 using TGHub.Application.Services.ChannelAdministrators;
 using TGHub.Application.Services.Channels;
 using TGHub.Application.Services.Jwt;
 using TGHub.Application.Services.Posts;
+using TGHub.Application.Services.Posts.Interfaces;
+using TGHub.Application.Services.Posts.Jobs;
 using TGHub.Domain.Entities;
 
 namespace TGHub.Application;
