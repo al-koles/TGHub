@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /.idea/config
 /.idea/.idea.TGHub/.idea
+/TGHub.Blazor/Files

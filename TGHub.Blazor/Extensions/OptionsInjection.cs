@@ -1,5 +1,5 @@
 ﻿using TGHub.Application.Services.Jwt;
-using TGHub.WebApiCore.Options;
+using TGHub.Telegram.Bot.Options;
 
 namespace TGHub.Blazor.Extensions;
 

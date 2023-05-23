@@ -14,6 +14,7 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
 
         builder.HasOne(e => e.Creator)
             .WithMany(e => e.Posts)
-            .HasForeignKey(e => e.CreatorId);
+            .HasForeignKey(e => e.CreatorId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

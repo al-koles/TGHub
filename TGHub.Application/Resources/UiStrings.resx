@@ -120,14 +120,62 @@
   <data name="AccessDenied" xml:space="preserve">
     <value>You don't have access to this resource.</value>
   </data>
+  <data name="Attachments" xml:space="preserve">
+    <value>Attachments</value>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
   <data name="Authorizing" xml:space="preserve">
     <value>Authorizing...</value>
+  </data>
+  <data name="Buttons" xml:space="preserve">
+    <value>Buttons</value>
+  </data>
+  <data name="ButtonsWarning" xml:space="preserve">
+    <value>Can't attach buttons to post with several attachments. Buttons will be sent in separate post.</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Channel</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreatePost" xml:space="preserve">
+    <value>Create Post</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Document" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="EditPost" xml:space="preserve">
+    <value>Edit Post</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
   </data>
   <data name="ExceptionDev" xml:space="preserve">
     <value>An unhandled exception has occurred. See browser dev tools for details.</value>
   </data>
   <data name="ExceptionProd" xml:space="preserve">
     <value>An error has occurred. This application may no longer respond until reloaded.</value>
+  </data>
+  <data name="InvalidExtensionFiles" xml:space="preserve">
+    <value>Some of selected files ({0}) have invalid extension. Remove them before submit.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
   </data>
   <data name="LogoutInstruction" xml:space="preserve">
     <value>If you want to login with another account go to Telegram app or website, find chat with Telegram service notifications and click "Terminate session" button.</value>
@@ -141,13 +189,79 @@
   <data name="NavLottery" xml:space="preserve">
     <value>Lottery</value>
   </data>
-  <data name="NavMessages" xml:space="preserve">
-    <value>Messages</value>
+  <data name="NavPosts" xml:space="preserve">
+    <value>Posts</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>Sorry, there's nothing at this address.</value>
   </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="PhotoVideo" xml:space="preserve">
+    <value>Photo&amp;Video</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Posts</value>
+  </data>
+  <data name="PostStatusFailedToSend" xml:space="preserve">
+    <value>Failed To Send</value>
+  </data>
+  <data name="PostStatusFailedToSendDescription" xml:space="preserve">
+    <value>ERROR. Post failed to send to Telegram. Edit post to reschedule or send it with "Send" button click</value>
+  </data>
+  <data name="PostStatusNotScheduled" xml:space="preserve">
+    <value>Not Scheduled</value>
+  </data>
+  <data name="PostStatusNotScheduledDescription" xml:space="preserve">
+    <value>WARNING. Post is NOT scheduled and will NOT be sent to Telegram at specified time. Try update to schedule</value>
+  </data>
+  <data name="PostStatusScheduled" xml:space="preserve">
+    <value>Scheduled</value>
+  </data>
+  <data name="PostStatusScheduledDescription" xml:space="preserve">
+    <value>Post is scheduled and will be sent to Telegram at specified time</value>
+  </data>
+  <data name="PostStatusSent" xml:space="preserve">
+    <value>Sent</value>
+  </data>
+  <data name="PostStatusSentDescription" xml:space="preserve">
+    <value>Post was successfully sent to Telegram</value>
+  </data>
+  <data name="ReleaseAt" xml:space="preserve">
+    <value>Release at:</value>
+  </data>
+  <data name="ReleaseDate" xml:space="preserve">
+    <value>Release Date</value>
+  </data>
+  <data name="ReleaseTime" xml:space="preserve">
+    <value>Release Time</value>
+  </data>
   <data name="Reload" xml:space="preserve">
     <value>Reload</value>
+  </data>
+  <data name="SelectChannel" xml:space="preserve">
+    <value>Select a channel</value>
+  </data>
+  <data name="SelectFileFormat" xml:space="preserve">
+    <value>Select files format</value>
+  </data>
+  <data name="SendNow" xml:space="preserve">
+    <value>Send to Telegram now</value>
+  </data>
+  <data name="SendStatus" xml:space="preserve">
+    <value>Send status</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="Url" xml:space="preserve">
+    <value>Url</value>
   </data>
 </root>

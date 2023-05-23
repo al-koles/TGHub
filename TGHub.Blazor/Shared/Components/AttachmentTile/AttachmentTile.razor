@@ -1,0 +1,57 @@
+﻿@using TGHub.Domain.Enums
+@using TGHub.Blazor.Resources
+<div class="max-w-full flex flex-col items-center gap-1 relative rounded-md bg-white p-1">
+    <div>
+        @if (Model.Format == AttachmentType.Photo)
+        {
+            <img src="@Model.Url" alt="@Path.GetExtension(Model.FileName)"
+                 class="max-w-20 max-h-20"/>
+            <a class="block absolute top-0 left-0 hover:cursor-pointer rounded-full p-0.5 bg-[@ColorStrings.C0]/60"
+               href="@Model.Url" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                </svg>
+            </a>
+        }
+        else if (Model.Format == AttachmentType.Video)
+        {
+            <video controls
+                   class="max-w-20 max-h-20">
+                <source src="@Model.Url" type="video/mp4"/>
+            </video>
+        }
+        else if (Model.Format == AttachmentType.Audio)
+        {
+            <audio controls
+                   class="max-w-full h-[2rem]">
+                <source src="@Model.Url"/>
+            </audio>
+        }
+        else
+        {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                 class="w-20 h-20 shrink-0 text-[@ColorStrings.C4]/70">
+                <path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625z"/>
+                <path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z"/>
+            </svg>
+            <a class="block absolute top-0 left-0 hover:cursor-pointer rounded-full p-0.5 bg-[@ColorStrings.C0]/60"
+               href="@Model.Url" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                </svg>
+            </a>
+        }
+    </div>
+    <div class="w-full h-7 relative">
+        <div class="absolute top-0 left-0 px-1 w-full h-full text-xs break-words max-w-full overflow-y-auto">
+            @Model.FileName
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public AttachmentTileModel Model { get; set; } = new();
+
+}

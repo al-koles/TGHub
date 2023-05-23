@@ -10,12 +10,12 @@ public class Service<TEntity> : IService<TEntity> where TEntity : class, IEntity
 {
     protected readonly ITgHubDbContext DbContext;
 
-    protected Service(ITgHubDbContext dbContext)
+    public Service(ITgHubDbContext dbContext)
     {
         DbContext = dbContext;
     }
 
-    public Task<List<TEntity>> ListAsync(FilterBase<TEntity>? filter = null)
+    public virtual Task<List<TEntity>> ListAsync(FilterBase<TEntity>? filter = null)
     {
         var query = DbContext.Set<TEntity>().AsNoTracking();
 
@@ -32,33 +32,30 @@ public class Service<TEntity> : IService<TEntity> where TEntity : class, IEntity
         return query.Sort(filter).ToListAsync();
     }
 
-    public Task<TEntity?> FirsOrDefaultAsync(Expression<Func<TEntity, bool>>? predicate = null)
+    public virtual Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>>? predicate = null)
     {
-        var query = DbContext.Set<TEntity>().AsNoTracking();
+        var query = DbContext.Set<TEntity>();
 
-        if (predicate == null)
-        {
-            return query.FirstOrDefaultAsync();
-        }
-
-        return query.FirstOrDefaultAsync(predicate);
+        return predicate == null
+            ? query.FirstOrDefaultAsync()
+            : query.FirstOrDefaultAsync(predicate);
     }
 
-    public async Task<int> CreateAsync(TEntity entity)
+    public virtual async Task<int> CreateAsync(TEntity entity)
     {
         var entry = await DbContext.Set<TEntity>().AddAsync(entity);
         await DbContext.SaveChangesAsync();
-        
+
         return entry.Entity.Id;
     }
 
-    public async Task UpdateAsync(TEntity entity)
+    public virtual async Task UpdateAsync(TEntity entity)
     {
         DbContext.Set<TEntity>().Update(entity);
         await DbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(TEntity entity)
+    public virtual async Task DeleteAsync(TEntity entity)
     {
         DbContext.Set<TEntity>().Remove(entity);
         await DbContext.SaveChangesAsync();

@@ -61,11 +61,101 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error deleting. Please try again.
+        /// </summary>
+        public static string DeleteError {
+            get {
+                return ResourceManager.GetString("DeleteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error deleting file ({0}).
+        /// </summary>
+        public static string FileDeleteError {
+            get {
+                return ResourceManager.GetString("FileDeleteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error uploading file ({0}).
+        /// </summary>
+        public static string FileUploadError {
+            get {
+                return ResourceManager.GetString("FileUploadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello.
         /// </summary>
         public static string Greeting {
             get {
                 return ResourceManager.GetString("Greeting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing post &quot;{0}&quot;. May be it was deleted.
+        /// </summary>
+        public static string MissingPost {
+            get {
+                return ResourceManager.GetString("MissingPost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;No your administrated channels detected. Go to Telegram and add &lt;a target=&quot;_blank&quot; href=&quot;https://t.me/tghub_manager_bot&quot;&gt;@tghub_manager_bot&lt;/a&gt; to any of your administrated channels&lt;/p&gt;.
+        /// </summary>
+        public static string NoAdministratedChannels {
+            get {
+                return ResourceManager.GetString("NoAdministratedChannels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Found. Try page reload.
+        /// </summary>
+        public static string NotFound {
+            get {
+                return ResourceManager.GetString("NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post &quot;{0}&quot; was deleted.
+        /// </summary>
+        public static string PostDeleted {
+            get {
+                return ResourceManager.GetString("PostDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post &quot;{0}&quot; was sent to telegram channel &quot;{1}&quot;.
+        /// </summary>
+        public static string PostSent {
+            get {
+                return ResourceManager.GetString("PostSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error sending. Please try again.
+        /// </summary>
+        public static string SendError {
+            get {
+                return ResourceManager.GetString("SendError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error submitting. Please try again.
+        /// </summary>
+        public static string SubmitError {
+            get {
+                return ResourceManager.GetString("SubmitError", resourceCulture);
             }
         }
         

@@ -1,0 +1,41 @@
+﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Blazor.Resources
+@using TGHub.Blazor.Shared.Components.Calendar.Components
+@using System.Globalization
+@inject NavigationManager NavigationManager
+
+<div class="w-[60%] flex flex-col gap-2 mx-auto">
+    <a class="rounded bg-[@ColorStrings.C4]/30 flex justify-center p-0.5 w-full
+                   hover:cursor-pointer hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5]"
+       href="@_createNewUrl"
+       title="Add">
+        +
+    </a>
+    @foreach (var calendarEvent in Events)
+    {
+        <CalendarEvent Event="@calendarEvent" Click="@EventClick"/>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public DateTime Date { get; set; }
+
+    [Parameter]
+    public List<CalendarEventModel> Events { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<int> EventClick { get; set; }
+
+    private string _createNewUrl = null!;
+
+    protected override void OnParametersSet()
+    {
+        var currentUrl = new Uri(NavigationManager.Uri).GetComponents(UriComponents.Path, UriFormat.UriEscaped);
+        var redirectUrl = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
+        var defaultDate = Uri.EscapeDataString(DateOnly.FromDateTime(Date).ToShortDateString());
+        _createNewUrl = $"/{currentUrl}/create?redirectUrl={redirectUrl}&defaultDate={defaultDate}";
+    }
+
+}

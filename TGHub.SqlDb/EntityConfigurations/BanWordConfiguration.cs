@@ -14,6 +14,7 @@ public class BanWordConfiguration : IEntityTypeConfiguration<BannWord>
 
         builder.HasOne(e => e.Channel)
             .WithMany(e => e.BannWords)
-            .HasForeignKey(e => e.ChannelId);
+            .HasForeignKey(e => e.ChannelId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

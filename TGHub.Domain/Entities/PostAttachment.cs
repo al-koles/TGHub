@@ -1,8 +1,11 @@
-﻿namespace TGHub.Domain.Entities;
+﻿using TGHub.Domain.Enums;
+
+namespace TGHub.Domain.Entities;
 
 public class PostAttachment : EntityBase
 {
-    public string Link { get; set; } = null!;
+    public string FileName { get; set; } = null!;
+    public AttachmentType Type { get; set; }
 
     public int PostId { get; set; }
     public Post Post { get; set; } = null!;

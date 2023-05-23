@@ -1,14 +1,15 @@
 using Blazored.LocalStorage;
+using Blazored.Modal;
+using Blazored.SessionStorage;
 using Blazored.Toast;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using TGHub.Application;
 using TGHub.Application.Common.Mappings;
-using TGHub.Application.Services.Auth;
 using TGHub.Blazor.Data;
 using TGHub.Blazor.Extensions;
+using TGHub.ServerFileStorage;
 using TGHub.SqlDb;
-using TGHub.WebApiCore;
-using TGHub.WebApiCore.Controllers.Telegram;
+using TGHub.Telegram.Bot;
+using TGHub.WebApiCore.Controllers.Culture;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,16 +17,19 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddControllers()
     .AddNewtonsoftJson()
-    .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(BotController).Assembly));
+    .AddApplicationPart(typeof(BotController).Assembly)
+    .AddApplicationPart(typeof(CultureController).Assembly);
 
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddOptions(builder.Configuration);
 builder.Services.AddTelegramBotClient();
+builder.Services.AddServerFileStorage();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddBlazoredToast();
+builder.Services.AddBlazoredModal();
 builder.Services.AddApplication();
 builder.Services.AddSqlDb(builder.Configuration["ConnectionStrings:DefaultConnection"]);
-builder.Services.AddScoped<UserSession>();
 builder.Services.AddAutoMapper(opt =>
 {
     opt.AddProfiles(new[]
@@ -61,5 +65,6 @@ app.MapFallbackToPage("/_Host");
 app.MapControllers();
 
 await app.MigrateDbContextIfNecessaryAsync<TgHubDbContext>();
+await app.SchedulePostsAsync();
 
 app.Run();

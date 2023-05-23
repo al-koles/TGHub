@@ -58,9 +58,8 @@ namespace TGHub.SqlDb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TelegramId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("TelegramId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -117,6 +116,15 @@ namespace TGHub.SqlDb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("LinkedChatTelegramId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("LogoFileName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -124,9 +132,8 @@ namespace TGHub.SqlDb.Migrations
                     b.Property<bool>("SpamOn")
                         .HasColumnType("bit");
 
-                    b.Property<string>("TelegramId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("TelegramId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -184,7 +191,14 @@ namespace TGHub.SqlDb.Migrations
                     b.Property<DateTime>("FromDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("TelegramId")
+                    b.Property<long?>("LotteryTelegramId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ResultTelegramId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ToDateTime")
@@ -236,9 +250,8 @@ namespace TGHub.SqlDb.Migrations
                     b.Property<int>("LotteryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("TelegramId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("TelegramId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -255,6 +268,12 @@ namespace TGHub.SqlDb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<Guid>("AttachmentsFolderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AttachmentsFormat")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -265,7 +284,11 @@ namespace TGHub.SqlDb.Migrations
                     b.Property<DateTime>("ReleaseDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("TelegramId")
+                    b.Property<int?>("TelegramId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -283,11 +306,14 @@ namespace TGHub.SqlDb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Link")
+                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -340,9 +366,8 @@ namespace TGHub.SqlDb.Migrations
                     b.Property<string>("PhotoUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TelegramId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("TelegramId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
@@ -375,7 +400,7 @@ namespace TGHub.SqlDb.Migrations
                     b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
                         .WithMany("BannedUsers")
                         .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Channel");
@@ -386,7 +411,7 @@ namespace TGHub.SqlDb.Migrations
                     b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
                         .WithMany("BannWords")
                         .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Channel");
@@ -397,13 +422,13 @@ namespace TGHub.SqlDb.Migrations
                     b.HasOne("TGHub.Domain.Entities.TgHubUser", "Administrator")
                         .WithMany("AdministratedChannels")
                         .HasForeignKey("AdministratorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
                         .WithMany("Administrators")
                         .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Administrator");
@@ -416,7 +441,7 @@ namespace TGHub.SqlDb.Migrations
                     b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "Creator")
                         .WithMany("Lotteries")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Creator");
@@ -449,7 +474,7 @@ namespace TGHub.SqlDb.Migrations
                     b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "Creator")
                         .WithMany("Posts")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Creator");

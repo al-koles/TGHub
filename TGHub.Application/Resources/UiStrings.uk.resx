@@ -120,14 +120,62 @@
   <data name="AccessDenied" xml:space="preserve">
     <value>Ви не маєте доступу до цього ресурсу.</value>
   </data>
+  <data name="Attachments" xml:space="preserve">
+    <value>Прикріплення</value>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Аудіо</value>
+  </data>
   <data name="Authorizing" xml:space="preserve">
     <value>Авторизація...</value>
+  </data>
+  <data name="Buttons" xml:space="preserve">
+    <value>Кнопки</value>
+  </data>
+  <data name="ButtonsWarning" xml:space="preserve">
+    <value>Неможливо прикріпити кнопки до публікації з кількома файлами. Кнопки будуть надіслані окремим постом.</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Канал</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Зміст</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Створити</value>
+  </data>
+  <data name="CreatePost" xml:space="preserve">
+    <value>Створити Пост</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Автор</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="Document" xml:space="preserve">
+    <value>Документи</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Редагувати</value>
+  </data>
+  <data name="EditPost" xml:space="preserve">
+    <value>Редагувати пост</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Помилка</value>
   </data>
   <data name="ExceptionDev" xml:space="preserve">
     <value>Виникла необроблена помилка. Докладніше див. у інструментах розробника браузера.</value>
   </data>
   <data name="ExceptionProd" xml:space="preserve">
     <value>Сталася помилка. Перезавантажте сторінку.</value>
+  </data>
+  <data name="InvalidExtensionFiles" xml:space="preserve">
+    <value>Деякі з вибраних файлів ({0}) мають невалідний формат. Видаліть їх перед надсиланням.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Мова</value>
   </data>
   <data name="LogoutInstruction" xml:space="preserve">
     <value>Якщо ви хочете увійти за допомогою іншого облікового запису, перейдіть до додатку або веб-сайту Telegram, знайдіть чат зі сповіщеннями служби Telegram і натисніть кнопку «Завершити сеанс».</value>
@@ -141,13 +189,79 @@
   <data name="NavLottery" xml:space="preserve">
     <value>Розіграші</value>
   </data>
-  <data name="NavMessages" xml:space="preserve">
-    <value>Повідомлення</value>
+  <data name="NavPosts" xml:space="preserve">
+    <value>Пости</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>Вибачте, за цією адресою нічого немає.</value>
   </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Очікує</value>
+  </data>
+  <data name="PhotoVideo" xml:space="preserve">
+    <value>Фото та відео</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Пости</value>
+  </data>
+  <data name="PostStatusFailedToSend" xml:space="preserve">
+    <value>Помилка відправки</value>
+  </data>
+  <data name="PostStatusFailedToSendDescription" xml:space="preserve">
+    <value>ПОМИЛКА. Не вдалося надіслати пост в Telegram. Відредагуйте публікацію, щоб запланувати її, або надішліть до Telegram зараз, натиснувши кнопку «Надіслати».</value>
+  </data>
+  <data name="PostStatusNotScheduled" xml:space="preserve">
+    <value>Не заплановано</value>
+  </data>
+  <data name="PostStatusNotScheduledDescription" xml:space="preserve">
+    <value>УВАГА. Пост НЕ запланований і НЕ буде надісланий до Telegram у вказаний час. Спробуйте оновити щоб запланувати</value>
+  </data>
+  <data name="PostStatusScheduled" xml:space="preserve">
+    <value>Заплановано</value>
+  </data>
+  <data name="PostStatusScheduledDescription" xml:space="preserve">
+    <value>Пост заплановано та буде надіслано до Telegram у вказаний час</value>
+  </data>
+  <data name="PostStatusSent" xml:space="preserve">
+    <value>Відправлено</value>
+  </data>
+  <data name="PostStatusSentDescription" xml:space="preserve">
+    <value>Пост успішно відправлено до Telegram</value>
+  </data>
+  <data name="ReleaseAt" xml:space="preserve">
+    <value>Дата релізу:</value>
+  </data>
+  <data name="ReleaseDate" xml:space="preserve">
+    <value>Дата Релізу</value>
+  </data>
+  <data name="ReleaseTime" xml:space="preserve">
+    <value>Час Релізу</value>
+  </data>
   <data name="Reload" xml:space="preserve">
     <value>Перезавантажити</value>
+  </data>
+  <data name="SelectChannel" xml:space="preserve">
+    <value>Виберіть канал</value>
+  </data>
+  <data name="SelectFileFormat" xml:space="preserve">
+    <value>Виберіть формат файлів</value>
+  </data>
+  <data name="SendNow" xml:space="preserve">
+    <value>Відправити до Telegram зараз</value>
+  </data>
+  <data name="SendStatus" xml:space="preserve">
+    <value>Статус відправки</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Відправлено</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Назва</value>
+  </data>
+  <data name="Url" xml:space="preserve">
+    <value>Посилання</value>
   </data>
 </root>

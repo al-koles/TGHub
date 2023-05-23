@@ -1,0 +1,106 @@
+﻿@using TGHub.Application.Resources
+@using TGHub.Blazor.Pages.Posts.Models
+@using TGHub.Blazor.Resources
+@using System.Linq.Expressions
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+
+<div class="rounded-xl max-h-[12rem] bg-[@ColorStrings.C0] py-1 pl-1 pr-2 flex flex-col
+            outline-1 @(_isValid == null ? "" : _isValid.Value ? $"outline outline-[{ColorStrings.C5}]" : "outline outline-red-500")">
+    <div class="grow flex flex-col gap-2 overflow-y-auto py-2 pl-2 pr-1"
+         hidden="@(!Buttons.Any())">
+        @foreach (var button in Buttons)
+        {
+            <div class="flex items-center gap-3">
+                <div class="grow grid grid-cols-3 gap-2">
+                    <div class="flex flex-col">
+                        <InputText class="@($"rounded-full w-full px-2 py-1 focus:outline-[{ColorStrings.C5}]")"
+                                   placeholder="@UiStringsLoc[UiStrings.Content]"
+                                   @bind-Value="@button.Content"/>
+                        <ValidationMessage For="@(() => button.Content)"/>
+                    </div>
+                    <div class="col-span-2 flex flex-col">
+                        <InputText class="@($"rounded-full w-full px-2 py-1 focus:outline-[{ColorStrings.C5}]")"
+                                   placeholder="@UiStringsLoc[UiStrings.Url]"
+                                   @bind-Value="@button.Link"/>
+                        <ValidationMessage For="@(() => button.Link)"/>
+                    </div>
+                </div>
+                <div class="text-[@ColorStrings.C2] hover:text-black hover:cursor-pointer"
+                     @onclick="@(() => OnRemoveClickAsync(button))">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="rounded-full flex justify-content-center p-0.5 bg-[@ColorStrings.C5]/80 text-white text-2xl max-w-[20rem]
+                        hover:bg-[@ColorStrings.C5] hover:cursor-pointer"
+         @onclick="@OnAddClickAsync">
+        +
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    private EditContext? EditContext { get; set; }
+
+    [Parameter]
+    public List<PostButtonModel> Buttons { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<List<PostButtonModel>> ButtonsChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<List<PostButtonModel>>>? ButtonsExpression { get; set; }
+
+    private bool? _isValid;
+    private FieldIdentifier _fieldIdentifier;
+
+    protected override void OnInitialized()
+    {
+        if (ButtonsExpression == null)
+        {
+            throw new InvalidOperationException($"{GetType()} requires a value for the 'FilesExpression' " +
+                                                "parameter. Normally this is provided automatically when using '@bind-Value'.");
+        }
+
+        _fieldIdentifier = FieldIdentifier.Create(ButtonsExpression);
+
+        if (EditContext != null)
+        {
+            EditContext.OnValidationStateChanged += OnValidationStateChanged;
+        }
+    }
+
+    private void OnValidationStateChanged(object? sender, ValidationStateChangedEventArgs args)
+    {
+        if (EditContext == null)
+        {
+            return;
+        }
+
+        _isValid = !EditContext.GetValidationMessages(_fieldIdentifier).Any();
+        StateHasChanged();
+    }
+
+    private async Task OnAddClickAsync()
+    {
+        Buttons = Buttons.Append(new PostButtonModel()).ToList();
+        await ButtonsChanged.InvokeAsync(Buttons);
+
+        EditContext?.NotifyFieldChanged(_fieldIdentifier);
+        StateHasChanged();
+    }
+
+    private async Task OnRemoveClickAsync(PostButtonModel button)
+    {
+        Buttons = Buttons.Where(b => b != button).ToList();
+        await ButtonsChanged.InvokeAsync(Buttons);
+
+        EditContext?.NotifyFieldChanged(_fieldIdentifier);
+        StateHasChanged();
+    }
+
+}

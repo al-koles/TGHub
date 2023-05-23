@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TGHub.Application;
+using TGHub.Application.Services.Posts.Data;
+using TGHub.Application.Services.Posts.Interfaces;
 
 namespace TGHub.Blazor.Extensions;
 
@@ -43,5 +45,35 @@ public static class WebApplicationExtensions
             .AddSupportedUICultures(supportedCultures);
 
         app.UseRequestLocalization(localizationOptions);
+    }
+
+    public static async Task SchedulePostsAsync(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+        logger.LogInformation("Getting future posts to schedule");
+        try
+        {
+            var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+            var postsToSchedule = await postService.ListAsync(new PostFilter
+            {
+                From = DateTime.UtcNow,
+                Where = p => p.TelegramId == null
+            });
+
+            logger.LogInformation($"Found {postsToSchedule.Count} posts to schedule");
+            logger.LogInformation("Scheduling posts");
+
+            var postScheduleService = scope.ServiceProvider.GetRequiredService<IPostScheduleService>();
+            await Task.WhenAll(postsToSchedule.Select(p => postScheduleService.ScheduleAsync(p)));
+
+            logger.LogInformation("Posts scheduled");
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error while scheduling posts");
+        }
     }
 }

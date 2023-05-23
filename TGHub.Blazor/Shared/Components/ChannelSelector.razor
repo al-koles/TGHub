@@ -1,0 +1,124 @@
+﻿@using TGHub.Application.Resources
+@using TGHub.Application.Services.Base
+@using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using TGHub.Application.Common
+@using TGHub.Application.Common.Filtering
+@using TGHub.Application.Common.SessionStorage
+@using TGHub.Application
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject LocalStorageProvider LocalStorageProvider
+@inject SessionStorageProvider SessionStorageProvider
+@inject IServiceProvider ServiceProvider
+
+@if (AdministratedChannels != null)
+{
+    <div class="p-0.5 rounded-md bg-[@ColorStrings.C4]/80">
+        <BlazoredTypeahead SearchMethod="@SearchChannelAdministrators"
+                           TValue="@ChannelAdministrator"
+                           TItem="@ChannelAdministrator"
+                           Value="@Channel"
+                           ValueExpression="@(() => Channel)"
+                           ValueChanged="@OnValueChanged"
+                           MaximumSuggestions="@AdministratedChannels.Count"
+                           EnableDropDown="@true"
+                           ShowDropDownOnFocus="@true"
+                           placeholder="@UiStringsLoc[UiStrings.SelectChannel]">
+            <SelectedTemplate>
+                <div class="flex gap-2 items-center text-white font-bold">
+                    <img class="h-6 w-6 rounded-full"
+                         src="@GetChannelLogoUrl(context.Channel.LogoFileName ?? string.Empty)"
+                         alt="@(context.Channel.Name.First())">
+                    @(context.Channel.Name)
+                </div>
+            </SelectedTemplate>
+            <HelpTemplate>
+                help
+            </HelpTemplate>
+            <ResultTemplate>
+                <div class="flex gap-2 items-center">
+                    <img class="h-6 w-6 rounded-full"
+                         src="@GetChannelLogoUrl(context.Channel.LogoFileName ?? string.Empty)"
+                         alt="@(context.Channel.Name.First())">
+                    @(context.Channel.Name)
+                </div>
+            </ResultTemplate>
+        </BlazoredTypeahead>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public bool SetGlobally { get; set; }
+
+    [Parameter]
+    public bool SetFromGlobal { get; set; }
+
+    [Parameter]
+    public IList<ChannelAdministrator>? AdministratedChannels { get; set; }
+
+    [Parameter]
+    public ChannelAdministrator? Channel { get; set; }
+
+    [Parameter]
+    public EventCallback<ChannelAdministrator?> ChannelChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AdministratedChannels == null)
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
+            var administratedChannels = await channelAdministratorService
+                .ListAsync(new FilterBase<ChannelAdministrator>
+                {
+                    Where = a => a.IsActive && a.Channel.IsActive && a.AdministratorId == LocalStorageProvider.Id
+                });
+            AdministratedChannels = administratedChannels;
+        }
+
+        if (SetFromGlobal && SessionStorageProvider.SelectedChannelAdministratorData != null)
+        {
+            Channel = AdministratedChannels
+                .FirstOrDefault(a => a.ChannelId == SessionStorageProvider.SelectedChannelAdministratorData.ChannelId);
+            await ChannelChanged.InvokeAsync(Channel);
+        }
+    }
+
+    private async Task<IEnumerable<ChannelAdministrator>> SearchChannelAdministrators(string searchText)
+    {
+        return await Task.FromResult(AdministratedChannels!
+            .Where(a => a.Channel.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList());
+    }
+
+    private async Task OnValueChanged(ChannelAdministrator? selectedChannel)
+    {
+        Channel = selectedChannel;
+        await ChannelChanged.InvokeAsync(Channel);
+
+        if (SetGlobally)
+        {
+            if (Channel == null)
+            {
+                SessionStorageProvider.SelectedChannelAdministratorData = null;
+            }
+            else
+            {
+                SessionStorageProvider.SelectedChannelAdministratorData = new ChannelAdministratorSessionData
+                {
+                    ChannelId = Channel.ChannelId,
+                    Role = Channel.Role
+                };
+            }
+            await SessionStorageProvider.PushAsync();
+            await SessionStorageProvider.NotifyDataChangedAsync();
+        }
+    }
+
+    private string GetChannelLogoUrl(string fileName)
+    {
+        return $"api/files?fileName={fileName}&directory={Constants.ChannelLogoPicturesFolderName}&token={LocalStorageProvider.Token}";
+    }
+
+}

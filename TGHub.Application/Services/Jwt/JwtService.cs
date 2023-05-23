@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using TGHub.Application.Services.Auth;
+using TGHub.Application.Common;
 
 namespace TGHub.Application.Services.Jwt;
 
@@ -16,13 +16,13 @@ public class JwtService : IJwtService
         _jwtOptions = jwtOptions.Value;
     }
 
-    public string GenerateToken(UserSession userSession)
+    public string GenerateToken(LocalStorageProvider localStorageProvider)
     {
         var now = DateTime.UtcNow;
         var token = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
-            claims: userSession.ToClaims(),
+            claims: localStorageProvider.ToClaims(),
             notBefore: now,
             expires: now + TimeSpan.FromMinutes(_jwtOptions.LifetimeMinutes),
             signingCredentials: new SigningCredentials(
@@ -31,13 +31,14 @@ public class JwtService : IJwtService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public (UserSession, List<Claim>) ParseToken(string token)
+    public (LocalStorageProvider, List<Claim>) ParseToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var parsedToken = tokenHandler.ReadJwtToken(token);
-        var userSession = new UserSession().FillWithClaims(parsedToken.Claims.ToList());
+        var localStorageProvider = new LocalStorageProvider().FillWithClaims(parsedToken.Claims.ToList());
+        localStorageProvider.Token = token;
 
-        return (userSession, parsedToken.Claims.ToList());
+        return (localStorageProvider, parsedToken.Claims.ToList());
     }
 
     public bool ValidateToken(string token)
@@ -53,7 +54,7 @@ public class JwtService : IJwtService
             ValidateIssuer = true,
             ValidIssuer = _jwtOptions.Issuer,
             ValidateAudience = true,
-            ValidAudience = _jwtOptions.Audience,
+            ValidAudience = _jwtOptions.Audience
         };
         var tokenHandler = new JwtSecurityTokenHandler();
 

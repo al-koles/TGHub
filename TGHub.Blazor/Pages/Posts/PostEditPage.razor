@@ -1,0 +1,84 @@
+﻿@attribute [Authorize]
+@page "/posts/edit/{id:int}"
+@using TGHub.Application.Resources
+@using TGHub.Application.Services.Posts.Interfaces
+@using TGHub.Blazor.Data
+@using TGHub.Blazor.Pages.Posts.Forms
+@using TGHub.Blazor.Pages.Posts.Models
+@using TGHub.Domain.Enums
+@using AutoMapper
+@using TGHub.Application.Common
+@using Moq
+@using TGHub.Application
+
+@inject IToastService ToastService
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject NavigationManager NavigationManager
+@inject IMapper Mapper
+@inject LocalStorageProvider LocalStorageProvider
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IServiceProvider ServiceProvider
+
+<div class="h-full">
+    <PostForm Model="@_model" IsEdit="@true" RedirectUrl="@RedirectUrl"/>
+</div>
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? RedirectUrl { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private readonly PostModel _model = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+
+        var post = await postService.FirstOrDefaultAsync(p => p.Id == Id);
+        if (post == null)
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.NotFound]);
+            NavigationManager.NavigateTo(RedirectUrl ?? "/posts");
+            return;
+        }
+
+        var isUserPostCreator = post.Creator.AdministratorId == LocalStorageProvider.Id;
+        var isUserOwnerOfPostChannelEntity = await postService
+            .FirstOrDefaultAsync(p =>
+                p.Id == Id &&
+                p.Creator.Channel.Administrators.Any(a => a.IsActive &&
+                                                          a.Role == ChannelRole.Owner &&
+                                                          a.AdministratorId == LocalStorageProvider.Id));
+        var isUserOwnerOfPostChannel = isUserOwnerOfPostChannelEntity != null;
+        var isPostSent = post.TelegramId != null;
+        var accessGranted = !isPostSent && (isUserPostCreator || isUserOwnerOfPostChannel);
+        if (!accessGranted)
+        {
+            ToastService.ShowWarning(UiStringsLoc[UiStrings.AccessDenied]);
+            NavigationManager.NavigateTo($"/access-denied?RedirectUrl={Uri.EscapeDataString(RedirectUrl ?? "/")}");
+            return;
+        }
+
+        Mapper.Map(post, _model);
+
+        _model.Attachments = post.Attachments.Select(a =>
+        {
+            var mockFile = new Mock<IBrowserFile>();
+            mockFile.Setup(file => file.Name).Returns(a.FileName);
+            var directory = Uri.EscapeDataString($"{Constants.PostAttachmentsFolderName}/{post.AttachmentsFolderId}");
+            return new CustomInputFileModel
+            {
+                File = mockFile.Object,
+                Url = $"/api/files?fileName={a.FileName}&directory={directory}&token={LocalStorageProvider.Token}",
+                UploadStatus = FileUploadStatus.Uploaded,
+                Format = AttachmentFormatsHelper.GetType(Path.GetExtension(a.FileName))
+            };
+        }).ToList();
+    }
+
+}

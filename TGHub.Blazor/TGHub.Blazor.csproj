@@ -9,19 +9,25 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TGHub.Application\TGHub.Application.csproj" />
+    <ProjectReference Include="..\TGHub.ServerFileStorage\TGHub.ServerFileStorage.csproj" />
     <ProjectReference Include="..\TGHub.SqlDb\TGHub.SqlDb.csproj" />
+    <ProjectReference Include="..\TGHub.Telegram.Bot\TGHub.Telegram.Bot.csproj" />
     <ProjectReference Include="..\TGHub.WebApiCore\TGHub.WebApiCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+    <PackageReference Include="Blazored.Modal" Version="7.1.0" />
     <PackageReference Include="Blazored.Toast" Version="4.1.0" />
+    <PackageReference Include="Blazored.Typeahead" Version="4.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-rc1.20223.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.16">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Moq" Version="4.18.4" />
   </ItemGroup>
 
   <ItemGroup>

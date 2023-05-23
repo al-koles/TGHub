@@ -1,0 +1,241 @@
+﻿@using TGHub.Blazor.Data
+@using TGHub.Blazor.Pages.Posts.Models
+@using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using TGHub.Domain.Enums
+@using AutoMapper
+@using TGHub.Application.Resources
+@using TGHub.Application.Services.Posts.Interfaces
+@using Quartz
+@using TGHub.Application
+@using TGHub.Application.Interfaces
+@inject IMapper Mapper
+@inject NavigationManager NavigationManager
+@inject IToastService ToastService
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject ILogger<PostForm> Logger
+@inject ISchedulerFactory SchedulerFactory
+@inject IFileStorage FileStorage
+@inject IServiceProvider ServiceProvider
+
+<div class="rounded-3xl w-full h-full px-8 py-4 bg-[@ColorStrings.C1]/40">
+    <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
+        <ObjectGraphDataAnnotationsValidator/>
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <PageHeaderTitle Text="@UiStringsLoc[IsEdit ? UiStrings.EditPost : UiStrings.CreatePost]"/>
+                <SubmitButton IsLoading="@_isLoading"/>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.Channel]</label>
+                <div class="flex">
+                    <ChannelSelector @bind-Channel="@Model.Creator" SetFromGlobal="@(!IsEdit)"/>
+                </div>
+                <ValidationMessage For="@(() => Model.Creator)"/>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.Title]</label>
+                <InputText class="@($"rounded-full w-full p-2 focus:outline-[{ColorStrings.C5}]")"
+                           @bind-Value="@Model.Title"/>
+                <ValidationMessage For="@(() => Model.Title)"/>
+            </div>
+
+            <div class="flex flex-col">
+                <div class="flex gap-4">
+                    <label class="font-bold">@UiStringsLoc[UiStrings.Attachments]</label>
+                    <label>
+                        @UiStringsLoc[UiStrings.SelectFileFormat]:
+                        <InputSelect TValue="@MediaGroupFormat"
+                                     Value="@Model.AttachmentsFormat"
+                                     ValueExpression="@(() => Model.AttachmentsFormat)"
+                                     ValueChanged="@OnAttachmentsFormatChanged">
+                            @foreach (var attachmentFormat in Enum.GetValues<MediaGroupFormat>())
+                            {
+                                <option value="@attachmentFormat">@UiStringsLoc[attachmentFormat.ToString()]</option>
+                            }
+                        </InputSelect>
+                    </label>
+                </div>
+                <CustomInputFiles Files="@Model.Attachments"
+                                  InvalidFiles="@_invalidExtensionFiles"
+                                  FilesExpression="@(() => Model.Attachments)"
+                                  FilesChanged="@OnAttachmentsChanged"
+                                  AllowedFileFormats="@_attachmentsFormatsString"
+                                  UploadDirectory="@(Path.Combine(Constants.PostAttachmentsFolderName, Model.AttachmentsFolderId.ToString()))"/>
+                <ValidationMessage For="@(() => Model.Attachments)"/>
+                <div class="text-red-500">@_attachmentsValidationMessage</div>
+            </div>
+
+            <div class="flex flex-col">
+                <div>
+                    <label class="font-bold">@UiStringsLoc[UiStrings.Buttons]</label>
+                    @if (Model.Attachments.Count > 1 && Model.Buttons.Any())
+                    {
+                        <div class="inline text-red-500/70">
+                            <div class="inline"> </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                 class="w-6 h-6 inline">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                            </svg>
+                            <div class="inline">@UiStringsLoc[UiStrings.ButtonsWarning]</div>
+                        </div>
+                    }
+                </div>
+                <InputUrlButtons @bind-Buttons="@Model.Buttons"/>
+            </div>
+
+            <div class="flex gap-4">
+                <div class="flex flex-col">
+                    <label class="font-bold">@UiStringsLoc[UiStrings.ReleaseDate]</label>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                             class="w-6 h-6 inline text-[@ColorStrings.C5]">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
+                        </svg>
+                        <InputDate class="@($"px-2 py-0.5 rounded-full focus:outline-[{ColorStrings.C5}]")"
+                                   @bind-Value="@Model.ReleaseDate"/>
+                    </div>
+                    <ValidationMessage For="@(() => Model.ReleaseDate)"/>
+                </div>
+                <div class="flex flex-col">
+                    <label class="font-bold">@UiStringsLoc[UiStrings.ReleaseTime]</label>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                             class="w-6 h-6 inline text-[@ColorStrings.C5]">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <InputText type="time" class="@($"px-2 py-0.5 rounded-full focus:outline-[{ColorStrings.C5}]")"
+                                   @bind-Value="@Model.ReleaseTime"/>
+                    </div>
+                    <ValidationMessage For="@(() => Model.ReleaseTime)"/>
+                </div>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.Content]</label>
+                <InputTextArea class="@($"min-h-[5rem] rounded-2xl w-full p-2 focus:outline-[{ColorStrings.C5}]")"
+                               @bind-Value="@Model.Content"/>
+                <ValidationMessage For="@(() => Model.Content)"/>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+
+    [Parameter]
+    public PostModel Model { get; set; } = new();
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public string RedirectUrl { get; set; } = null!;
+
+    private bool _isLoading;
+    private string _attachmentsFormatsString = string.Empty;
+    private List<CustomInputFileModel> _invalidExtensionFiles = new();
+    private string _attachmentsValidationMessage = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        _attachmentsFormatsString = Model.AttachmentsFormat.GetFileFormats();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (_isLoading)
+        {
+            return;
+        }
+        if (!ValidateAttachments())
+        {
+            return;
+        }
+        _isLoading = true;
+        await InvokeAsync(StateHasChanged);
+        try
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+            Post? post;
+            if (IsEdit)
+            {
+                post = await postService.FirstOrDefaultAsync(p => p.Id == Model.Id);
+                if (post == null)
+                {
+                    ToastService.ShowError(NotificationStringsLoc[NotificationStrings.MissingPost]);
+                    return;
+                }
+                Mapper.Map(Model, post);
+                await postService.UpdateAsync(post);
+            }
+            else
+            {
+                post = Mapper.Map<Post>(Model);
+                var id = await postService.CreateAsync(post);
+                post.Id = id;
+            }
+            var postScheduleService = scope.ServiceProvider.GetRequiredService<IPostScheduleService>();
+            await postScheduleService.ScheduleAsync(post);
+            NavigationManager.NavigateTo(RedirectUrl ?? "/");
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.SubmitError]);
+            Logger.LogError(e, "Submit failed");
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void OnAttachmentsFormatChanged(MediaGroupFormat attachmentsFormat)
+    {
+        Model.AttachmentsFormat = attachmentsFormat;
+        _attachmentsFormatsString = attachmentsFormat.GetFileFormats();
+        if (Model.Attachments.Any())
+        {
+            ValidateAttachments();
+        }
+    }
+
+    private void OnAttachmentsChanged(List<CustomInputFileModel> attachments)
+    {
+        Model.Attachments = attachments;
+        ValidateAttachments();
+    }
+
+    private bool ValidateAttachments()
+    {
+        if (Model.AttachmentsFormat != MediaGroupFormat.Document)
+        {
+            _invalidExtensionFiles = Model.Attachments
+                .Where(a =>
+                    Model.AttachmentsFormat != AttachmentFormatsHelper.GetMediaGroupFormat(Path.GetExtension(a.File.Name)))
+                .ToList();
+            if (_invalidExtensionFiles.Any())
+            {
+                _attachmentsValidationMessage = string.Format(UiStringsLoc[UiStrings.InvalidExtensionFiles],
+                    string.Join(", ", _invalidExtensionFiles.Select(a => a.File.Name)));
+                StateHasChanged();
+                return false;
+            }
+        }
+        return GetValidExtensionsState();
+    }
+
+    private bool GetValidExtensionsState()
+    {
+        _invalidExtensionFiles.Clear();
+        _attachmentsValidationMessage = string.Empty;
+        StateHasChanged();
+        return true;
+    }
+
+}

@@ -16,14 +16,16 @@
 <div class="h-screen flex flex-col items-center justify-center gap-3">
     <div class="max-w-md w-full flex flex-col items-center bg-white rounded-lg shadow-lg p-8">
         <script async src="https://telegram.org/js/telegram-widget.js?22"
-                data-telegram-login="tghub_manager_bot" data-size="large"
-                data-radius="20" data-auth-url="login-callback/?redirectUrl=@(Model.RedirectUrl)" data-request-access="write">
+                data-telegram-login="tghub_manager_bot"
+                data-size="large"
+                data-auth-url="/login-callback?redirectUrl=@(Uri.EscapeDataString(Model.RedirectUrl ?? "/"))"
+                data-request-access="write">
         </script>
         <div class="text-gray-600 mt-4 text-center">
-            @UiStringsLoc[nameof(UiStrings.LogoutInstruction)]
+            @UiStringsLoc[UiStrings.LogoutInstruction]
         </div>
-        <div class="w-full flex justify-end mt-4">
-            <component type="typeof(CultureSelector)" render-mode="ServerPrerendered"/>
+        <div class="w-full flex justify-end mt-4 min-h-[2rem]">
+            <component type="typeof(CultureSelector)" render-mode="Server"/>
         </div>
     </div>
 </div>

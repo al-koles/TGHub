@@ -1,0 +1,16 @@
+﻿@using TGHub.Blazor.Resources
+<button class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
+                                                    hover:bg-[@ColorStrings.C4] active:shadow-none active:ring"
+        @onclick="@OnClick">
+    @Text
+</button>
+
+@code {
+
+    [Parameter]
+    public string Text { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+    
+}
