@@ -64,10 +64,10 @@
             }
             if (ValidateCallback())
             {
-                var userSession = GetUserSession();
+                var localStorageProvider = GetLocalStorageProvider();
                 try
                 {
-                    await UpdateUserDataAndLoginAsync(userSession);
+                    await UpdateUserDataAndLoginAsync(localStorageProvider);
                     NavigationManager.NavigateTo($"{RedirectUrl}", true);
                     ToastService.ShowSuccess($"Welcome back {FirstName}!");
                 }
@@ -108,7 +108,7 @@
         return checkHash == Hash;
     }
 
-    private LocalStorageProvider GetUserSession()
+    private LocalStorageProvider GetLocalStorageProvider()
     {
         return new LocalStorageProvider
         {
