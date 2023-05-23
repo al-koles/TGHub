@@ -45,6 +45,26 @@ public static class AttachmentFormatsHelper
         };
     }
 
+    public static AttachmentType GetType(string fileFormat)
+    {
+        if (PhotoFormats.Contains(fileFormat))
+        {
+            return AttachmentType.Photo;
+        }
+
+        if (VideoFormats.Contains(fileFormat))
+        {
+            return AttachmentType.Video;
+        }
+
+        if (AudioFormats.Contains(fileFormat))
+        {
+            return AttachmentType.Audio;
+        }
+
+        return AttachmentType.Document;
+    }
+
     public static AttachmentType GetInAlbumType(string fileFormat)
     {
         if (PhotoFormats.Contains(fileFormat))

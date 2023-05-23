@@ -4,6 +4,7 @@
 @using System.Linq.Expressions
 @using Blazored.LocalStorage
 @using TGHub.Application.Common
+@using TGHub.Blazor.Data
 @inject IFileStorage FileStorage
 @inject ILogger<CustomInputFiles> Logger
 @inject IToastService ToastService
@@ -22,7 +23,7 @@
                                   IsValid="@(!InvalidFiles.Contains(file))"
                                   RetryUploadClick="@UploadFileAsync"/>
         }
-        <div class="relative w-[6rem] h-[6rem]
+        <div class="relative w-[6rem] h-[6rem] mt-4
                         border-4 border-slate-400/70 hover:border-slate-400 border-dashed rounded-xl 
                         flex items-center justify-center
                         text-slate-400/70 hover:text-slate-400">
@@ -122,7 +123,8 @@
             .Select(inputFile => new CustomInputFileModel
             {
                 File = inputFile,
-                UploadStatus = FileUploadStatus.Uploading
+                UploadStatus = FileUploadStatus.Uploading,
+                Format = AttachmentFormatsHelper.GetType(Path.GetExtension(inputFile.Name))
             })
             .ToList();
 

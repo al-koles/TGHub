@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using TGHub.Application.Common.Mappings;
 using TGHub.Application.Services.Posts.Data;
+using TGHub.Blazor.Data;
+using TGHub.Blazor.Shared.Components.AttachmentTile;
 using TGHub.Blazor.Shared.Components.Calendar.Models;
 using TGHub.Domain.Entities;
 
@@ -20,5 +22,10 @@ public class MappingProfile : IMapWith<object>
         });
         profile.CreateMap<Lottery, CalendarEventModel>().ReverseMap();
         profile.CreateMap<Post, CalendarEventModel>().ReverseMap();
+        profile.CreateMap<PostAttachment, AttachmentTileModel>()
+            .ForMember(dst => dst.Url,
+                opt => opt.MapFrom((_, _, _, context) => context.Items[nameof(AttachmentTileModel.Url)]))
+            .ForMember(dst => dst.Format,
+                opt => opt.MapFrom(srs => AttachmentFormatsHelper.GetType(Path.GetExtension(srs.FileName))));
     }
 }

@@ -4,7 +4,7 @@ using TGHub.Domain.Entities;
 
 namespace TGHub.Application.Interfaces;
 
-public interface ITgHubDbContext
+public interface ITgHubDbContext : IDisposable, IAsyncDisposable
 {
     DbSet<BannedUser> BannedUsers { get; set; }
     DbSet<BannTopic> BannTopics { get; set; }
