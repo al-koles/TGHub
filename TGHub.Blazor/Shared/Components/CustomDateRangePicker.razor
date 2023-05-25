@@ -1,0 +1,119 @@
+﻿@using TGHub.Application.Resources
+@using TGHub.Blazor.Resources
+@using System.Globalization
+@using System.Linq.Expressions
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+<DateRangePicker StartDate="StartDate" StartDateChanged="StartDateChanged"
+                 EndDate="EndDate" EndDateChanged="EndDateChanged"
+                 TimePicker="@TimePicker"
+                 SingleDatePicker="@SingleDatePicker"
+                 DateFormat="@CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern"
+                 CustomDateFunction="@(date => date.Date == DateTime.UtcNow.Date ? $"outline outline-1 outline-[{ColorStrings.C5}]" : true)">
+    <PickerTemplate Context="pickerContext">
+        <div id="@pickerContext.Id" @onclick="pickerContext.Toggle"
+             class="bg-white rounded-full w-full px-3 py-2 focus:outline-[@ColorStrings.C5] cursor-pointer
+                    outline-1 @(_isValid == null ? "" : _isValid.Value ? $"outline outline-[{ColorStrings.C5}]" : "outline outline-red-500")">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                 class="w-6 h-6 inline-block mb-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
+            </svg>
+            <span>@pickerContext.FormattedRange @(string.IsNullOrEmpty(pickerContext.FormattedRange) ? "Choose dates..." : "")</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                 class="w-6 h-6 inline-block float-right mt-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+            </svg>
+        </div>
+    </PickerTemplate>
+    <ButtonsTemplate Context="buttonsContext">
+        <button @onclick="@buttonsContext.ClickCancel" type="button">
+            @UiStringsLoc[UiStrings.Cancel]
+        </button>
+        <button class="rounded-md p-1 text-white
+                        @(IsDisabled(buttonsContext) ? $"bg-[{ColorStrings.C5}]/20" : $"bg-[{ColorStrings.C5}]/80 hover:bg-[{ColorStrings.C5}]")"
+                type="button" @onclick="@buttonsContext.ClickApply"
+                disabled="@IsDisabled(buttonsContext)">
+            @UiStringsLoc[UiStrings.Apply]
+        </button>
+    </ButtonsTemplate>
+</DateRangePicker>
+
+@code {
+
+    [CascadingParameter]
+    private EditContext? EditContext { get; set; }
+
+    [Parameter]
+    public DateTimeOffset? StartDate { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTimeOffset?> StartDateChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<DateTimeOffset?>>? StartDateExpression { get; set; }
+
+    [Parameter]
+    public DateTimeOffset? EndDate { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTimeOffset?> EndDateChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<DateTimeOffset?>>? EndDateExpression { get; set; }
+
+    [Parameter]
+    public bool TimePicker { get; set; }
+
+    [Parameter]
+    public bool SingleDatePicker { get; set; }
+
+    private bool? _isValid;
+    private FieldIdentifier? _startDateIdentifier;
+    private FieldIdentifier? _endDateIdentifier;
+
+    protected override void OnInitialized()
+    {
+        if (StartDateExpression != null)
+        {
+            _startDateIdentifier = FieldIdentifier.Create(StartDateExpression);
+        }
+
+        if (EndDateExpression != null)
+        {
+            _endDateIdentifier = FieldIdentifier.Create(EndDateExpression);
+        }
+
+        if (EditContext != null)
+        {
+            EditContext.OnValidationStateChanged += OnValidationStateChanged;
+        }
+    }
+
+    private void OnValidationStateChanged(object? sender, ValidationStateChangedEventArgs args)
+    {
+        if (EditContext == null)
+        {
+            return;
+        }
+
+        if (_startDateIdentifier != null)
+        {
+            _isValid = true;
+            var isStartDateValid = !EditContext.GetValidationMessages(_startDateIdentifier.Value).Any();
+            _isValid = _isValid.Value && isStartDateValid;
+        }
+        if (_endDateIdentifier != null)
+        {
+            _isValid ??= true;
+            var isEndDateValid = !EditContext.GetValidationMessages(_endDateIdentifier.Value).Any();
+            _isValid = _isValid.Value && isEndDateValid;
+        }
+
+        StateHasChanged();
+    }
+
+    private bool IsDisabled(DateRangePicker dateRangePicker)
+    {
+        return dateRangePicker.TStartDate == null || dateRangePicker.TEndDate == null;
+    }
+
+}

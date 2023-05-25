@@ -77,7 +77,7 @@
 
 <div class="mt-3">
     <label class="font-bold">@UiStringsLoc[UiStrings.ReleaseAt]</label>
-    @LotteryInfo.FromDateTime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern)
+    @LotteryInfo.StartDateTime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern)
 </div>
 <div class="flex gap-2 mt-3">
     <label class="font-bold">@UiStringsLoc[UiStrings.Creator]:</label>
@@ -162,7 +162,7 @@
             var tgClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
             var tgId = await tgClient.SendLotteryAsync(LotteryInfo);
 
-            LotteryInfo.FromDateTime = DateTime.UtcNow;
+            LotteryInfo.StartDateTime = DateTime.UtcNow;
             LotteryInfo.LotteryTelegramId = tgId;
 
             var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();

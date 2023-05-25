@@ -129,6 +129,9 @@
   <data name="Greeting" xml:space="preserve">
     <value>Вітаю</value>
   </data>
+  <data name="MissingLottery" xml:space="preserve">
+    <value>Не знайдено розіграш "{0}". Схоже віт був видалений</value>
+  </data>
   <data name="MissingPost" xml:space="preserve">
     <value>Не знайдено пост "{0}". Схоже віт був видалений</value>
   </data>

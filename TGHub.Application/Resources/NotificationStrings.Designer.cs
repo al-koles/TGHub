@@ -97,6 +97,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing lottery &quot;{0}&quot;. May be it was deleted.
+        /// </summary>
+        public static string MissingLottery {
+            get {
+                return ResourceManager.GetString("MissingLottery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing post &quot;{0}&quot;. May be it was deleted.
         /// </summary>
         public static string MissingPost {

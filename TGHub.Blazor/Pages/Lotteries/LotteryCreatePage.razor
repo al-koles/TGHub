@@ -1,30 +1,32 @@
 ﻿@attribute [Authorize]
 @page "/lotteries/create"
-@using TGHub.Blazor.Pages.Posts.Forms
-@using TGHub.Blazor.Pages.Posts.Models
+@using TGHub.Blazor.Pages.Lotteries.Models
+@using TGHub.Blazor.Pages.Lotteries.Forms
 
 <div class="h-full">
-    <PostForm Model="@_model" IsEdit="@false" RedirectUrl="@RedirectUrl"/>
+    <LotteryForm Model="@_model" IsEdit="@false" RedirectUrl="@RedirectUrl"/>
 </div>
 
 @code {
-    
-    [Parameter] [SupplyParameterFromQuery]
+
+    [Parameter]
+    [SupplyParameterFromQuery]
     public string? RedirectUrl { get; set; }
 
-    [Parameter] [SupplyParameterFromQuery]
+    [Parameter]
+    [SupplyParameterFromQuery]
     public string? DefaultDate
     {
-        get => _defaultDate?.ToString();
-        set => _defaultDate = DateOnly.TryParse(value, out var date) ?  date : null;
+        get => _defaultDateTime?.ToString();
+        set => _defaultDateTime = DateTime.TryParse(value, out var dateTime) ? dateTime : null;
     }
 
-    private DateOnly? _defaultDate;
-    private readonly PostModel _model = new();
+    private DateTime? _defaultDateTime;
+    private readonly LotteryModel _model = new();
 
     protected override void OnParametersSet()
     {
-        _model.ReleaseDate = _defaultDate;
+        _model.StartDateTime = _defaultDateTime;
     }
 
 }

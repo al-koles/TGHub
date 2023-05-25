@@ -1,11 +1,11 @@
 ﻿@using TGHub.Blazor.Data
-@using TGHub.Blazor.Pages.Posts.Models
+@using TGHub.Blazor.Pages.Lotteries.Models
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using AutoMapper
 @using TGHub.Application.Resources
-@using TGHub.Application.Services.Posts.Interfaces
+@using TGHub.Application.Services.Lotteries.Interfaces
 @using TGHub.Application
 @inject IMapper Mapper
 @inject NavigationManager NavigationManager
@@ -20,8 +20,16 @@
         <ObjectGraphDataAnnotationsValidator/>
         <div class="flex flex-col gap-3">
             <div class="flex justify-between items-center">
-                <PageHeaderTitle Text="@UiStringsLoc[IsEdit ? UiStrings.EditPost : UiStrings.CreatePost]"/>
+                <PageHeaderTitle Text="@UiStringsLoc[IsEdit ? UiStrings.EditLottery : UiStrings.CreateLottery]"/>
                 <SubmitButton IsLoading="@_isLoading"/>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.LotteryReleaseDatetime]</label>
+                <CustomDateRangePicker @bind-StartDate="@Model.StartDateTime" @bind-EndDate="@Model.EndDateTime"
+                                       TimePicker="@true"/>
+                <ValidationMessage For="@(() => Model.StartDateTime)"/>
+                <ValidationMessage For="@(() => Model.EndDateTime)"/>
             </div>
 
             <div class="flex flex-col">
@@ -60,54 +68,9 @@
                                   FilesExpression="@(() => Model.Attachments)"
                                   FilesChanged="@OnAttachmentsChanged"
                                   AllowedFileFormats="@_attachmentsFormatsString"
-                                  UploadDirectory="@(Path.Combine(Constants.PostAttachmentsFolderName, Model.AttachmentsFolderId.ToString()))"/>
+                                  UploadDirectory="@(Path.Combine(Constants.LotteryAttachmentsFolderName, Model.AttachmentsFolderId.ToString()))"/>
                 <ValidationMessage For="@(() => Model.Attachments)"/>
                 <div class="text-red-500">@_attachmentsValidationMessage</div>
-            </div>
-
-            <div class="flex flex-col">
-                <div>
-                    <label class="font-bold">@UiStringsLoc[UiStrings.Buttons]</label>
-                    @if (Model.Attachments.Count > 1 && Model.Buttons.Any())
-                    {
-                        <div class="inline text-red-500/70">
-                            <div class="inline"> </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                 class="w-6 h-6 inline">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-                            </svg>
-                            <div class="inline">@UiStringsLoc[UiStrings.ButtonsWarning]</div>
-                        </div>
-                    }
-                </div>
-                <InputUrlButtons @bind-Buttons="@Model.Buttons"/>
-            </div>
-
-            <div class="flex gap-4">
-                <div class="flex flex-col">
-                    <label class="font-bold">@UiStringsLoc[UiStrings.ReleaseDate]</label>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                             class="w-6 h-6 inline text-[@ColorStrings.C5]">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
-                        </svg>
-                        <InputDate class="@($"px-2 py-0.5 rounded-full focus:outline-[{ColorStrings.C5}]")"
-                                   @bind-Value="@Model.ReleaseDate"/>
-                    </div>
-                    <ValidationMessage For="@(() => Model.ReleaseDate)"/>
-                </div>
-                <div class="flex flex-col">
-                    <label class="font-bold">@UiStringsLoc[UiStrings.ReleaseTime]</label>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                             class="w-6 h-6 inline text-[@ColorStrings.C5]">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <InputText type="time" class="@($"px-2 py-0.5 rounded-full focus:outline-[{ColorStrings.C5}]")"
-                                   @bind-Value="@Model.ReleaseTime"/>
-                    </div>
-                    <ValidationMessage For="@(() => Model.ReleaseTime)"/>
-                </div>
             </div>
 
             <div class="flex flex-col">
@@ -123,7 +86,7 @@
 @code {
 
     [Parameter]
-    public PostModel Model { get; set; } = new();
+    public LotteryModel Model { get; set; } = new();
 
     [Parameter]
     public bool IsEdit { get; set; }
@@ -156,27 +119,28 @@
         try
         {
             await using var scope = ServiceProvider.CreateAsyncScope();
-            var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
-            Post? post;
+            var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
+            Lottery? lottery;
             if (IsEdit)
             {
-                post = await postService.FirstOrDefaultAsync(p => p.Id == Model.Id);
-                if (post == null)
+                lottery = await lotteryService.FirstOrDefaultAsync(p => p.Id == Model.Id);
+                if (lottery == null)
                 {
-                    ToastService.ShowError(NotificationStringsLoc[NotificationStrings.MissingPost]);
+                    ToastService.ShowError(NotificationStringsLoc[NotificationStrings.MissingLottery]);
                     return;
                 }
-                Mapper.Map(Model, post);
-                await postService.UpdateAsync(post);
+                Mapper.Map(Model, lottery);
+                await lotteryService.UpdateAsync(lottery);
             }
             else
             {
-                post = Mapper.Map<Post>(Model);
-                var id = await postService.CreateAsync(post);
-                post.Id = id;
+                lottery = Mapper.Map<Lottery>(Model);
+                var id = await lotteryService.CreateAsync(lottery);
+                lottery.Id = id;
             }
-            var postScheduleService = scope.ServiceProvider.GetRequiredService<IPostScheduleService>();
-            await postScheduleService.ScheduleAsync(post);
+            var lotteryScheduleService = scope.ServiceProvider.GetRequiredService<ILotteryScheduleService>();
+            await lotteryScheduleService.ScheduleLotteryAsync(lottery);
+            await lotteryScheduleService.ScheduleResultAsync(lottery);
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
         catch (Exception e)

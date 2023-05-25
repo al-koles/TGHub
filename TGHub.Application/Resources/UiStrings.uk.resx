@@ -270,4 +270,19 @@
   <data name="Url" xml:space="preserve">
     <value>Посилання</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Підтвердити</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="CreateLottery" xml:space="preserve">
+    <value>Створити розіграш</value>
+  </data>
+  <data name="EditLottery" xml:space="preserve">
+    <value>Редагувати розіграш</value>
+  </data>
+  <data name="LotteryReleaseDatetime" xml:space="preserve">
+    <value>Дати початку та кінця</value>
+  </data>
 </root>

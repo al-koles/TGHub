@@ -8,25 +8,19 @@ using TGHub.Domain.Enums;
 
 namespace TGHub.Blazor.Pages.Lotteries.Models;
 
-public class LotteryModel : IMapWith<Post>
+public class LotteryModel : IMapWith<Lottery>
 {
-    private TimeOnly? _releaseTime;
     public int Id { get; set; }
 
     [Required] public string Title { get; set; } = null!;
 
     [Required] public string Content { get; set; } = null!;
 
-    [Required] public DateOnly? ReleaseDate { get; set; }
+    [Required] public int WinnersCount { get; set; }
 
-    [Required]
-    public string? ReleaseTime
-    {
-        get => _releaseTime?.ToString("HH:mm");
-        set => _releaseTime = TimeOnly.TryParse(value ?? "", out var time) ? time : null;
-    }
+    [Required] public DateTimeOffset? StartDateTime { get; set; }
 
-    public int? TelegramId { get; set; }
+    [Required] public DateTimeOffset? EndDateTime { get; set; }
 
     public MediaGroupFormat AttachmentsFormat { get; set; } = MediaGroupFormat.PhotoVideo;
 
@@ -35,21 +29,21 @@ public class LotteryModel : IMapWith<Post>
     [Required(ErrorMessage = "The Channel field is required.")]
     public ChannelAdministrator Creator { get; set; }
 
-    [Required] [ValidateComplexType] public List<LotteryButtonModel> Buttons { get; set; } = new();
-
     [Required] public List<CustomInputFileModel> Attachments { get; set; } = new();
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<LotteryModel, Post>()
+        profile.CreateMap<LotteryModel, Lottery>()
             .ForMember(dst => dst.Creator,
                 opt => opt.Ignore())
             .ForMember(dst => dst.CreatorId,
                 opt => opt.MapFrom(srs => srs.Creator.Id))
-            .ForMember(dst => dst.ReleaseDateTime,
-                opt => opt.MapFrom(srs => srs.ReleaseDate!.Value.ToDateTime(srs._releaseTime!.Value)))
+            .ForMember(dst => dst.StartDateTime,
+                opt => opt.MapFrom(srs => srs.StartDateTime!.Value.DateTime))
+            .ForMember(dst => dst.EndDateTime,
+                opt => opt.MapFrom(srs => srs.EndDateTime!.Value.DateTime))
             .ForMember(dst => dst.Attachments,
-                opt => opt.MapFrom(srs => srs.Attachments.Select(a => new PostAttachment
+                opt => opt.MapFrom(srs => srs.Attachments.Select(a => new LotteryAttachment
                 {
                     FileName = a.File.Name,
                     Type = srs.AttachmentsFormat == MediaGroupFormat.PhotoVideo
@@ -59,11 +53,7 @@ public class LotteryModel : IMapWith<Post>
                             : AttachmentType.Document
                 }).ToList()));
 
-        profile.CreateMap<Post, LotteryModel>()
-            .ForMember(dst => dst.ReleaseDate,
-                opt => opt.MapFrom(srs => DateOnly.FromDateTime(srs.ReleaseDateTime)))
-            .ForMember(dst => dst.ReleaseTime,
-                opt => opt.MapFrom(srs => TimeOnly.FromDateTime(srs.ReleaseDateTime)))
+        profile.CreateMap<Lottery, LotteryModel>()
             .ForMember(dst => dst.Attachments,
                 opt => opt.Ignore());
     }

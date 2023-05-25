@@ -129,6 +129,9 @@
   <data name="Greeting" xml:space="preserve">
     <value>Hello</value>
   </data>
+  <data name="MissingLottery" xml:space="preserve">
+    <value>Missing lottery "{0}". May be it was deleted</value>
+  </data>
   <data name="MissingPost" xml:space="preserve">
     <value>Missing post "{0}". May be it was deleted</value>
   </data>

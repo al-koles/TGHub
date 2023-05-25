@@ -270,4 +270,19 @@
   <data name="Url" xml:space="preserve">
     <value>Url</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CreateLottery" xml:space="preserve">
+    <value>Create lottery</value>
+  </data>
+  <data name="EditLottery" xml:space="preserve">
+    <value>Edit lottery</value>
+  </data>
+  <data name="LotteryReleaseDatetime" xml:space="preserve">
+    <value>Start and end dates</value>
+  </data>
 </root>

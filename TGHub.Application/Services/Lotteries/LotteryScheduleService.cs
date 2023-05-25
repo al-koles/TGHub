@@ -24,7 +24,7 @@ public class LotteryScheduleService : ILotteryScheduleService
         var newTrigger = TriggerBuilder.Create()
             .WithIdentity(triggerKey)
             .ForJob(SendLotteryJob.Key)
-            .StartAt(lottery.FromDateTime)
+            .StartAt(lottery.StartDateTime)
             .UsingJobData(new JobDataMap
                 { { nameof(SendLotteryJob.LotteryId), lottery.Id } })
             .Build();
@@ -47,7 +47,7 @@ public class LotteryScheduleService : ILotteryScheduleService
         var newTrigger = TriggerBuilder.Create()
             .WithIdentity(triggerKey)
             .ForJob(SendLotteryResultJob.Key)
-            .StartAt(lottery.FromDateTime)
+            .StartAt(lottery.EndDateTime)
             .UsingJobData(new JobDataMap
                 { { nameof(SendLotteryResultJob.LotteryId), lottery.Id } })
             .Build();
@@ -86,7 +86,7 @@ public class LotteryScheduleService : ILotteryScheduleService
             return LotterySendStatus.Sent;
         }
 
-        if (lottery.FromDateTime < DateTime.UtcNow)
+        if (lottery.StartDateTime < DateTime.UtcNow)
         {
             return LotterySendStatus.FailedToSend;
         }
@@ -105,7 +105,7 @@ public class LotteryScheduleService : ILotteryScheduleService
             return LotterySendStatus.Sent;
         }
 
-        if (lottery.FromDateTime < DateTime.UtcNow)
+        if (lottery.StartDateTime < DateTime.UtcNow)
         {
             return LotterySendStatus.FailedToSend;
         }

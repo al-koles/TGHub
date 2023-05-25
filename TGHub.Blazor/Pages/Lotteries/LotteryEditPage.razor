@@ -1,10 +1,10 @@
 ﻿@attribute [Authorize]
 @page "/lotteries/edit/{id:int}"
 @using TGHub.Application.Resources
-@using TGHub.Application.Services.Posts.Interfaces
+@using TGHub.Application.Services.Lotteries.Interfaces
 @using TGHub.Blazor.Data
-@using TGHub.Blazor.Pages.Posts.Forms
-@using TGHub.Blazor.Pages.Posts.Models
+@using TGHub.Blazor.Pages.Lotteries.Forms
+@using TGHub.Blazor.Pages.Lotteries.Models
 @using TGHub.Domain.Enums
 @using AutoMapper
 @using TGHub.Application.Common
@@ -20,7 +20,7 @@
 @inject IServiceProvider ServiceProvider
 
 <div class="h-full">
-    <PostForm Model="@_model" IsEdit="@true" RedirectUrl="@RedirectUrl"/>
+    <LotteryForm Model="@_model" IsEdit="@true" RedirectUrl="@RedirectUrl"/>
 </div>
 
 @code {
@@ -32,31 +32,31 @@
     [Parameter]
     public int Id { get; set; }
 
-    private readonly PostModel _model = new();
+    private readonly LotteryModel _model = new();
 
     protected override async Task OnParametersSetAsync()
     {
         using var scope = ServiceProvider.CreateScope();
-        var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
+        var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
 
-        var post = await postService.FirstOrDefaultAsync(p => p.Id == Id);
-        if (post == null)
+        var lottery = await lotteryService.FirstOrDefaultAsync(l => l.Id == Id);
+        if (lottery == null)
         {
             ToastService.ShowError(NotificationStringsLoc[NotificationStrings.NotFound]);
             NavigationManager.NavigateTo(RedirectUrl ?? "/posts");
             return;
         }
 
-        var isUserPostCreator = post.Creator.AdministratorId == LocalStorageProvider.Id;
-        var isUserOwnerOfPostChannelEntity = await postService
+        var isLotteryPostCreator = lottery.Creator.AdministratorId == LocalStorageProvider.Id;
+        var isUserOwnerOfLotteryChannelEntity = await lotteryService
             .FirstOrDefaultAsync(p =>
                 p.Id == Id &&
                 p.Creator.Channel.Administrators.Any(a => a.IsActive &&
                                                           a.Role == ChannelRole.Owner &&
                                                           a.AdministratorId == LocalStorageProvider.Id));
-        var isUserOwnerOfPostChannel = isUserOwnerOfPostChannelEntity != null;
-        var isPostSent = post.TelegramId != null;
-        var accessGranted = !isPostSent && (isUserPostCreator || isUserOwnerOfPostChannel);
+        var isUserOwnerOfLotteryChannel = isUserOwnerOfLotteryChannelEntity != null;
+        var isLotterySent = lottery.LotteryTelegramId != null;
+        var accessGranted = !isLotterySent && (isLotteryPostCreator || isUserOwnerOfLotteryChannel);
         if (!accessGranted)
         {
             ToastService.ShowWarning(UiStringsLoc[UiStrings.AccessDenied]);
@@ -64,13 +64,13 @@
             return;
         }
 
-        Mapper.Map(post, _model);
+        Mapper.Map(lottery, _model);
 
-        _model.Attachments = post.Attachments.Select(a =>
+        _model.Attachments = lottery.Attachments.Select(a =>
         {
             var mockFile = new Mock<IBrowserFile>();
             mockFile.Setup(file => file.Name).Returns(a.FileName);
-            var directory = Uri.EscapeDataString($"{Constants.PostAttachmentsFolderName}/{post.AttachmentsFolderId}");
+            var directory = Uri.EscapeDataString($"{Constants.LotteryAttachmentsFolderName}/{lottery.AttachmentsFolderId}");
             return new CustomInputFileModel
             {
                 File = mockFile.Object,

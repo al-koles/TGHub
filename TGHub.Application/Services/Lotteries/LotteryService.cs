@@ -34,12 +34,12 @@ public class LotteryService : Service<Lottery>, ILotteryService
         {
             if (lotteryFilter.From.HasValue)
             {
-                query = query.Where(l => l.FromDateTime >= lotteryFilter.From || l.ToDateTime >= lotteryFilter.From);
+                query = query.Where(l => l.StartDateTime >= lotteryFilter.From || l.EndDateTime >= lotteryFilter.From);
             }
 
             if (lotteryFilter.To.HasValue)
             {
-                query = query.Where(l => l.FromDateTime <= lotteryFilter.To || l.ToDateTime <= lotteryFilter.To);
+                query = query.Where(l => l.StartDateTime <= lotteryFilter.To || l.EndDateTime <= lotteryFilter.To);
             }
 
             if (lotteryFilter.ChannelId.HasValue)
