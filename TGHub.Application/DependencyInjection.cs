@@ -7,6 +7,8 @@ using TGHub.Application.Services.Base;
 using TGHub.Application.Services.ChannelAdministrators;
 using TGHub.Application.Services.Channels;
 using TGHub.Application.Services.Jwt;
+using TGHub.Application.Services.Lotteries;
+using TGHub.Application.Services.Lotteries.Interfaces;
 using TGHub.Application.Services.Posts;
 using TGHub.Application.Services.Posts.Interfaces;
 using TGHub.Application.Services.Posts.Jobs;
@@ -28,6 +30,8 @@ public static class DependencyInjection
         services.AddTransient<IPostService, PostService>();
         services.AddTransient<IPostScheduleService, PostScheduleService>();
         services.AddTransient<IService<ChannelAdministrator>, ChannelAdministratorService>();
+        services.AddTransient<ILotteryService, LotteryService>();
+        services.AddTransient<ILotteryScheduleService, LotteryScheduleService>();
 
         services.AddQuartz(q =>
         {

@@ -1,8 +1,11 @@
-﻿namespace TGHub.Domain.Entities;
+﻿using TGHub.Domain.Enums;
+
+namespace TGHub.Domain.Entities;
 
 public class LotteryAttachment : EntityBase
 {
-    public string Link { get; set; } = null!;
+    public string FileName { get; set; } = null!;
+    public AttachmentType Type { get; set; }
 
     public int LotteryId { get; set; }
     public Lottery Lottery { get; set; } = null!;

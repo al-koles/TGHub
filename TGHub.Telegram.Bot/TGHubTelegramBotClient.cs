@@ -25,4 +25,14 @@ internal class TgHubTelegramBotClient : ITgHubTelegramBotClient
     {
         return _tgSendService.SendPostAsync(post);
     }
+
+    public Task<int> SendLotteryAsync(Lottery lottery)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<int> SendLotteryResultAsync(Lottery lottery)
+    {
+        throw new NotImplementedException();
+    }
 }
