@@ -45,4 +45,12 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\Lotteries\Forms\LotterieForm.razor" />
+    <AdditionalFiles Include="Pages\Lotteries\LotterieCreatePage.razor" />
+    <AdditionalFiles Include="Pages\Lotteries\LotterieEditPage.razor" />
+    <AdditionalFiles Include="Pages\Lotteries\LotteriesPage.razor" />
+    <AdditionalFiles Include="Pages\Lotteries\Modals\LotterieInfoModal.razor" />
+  </ItemGroup>
+
 </Project>

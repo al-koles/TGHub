@@ -162,6 +162,9 @@
   <data name="EditPost" xml:space="preserve">
     <value>Edit Post</value>
   </data>
+  <data name="End" xml:space="preserve">
+    <value>End</value>
+  </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
@@ -186,8 +189,8 @@
   <data name="NavDashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
-  <data name="NavLottery" xml:space="preserve">
-    <value>Lottery</value>
+  <data name="NavLotteries" xml:space="preserve">
+    <value>Lotteries</value>
   </data>
   <data name="NavPosts" xml:space="preserve">
     <value>Posts</value>
@@ -204,29 +207,29 @@
   <data name="Posts" xml:space="preserve">
     <value>Posts</value>
   </data>
-  <data name="PostStatusFailedToSend" xml:space="preserve">
+  <data name="StatusFailedToSend" xml:space="preserve">
     <value>Failed To Send</value>
   </data>
-  <data name="PostStatusFailedToSendDescription" xml:space="preserve">
-    <value>ERROR. Post failed to send to Telegram. Edit post to reschedule or send it with "Send" button click</value>
+  <data name="StatusFailedToSendDescription" xml:space="preserve">
+    <value>ERROR. Failed to send to Telegram. Edit to reschedule or send it with "Send" button click</value>
   </data>
-  <data name="PostStatusNotScheduled" xml:space="preserve">
+  <data name="StatusNotScheduled" xml:space="preserve">
     <value>Not Scheduled</value>
   </data>
-  <data name="PostStatusNotScheduledDescription" xml:space="preserve">
-    <value>WARNING. Post is NOT scheduled and will NOT be sent to Telegram at specified time. Try update to schedule</value>
+  <data name="StatusNotScheduledDescription" xml:space="preserve">
+    <value>WARNING. Instatance is NOT scheduled and will NOT be sent to Telegram at specified time. Try edit to schedule</value>
   </data>
-  <data name="PostStatusScheduled" xml:space="preserve">
+  <data name="StatusScheduled" xml:space="preserve">
     <value>Scheduled</value>
   </data>
-  <data name="PostStatusScheduledDescription" xml:space="preserve">
-    <value>Post is scheduled and will be sent to Telegram at specified time</value>
+  <data name="StatusScheduledDescription" xml:space="preserve">
+    <value>Scheduled and will be sent to Telegram at specified time</value>
   </data>
-  <data name="PostStatusSent" xml:space="preserve">
+  <data name="StatusSent" xml:space="preserve">
     <value>Sent</value>
   </data>
-  <data name="PostStatusSentDescription" xml:space="preserve">
-    <value>Post was successfully sent to Telegram</value>
+  <data name="StatusSentDescription" xml:space="preserve">
+    <value>Successfully sent to Telegram</value>
   </data>
   <data name="ReleaseAt" xml:space="preserve">
     <value>Release at:</value>
@@ -251,6 +254,9 @@
   </data>
   <data name="SendStatus" xml:space="preserve">
     <value>Send status</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>

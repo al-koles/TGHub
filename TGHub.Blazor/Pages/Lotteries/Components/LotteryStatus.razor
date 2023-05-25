@@ -1,8 +1,8 @@
-﻿@using TGHub.Application.Services.Posts.Interfaces
+﻿@using TGHub.Application.Services.Lotteries.Interfaces
 @using TGHub.Domain.Entities
 @using TGHub.Application.Resources
-@using TGHub.Application.Services.Posts.Data
-@inject IPostScheduleService PostScheduleService
+@using TGHub.Application.Services.Lotteries.Data
+@inject ILotteryScheduleService LotteryScheduleService
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 
 <div class="text-@_color border-2 border-@_color px-1 py-0.5 inline-block uppercase text-xs font-bold"
@@ -10,17 +10,19 @@
     @_status
 </div>
 
-
 @code {
 
     [Parameter]
-    public Post? PostInfo { get; set; }
+    public bool IsResult { get; set; }
 
     [Parameter]
-    public PostSendStatus Status { get; set; }
+    public Lottery? LotteryInfo { get; set; }
 
     [Parameter]
-    public EventCallback<PostSendStatus> StatusChanged { get; set; }
+    public LotterySendStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<LotterySendStatus> StatusChanged { get; set; }
 
     private string _status = null!;
     private string _statusDescription = null!;
@@ -28,27 +30,34 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (PostInfo != null)
+        if (LotteryInfo != null)
         {
-            Status = await PostScheduleService.GetSendStatusAsync(PostInfo);
+            if (IsResult)
+            {
+                Status = await LotteryScheduleService.GetResultSendStatusAsync(LotteryInfo);
+            }
+            else
+            {
+                Status = await LotteryScheduleService.GetLotterySendStatusAsync(LotteryInfo);
+            }
             switch (Status)
             {
-                case PostSendStatus.Sent:
+                case LotterySendStatus.Sent:
                     _status = UiStringsLoc[UiStrings.StatusSent];
                     _statusDescription = UiStringsLoc[UiStrings.StatusSentDescription];
                     _color = "green-400";
                     break;
-                case PostSendStatus.FailedToSend:
+                case LotterySendStatus.FailedToSend:
                     _status = UiStringsLoc[UiStrings.StatusFailedToSend];
                     _statusDescription = UiStringsLoc[UiStrings.StatusFailedToSendDescription];
                     _color = "red-400";
                     break;
-                case PostSendStatus.Scheduled:
+                case LotterySendStatus.Scheduled:
                     _status = UiStringsLoc[UiStrings.StatusScheduled];
                     _statusDescription = UiStringsLoc[UiStrings.StatusScheduledDescription];
                     _color = "indigo-400";
                     break;
-                case PostSendStatus.NotScheduled:
+                case LotterySendStatus.NotScheduled:
                     _status = UiStringsLoc[UiStrings.StatusNotScheduled];
                     _statusDescription = UiStringsLoc[UiStrings.StatusNotScheduledDescription];
                     _color = "yellow-400";
