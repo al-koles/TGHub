@@ -255,13 +255,14 @@
             _isSendingResult = true;
             await using var scope = ServiceProvider.CreateAsyncScope();
 
+            var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
+            await Task.Run(() => lotteryService.SelectWinners(LotteryInfo));
+
             var tgClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
             var tgId = await tgClient.SendLotteryResultAsync(LotteryInfo);
 
             LotteryInfo.EndDateTime = DateTime.UtcNow;
             LotteryInfo.ResultTelegramId = tgId;
-
-            var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
             await lotteryService.UpdateAsync(LotteryInfo);
 
             var lotteryScheduleService = scope.ServiceProvider.GetRequiredService<ILotteryScheduleService>();

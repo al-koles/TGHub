@@ -39,7 +39,7 @@ public class SendLotteryResultJob : IJob
                 throw new Exception("Lottery wasn't send to Telegram so it's result also can't be sent");
             }
 
-            await Task.Run(() => SelectWinners(lottery));
+            await Task.Run(() => _lotteryService.SelectWinners(lottery));
 
             var lotteryTgId = await _telegramBotClient.SendLotteryResultAsync(lottery);
 
@@ -49,36 +49,6 @@ public class SendLotteryResultJob : IJob
         catch (Exception e)
         {
             _logger.LogError(e, "Failed to send lottery ({0}) result to channel", LotteryId);
-        }
-    }
-
-    private void SelectWinners(Lottery lottery)
-    {
-        if (lottery.Participants.Count <= lottery.WinnersCount)
-        {
-            foreach (var participant in lottery.Participants)
-            {
-                participant.IsWinner = true;
-            }
-
-            return;
-        }
-
-        foreach (var participant in lottery.Participants)
-        {
-            participant.IsWinner = false;
-        }
-
-        var participants = lottery.Participants.ToArray();
-        var random = new Random();
-        var winIndexes = new HashSet<int>();
-        while (winIndexes.Count < lottery.WinnersCount)
-        {
-            var generatedIndex = random.Next(participants.Length);
-            if (winIndexes.Add(generatedIndex))
-            {
-                participants[generatedIndex].IsWinner = true;
-            }
         }
     }
 }

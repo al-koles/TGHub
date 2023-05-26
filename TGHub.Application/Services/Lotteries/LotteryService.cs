@@ -74,4 +74,34 @@ public class LotteryService : Service<Lottery>, ILotteryService
             ? query.FirstOrDefaultAsync()
             : query.FirstOrDefaultAsync(predicate);
     }
+
+    public void SelectWinners(Lottery lottery)
+    {
+        if (lottery.Participants.Count <= lottery.WinnersCount)
+        {
+            foreach (var participant in lottery.Participants)
+            {
+                participant.IsWinner = true;
+            }
+
+            return;
+        }
+
+        foreach (var participant in lottery.Participants)
+        {
+            participant.IsWinner = false;
+        }
+
+        var participants = lottery.Participants.ToArray();
+        var random = new Random();
+        var winIndexes = new HashSet<int>();
+        while (winIndexes.Count < lottery.WinnersCount)
+        {
+            var generatedIndex = random.Next(participants.Length);
+            if (winIndexes.Add(generatedIndex))
+            {
+                participants[generatedIndex].IsWinner = true;
+            }
+        }
+    }
 }
