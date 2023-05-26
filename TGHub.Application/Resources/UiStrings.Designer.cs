@@ -295,11 +295,56 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lottery.
+        /// </summary>
+        public static string Lottery {
+            get {
+                return ResourceManager.GetString("Lottery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery isn&apos;t sent yet. Wait until it is sent or send it now..
+        /// </summary>
+        public static string LotteryIsNotSent {
+            get {
+                return ResourceManager.GetString("LotteryIsNotSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery is already sent.
+        /// </summary>
+        public static string LotteryIsSent {
+            get {
+                return ResourceManager.GetString("LotteryIsSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start and end dates.
         /// </summary>
         public static string LotteryReleaseDatetime {
             get {
                 return ResourceManager.GetString("LotteryReleaseDatetime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery result.
+        /// </summary>
+        public static string LotteryResult {
+            get {
+                return ResourceManager.GetString("LotteryResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery result is already sent.
+        /// </summary>
+        public static string LotteryResultIsSent {
+            get {
+                return ResourceManager.GetString("LotteryResultIsSent", resourceCulture);
             }
         }
         
@@ -561,6 +606,24 @@ namespace TGHub.Application.Resources {
         public static string Url {
             get {
                 return ResourceManager.GetString("Url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Winners.
+        /// </summary>
+        public static string Winners {
+            get {
+                return ResourceManager.GetString("Winners", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Winners count.
+        /// </summary>
+        public static string WinnersCount {
+            get {
+                return ResourceManager.GetString("WinnersCount", resourceCulture);
             }
         }
     }

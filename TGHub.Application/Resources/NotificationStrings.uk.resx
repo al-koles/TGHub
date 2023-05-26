@@ -129,6 +129,15 @@
   <data name="Greeting" xml:space="preserve">
     <value>Вітаю</value>
   </data>
+  <data name="LotteryDeleted" xml:space="preserve">
+    <value>Розіграш "{0}" видалено</value>
+  </data>
+  <data name="LotteryResultSent" xml:space="preserve">
+    <value>Результат розіграшу "{0}" надіслано до Telegram каналу "{1}"</value>
+  </data>
+  <data name="LotterySent" xml:space="preserve">
+    <value>Розіграш "{0}" надіслано до Telegram каналу "{1}"</value>
+  </data>
   <data name="MissingLottery" xml:space="preserve">
     <value>Не знайдено розіграш "{0}". Схоже віт був видалений</value>
   </data>

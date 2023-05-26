@@ -48,7 +48,6 @@
 
   <ItemGroup>
     <AdditionalFiles Include="Pages\Lotteries\LotteriesPage.razor" />
-    <AdditionalFiles Include="Pages\Lotteries\Modals\LotterieInfoModal.razor" />
   </ItemGroup>
 
 </Project>

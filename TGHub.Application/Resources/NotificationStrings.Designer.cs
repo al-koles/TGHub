@@ -97,6 +97,33 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lottery &quot;{0}&quot; was deleted.
+        /// </summary>
+        public static string LotteryDeleted {
+            get {
+                return ResourceManager.GetString("LotteryDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery result &quot;{0}&quot; was sent to telegram channel &quot;{1}&quot;.
+        /// </summary>
+        public static string LotteryResultSent {
+            get {
+                return ResourceManager.GetString("LotteryResultSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery &quot;{0}&quot; was sent to telegram channel &quot;{1}&quot;.
+        /// </summary>
+        public static string LotterySent {
+            get {
+                return ResourceManager.GetString("LotterySent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing lottery &quot;{0}&quot;. May be it was deleted.
         /// </summary>
         public static string MissingLottery {

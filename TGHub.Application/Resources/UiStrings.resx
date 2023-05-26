@@ -282,7 +282,28 @@
   <data name="EditLottery" xml:space="preserve">
     <value>Edit lottery</value>
   </data>
+  <data name="Lottery" xml:space="preserve">
+    <value>Lottery</value>
+  </data>
+  <data name="LotteryIsNotSent" xml:space="preserve">
+    <value>Lottery isn't sent yet. Wait until it is sent or send it now.</value>
+  </data>
+  <data name="LotteryIsSent" xml:space="preserve">
+    <value>Lottery is already sent</value>
+  </data>
   <data name="LotteryReleaseDatetime" xml:space="preserve">
     <value>Start and end dates</value>
+  </data>
+  <data name="LotteryResult" xml:space="preserve">
+    <value>Lottery result</value>
+  </data>
+  <data name="LotteryResultIsSent" xml:space="preserve">
+    <value>Lottery result is already sent</value>
+  </data>
+  <data name="Winners" xml:space="preserve">
+    <value>Winners</value>
+  </data>
+  <data name="WinnersCount" xml:space="preserve">
+    <value>Winners count</value>
   </data>
 </root>

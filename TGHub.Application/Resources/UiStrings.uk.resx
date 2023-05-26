@@ -282,7 +282,28 @@
   <data name="EditLottery" xml:space="preserve">
     <value>Редагувати розіграш</value>
   </data>
+  <data name="Lottery" xml:space="preserve">
+    <value>Розіграш</value>
+  </data>
+  <data name="LotteryIsNotSent" xml:space="preserve">
+    <value>Розіграш ще не відправлено. Дочекайтесь коли він відправиться або відправте зараз</value>
+  </data>
+  <data name="LotteryIsSent" xml:space="preserve">
+    <value>Розіграш вже відправлено</value>
+  </data>
   <data name="LotteryReleaseDatetime" xml:space="preserve">
     <value>Дати початку та кінця</value>
+  </data>
+  <data name="LotteryResult" xml:space="preserve">
+    <value>Результат розіграшу</value>
+  </data>
+  <data name="LotteryResultIsSent" xml:space="preserve">
+    <value>Результат розіграшу вже відправлено</value>
+  </data>
+  <data name="Winners" xml:space="preserve">
+    <value>Переможці</value>
+  </data>
+  <data name="WinnersCount" xml:space="preserve">
+    <value>Кількість переможців</value>
   </data>
 </root>
