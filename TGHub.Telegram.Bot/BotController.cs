@@ -5,6 +5,8 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TGHub.Application.Services.Channels;
+using TGHub.Application.Services.Lotteries.Interfaces;
+using TGHub.Domain.Entities;
 using TGHub.Telegram.Bot.Channels;
 
 namespace TGHub.Telegram.Bot;
@@ -15,16 +17,18 @@ public class BotController : ControllerBase
 {
     private readonly IChannelService _channelService;
     private readonly ILogger<BotController> _logger;
+    private readonly ILotteryService _lotteryService;
     private readonly ITelegramBotClient _telegramBotClient;
     private readonly ITgChannelService _tgChannelService;
 
     public BotController(ITelegramBotClient telegramBotClient, IChannelService channelService,
-        ILogger<BotController> logger, ITgChannelService tgChannelService)
+        ILogger<BotController> logger, ITgChannelService tgChannelService, ILotteryService lotteryService)
     {
         _telegramBotClient = telegramBotClient;
         _channelService = channelService;
         _logger = logger;
         _tgChannelService = tgChannelService;
+        _lotteryService = lotteryService;
     }
 
     [HttpPost]
@@ -126,6 +130,58 @@ public class BotController : ControllerBase
 
     private async Task CallbackQuery(Update update)
     {
-        
+        var user = update.CallbackQuery!.From;
+        if (int.TryParse(update.CallbackQuery?.Data, out var lotteryId))
+        {
+            if (user.Username == null)
+            {
+                await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery.Id,
+                    "Go to Telegram setting and specify your account username before", true);
+                return;
+            }
+
+            var lottery = await _lotteryService.FirstOrDefaultAsync(l => l.Id == lotteryId);
+            if (lottery == null)
+            {
+                await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery!.Id,
+                    "This lottery was deleted");
+                return;
+            }
+
+            if (lottery.ResultTelegramId != null)
+            {
+                await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery!.Id,
+                    "This lottery ended");
+                return;
+            }
+
+            var participant = lottery.Participants
+                .FirstOrDefault(p => p.TelegramId == user.Id);
+            if (participant == null)
+            {
+                lottery.Participants.Add(new LotteryParticipant
+                {
+                    TelegramId = user.Id,
+                    NickName = user.Username
+                });
+                await _lotteryService.UpdateAsync(lottery);
+                await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery.Id,
+                    "Congratulations! You are a participant now", true);
+            }
+            else
+            {
+                await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery.Id,
+                    "You are already a participant");
+            }
+        }
+        else
+        {
+            _logger.LogError(
+                $"Can't parse CallbackQuery date ({update.CallbackQuery?.Data}) " +
+                $"sent by user ({user.Id}) " +
+                $"in chat ({update.CallbackQuery!.ChatInstance})");
+            await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery!.Id,
+                "Error. We've logged it and it will be fixed soon", true);
+        }
     }
 }

@@ -1,0 +1,32 @@
+﻿@attribute [Authorize]
+@page "/lotteries/create"
+@using TGHub.Blazor.Pages.Lotteries.Models
+@using TGHub.Blazor.Pages.Lotteries.Forms
+
+<div class="h-full">
+    <LotteryForm Model="@_model" IsEdit="@false" RedirectUrl="@RedirectUrl"/>
+</div>
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? RedirectUrl { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? DefaultDate
+    {
+        get => _defaultDateTime?.ToString();
+        set => _defaultDateTime = DateTime.TryParse(value, out var dateTime) ? dateTime : null;
+    }
+
+    private DateTime? _defaultDateTime;
+    private readonly LotteryModel _model = new();
+
+    protected override void OnParametersSet()
+    {
+        _model.StartDateTime = _defaultDateTime;
+    }
+
+}

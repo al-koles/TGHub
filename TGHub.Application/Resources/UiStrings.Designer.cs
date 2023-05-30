@@ -70,6 +70,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string Apply {
+            get {
+                return ResourceManager.GetString("Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attachments.
         /// </summary>
         public static string Attachments {
@@ -115,6 +124,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Channel.
         /// </summary>
         public static string Channel {
@@ -138,6 +156,15 @@ namespace TGHub.Application.Resources {
         public static string Create {
             get {
                 return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create lottery.
+        /// </summary>
+        public static string CreateLottery {
+            get {
+                return ResourceManager.GetString("CreateLottery", resourceCulture);
             }
         }
         
@@ -187,11 +214,29 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit lottery.
+        /// </summary>
+        public static string EditLottery {
+            get {
+                return ResourceManager.GetString("EditLottery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Post.
         /// </summary>
         public static string EditPost {
             get {
                 return ResourceManager.GetString("EditPost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End.
+        /// </summary>
+        public static string End {
+            get {
+                return ResourceManager.GetString("End", resourceCulture);
             }
         }
         
@@ -250,6 +295,60 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lottery.
+        /// </summary>
+        public static string Lottery {
+            get {
+                return ResourceManager.GetString("Lottery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery isn&apos;t sent yet. Wait until it is sent or send it now..
+        /// </summary>
+        public static string LotteryIsNotSent {
+            get {
+                return ResourceManager.GetString("LotteryIsNotSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery is already sent.
+        /// </summary>
+        public static string LotteryIsSent {
+            get {
+                return ResourceManager.GetString("LotteryIsSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start and end dates.
+        /// </summary>
+        public static string LotteryReleaseDatetime {
+            get {
+                return ResourceManager.GetString("LotteryReleaseDatetime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery result.
+        /// </summary>
+        public static string LotteryResult {
+            get {
+                return ResourceManager.GetString("LotteryResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lottery result is already sent.
+        /// </summary>
+        public static string LotteryResultIsSent {
+            get {
+                return ResourceManager.GetString("LotteryResultIsSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comments.
         /// </summary>
         public static string NavComments {
@@ -268,11 +367,11 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lottery.
+        ///   Looks up a localized string similar to Lotteries.
         /// </summary>
-        public static string NavLottery {
+        public static string NavLotteries {
             get {
-                return ResourceManager.GetString("NavLottery", resourceCulture);
+                return ResourceManager.GetString("NavLotteries", resourceCulture);
             }
         }
         
@@ -291,6 +390,15 @@ namespace TGHub.Application.Resources {
         public static string NotFound {
             get {
                 return ResourceManager.GetString("NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Participants count.
+        /// </summary>
+        public static string ParticipantsCount {
+            get {
+                return ResourceManager.GetString("ParticipantsCount", resourceCulture);
             }
         }
         
@@ -318,78 +426,6 @@ namespace TGHub.Application.Resources {
         public static string Posts {
             get {
                 return ResourceManager.GetString("Posts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed To Send.
-        /// </summary>
-        public static string PostStatusFailedToSend {
-            get {
-                return ResourceManager.GetString("PostStatusFailedToSend", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ERROR. Post failed to send to Telegram. Edit post to reschedule or send it with &quot;Send&quot; button click.
-        /// </summary>
-        public static string PostStatusFailedToSendDescription {
-            get {
-                return ResourceManager.GetString("PostStatusFailedToSendDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Not Scheduled.
-        /// </summary>
-        public static string PostStatusNotScheduled {
-            get {
-                return ResourceManager.GetString("PostStatusNotScheduled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to WARNING. Post is NOT scheduled and will NOT be sent to Telegram at specified time. Try update to schedule.
-        /// </summary>
-        public static string PostStatusNotScheduledDescription {
-            get {
-                return ResourceManager.GetString("PostStatusNotScheduledDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scheduled.
-        /// </summary>
-        public static string PostStatusScheduled {
-            get {
-                return ResourceManager.GetString("PostStatusScheduled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Post is scheduled and will be sent to Telegram at specified time.
-        /// </summary>
-        public static string PostStatusScheduledDescription {
-            get {
-                return ResourceManager.GetString("PostStatusScheduledDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sent.
-        /// </summary>
-        public static string PostStatusSent {
-            get {
-                return ResourceManager.GetString("PostStatusSent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Post was successfully sent to Telegram.
-        /// </summary>
-        public static string PostStatusSentDescription {
-            get {
-                return ResourceManager.GetString("PostStatusSentDescription", resourceCulture);
             }
         }
         
@@ -466,6 +502,87 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string Start {
+            get {
+                return ResourceManager.GetString("Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed To Send.
+        /// </summary>
+        public static string StatusFailedToSend {
+            get {
+                return ResourceManager.GetString("StatusFailedToSend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ERROR. Failed to send to Telegram. Edit to reschedule or send it with &quot;Send&quot; button click.
+        /// </summary>
+        public static string StatusFailedToSendDescription {
+            get {
+                return ResourceManager.GetString("StatusFailedToSendDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Scheduled.
+        /// </summary>
+        public static string StatusNotScheduled {
+            get {
+                return ResourceManager.GetString("StatusNotScheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING. Instatance is NOT scheduled and will NOT be sent to Telegram at specified time. Try edit to schedule.
+        /// </summary>
+        public static string StatusNotScheduledDescription {
+            get {
+                return ResourceManager.GetString("StatusNotScheduledDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled.
+        /// </summary>
+        public static string StatusScheduled {
+            get {
+                return ResourceManager.GetString("StatusScheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled and will be sent to Telegram at specified time.
+        /// </summary>
+        public static string StatusScheduledDescription {
+            get {
+                return ResourceManager.GetString("StatusScheduledDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sent.
+        /// </summary>
+        public static string StatusSent {
+            get {
+                return ResourceManager.GetString("StatusSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully sent to Telegram.
+        /// </summary>
+        public static string StatusSentDescription {
+            get {
+                return ResourceManager.GetString("StatusSentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Submit.
         /// </summary>
         public static string Submit {
@@ -498,6 +615,24 @@ namespace TGHub.Application.Resources {
         public static string Url {
             get {
                 return ResourceManager.GetString("Url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Winners.
+        /// </summary>
+        public static string Winners {
+            get {
+                return ResourceManager.GetString("Winners", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Winners count.
+        /// </summary>
+        public static string WinnersCount {
+            get {
+                return ResourceManager.GetString("WinnersCount", resourceCulture);
             }
         }
     }

@@ -1,0 +1,190 @@
+﻿@attribute [Authorize]
+@page "/lotteries"
+@using AutoMapper
+@using TGHub.Application.Common.SessionStorage
+@using TGHub.Application.Resources
+@using TGHub.Application.Services.Lotteries.Data
+@using TGHub.Application.Services.Lotteries.Interfaces
+@using TGHub.Blazor.Pages.Lotteries.Modals
+@using TGHub.Blazor.Resources
+@using TGHub.Blazor.Shared.Components.Calendar.Models
+@using TGHub.Domain.Enums
+@using TGHub.Application.Common
+@using System.Globalization
+
+@inject IMapper Mapper
+@inject NavigationManager NavigationManager
+@inject IToastService ToastService
+@inject SessionStorageProvider SessionStorageProvider
+@inject LocalStorageProvider LocalStorageProvider
+@inject IServiceProvider ServiceProvider
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+
+<div class="h-full flex flex-col">
+    <div class="w-full flex items-center justify-between my-2">
+        <PageHeaderTitle Text="@UiStringsLoc[UiStrings.NavLotteries]"/>
+        <div>
+            <YearMonthSelector Value="@(new YearMonthSelectorModel { Year = _year, Month = _month })" ValueChanged="@OnYearMonthChanged"/>
+        </div>
+        <a href="@GetCreatePageUrl()"
+           class="py-1 px-2 text-lg text-white rounded bg-[@ColorStrings.C5] shadow-xl
+                        hover:bg-[@ColorStrings.C4] active:shadow-none active:ring">
+            @UiStringsLoc[UiStrings.Create]
+        </a>
+    </div>
+    <div class="grow w-full">
+        <CustomCalendar Events="@_events" Year="@_year" Month="@_month" EventClick="@OnEventClickAsync"/>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Year { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Month { get; set; }
+
+    [CascadingParameter]
+    private IModalService Modal { get; set; }
+
+    private int _year = DateTime.UtcNow.Year;
+    private Month _month = (Month)DateTime.UtcNow.Month;
+
+    private readonly List<CalendarEventModel> _events = new();
+
+    protected override void OnInitialized()
+    {
+        SessionStorageProvider.DataChangedAsync += RefreshEventsAsync;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!TryGetParameters(out var year, out var month))
+        {
+            var now = DateTime.UtcNow;
+            NavigationManager.NavigateTo($"/lotteries?year={now.Year}&month={now.Month}");
+            return;
+        }
+
+        _year = year;
+        _month = month;
+
+        await RefreshEventsAsync();
+    }
+
+    private async Task OnEventClickAsync(int id)
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
+
+        var lottery = await lotteryService.FirstOrDefaultAsync(p => p.Id == id);
+        if (lottery != null)
+        {
+            var parameters = new ModalParameters()
+                .Add(nameof(LotteryInfoModal.LotteryInfo), lottery);
+            var options = new ModalOptions
+            {
+                Position = ModalPosition.Middle,
+                Size = ModalSize.Large
+            };
+            var modal = Modal.Show<LotteryInfoModal>(lottery.Title, parameters, options);
+            await modal.Result;
+            await RefreshEventsAsync();
+        }
+        else
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.NotFound]);
+            await RefreshEventsAsync();
+        }
+    }
+
+    private void OnYearMonthChanged(YearMonthSelectorModel yearMonthSelectorModel)
+    {
+        _year = yearMonthSelectorModel.Year;
+        _month = yearMonthSelectorModel.Month;
+        NavigationManager.NavigateTo($"/lotteries?year={_year}&month={(int)_month}");
+    }
+
+    private bool TryGetParameters(out int year, out Month month)
+    {
+        year = DateTime.MinValue.Year;
+        month = Domain.Enums.Month.January;
+        if (int.TryParse(Year, out year) && int.TryParse(Month, out var monthInt))
+        {
+            month = (Month)monthInt;
+            return year >= DateTime.MinValue.Year && year <= DateTime.MaxValue.Year &&
+                   monthInt is >= 1 and <= 12;
+        }
+        return false;
+    }
+
+    private async Task RefreshEventsAsync()
+    {
+        var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+        var lastDayOfWeek = firstDayOfWeek + 6;
+
+        var from = new DateTime(_year, (int)_month, 1);
+        var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
+        from = from.AddDays(-1 * daysToFirstDayOfWeek);
+
+        var to = new DateTime(_year, (int)_month, 1).AddMonths(1).AddDays(-1);
+        var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
+        to = to.AddDays(daysToWeekEndCount);
+
+        var filter = new LotteryFilter
+        {
+            From = from,
+            To = to
+        };
+        if (SessionStorageProvider.SelectedChannelAdministratorData == null)
+        {
+            filter.ChannelAdministratorId = LocalStorageProvider.Id;
+        }
+        else
+        {
+            filter.ChannelId = SessionStorageProvider.SelectedChannelAdministratorData.ChannelId;
+        }
+
+        await using var scope = ServiceProvider.CreateAsyncScope();
+
+        var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
+        var lotteries = await lotteryService.ListAsync(filter);
+
+        _events.Clear();
+        var lotteryScheduleService = scope.ServiceProvider.GetRequiredService<ILotteryScheduleService>();
+        await Task.WhenAll(lotteries.Select(async lottery =>
+        {
+            var lotteryAsyncStatus = lotteryScheduleService.GetLotterySendStatusAsync(lottery);
+            var resultAsyncStatus = lotteryScheduleService.GetResultSendStatusAsync(lottery);
+            _events.AddRange(new[]
+            {
+                new CalendarEventModel
+                {
+                    Id = lottery.Id,
+                    ReleaseDateTime = lottery.StartDateTime,
+                    Title = $"{UiStringsLoc[UiStrings.Start]}: {lottery.Title}",
+                    Status = Mapper.Map<CalendarEventStatus>(await lotteryAsyncStatus)
+                },
+                new CalendarEventModel
+                {
+                    Id = lottery.Id,
+                    ReleaseDateTime = lottery.EndDateTime,
+                    Title = $"{UiStringsLoc[UiStrings.End]}: {lottery.Title}",
+                    Status = Mapper.Map<CalendarEventStatus>(await resultAsyncStatus)
+                }
+            });
+        }));
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetCreatePageUrl()
+    {
+        var redirectUri = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
+        return $"/lotteries/create?redirectUrl={redirectUri}";
+    }
+
+}

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorDateRangePicker" Version="4.3.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="Blazored.Modal" Version="7.1.0" />
     <PackageReference Include="Blazored.Toast" Version="4.1.0" />
@@ -43,6 +44,10 @@
       <LastGenOutput>ColorStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\Lotteries\LotteriesPage.razor" />
   </ItemGroup>
 
 </Project>

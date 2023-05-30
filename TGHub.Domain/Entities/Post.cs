@@ -9,7 +9,6 @@ public class Post : EntityBase
     public DateTime ReleaseDateTime { get; set; }
     public int? TelegramId { get; set; }
     public Guid AttachmentsFolderId { get; set; } = Guid.NewGuid();
-
     public MediaGroupFormat AttachmentsFormat { get; set; } = MediaGroupFormat.PhotoVideo;
 
     public int CreatorId { get; set; }

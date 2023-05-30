@@ -129,6 +129,18 @@
   <data name="Greeting" xml:space="preserve">
     <value>Hello</value>
   </data>
+  <data name="LotteryDeleted" xml:space="preserve">
+    <value>Lottery "{0}" was deleted</value>
+  </data>
+  <data name="LotteryResultSent" xml:space="preserve">
+    <value>Lottery result "{0}" was sent to telegram channel "{1}"</value>
+  </data>
+  <data name="LotterySent" xml:space="preserve">
+    <value>Lottery "{0}" was sent to telegram channel "{1}"</value>
+  </data>
+  <data name="MissingLottery" xml:space="preserve">
+    <value>Missing lottery "{0}". May be it was deleted</value>
+  </data>
   <data name="MissingPost" xml:space="preserve">
     <value>Missing post "{0}". May be it was deleted</value>
   </data>

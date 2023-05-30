@@ -162,6 +162,9 @@
   <data name="EditPost" xml:space="preserve">
     <value>Редагувати пост</value>
   </data>
+  <data name="End" xml:space="preserve">
+    <value>Кінець</value>
+  </data>
   <data name="Error" xml:space="preserve">
     <value>Помилка</value>
   </data>
@@ -186,7 +189,7 @@
   <data name="NavDashboard" xml:space="preserve">
     <value>Головна</value>
   </data>
-  <data name="NavLottery" xml:space="preserve">
+  <data name="NavLotteries" xml:space="preserve">
     <value>Розіграші</value>
   </data>
   <data name="NavPosts" xml:space="preserve">
@@ -204,29 +207,29 @@
   <data name="Posts" xml:space="preserve">
     <value>Пости</value>
   </data>
-  <data name="PostStatusFailedToSend" xml:space="preserve">
+  <data name="StatusFailedToSend" xml:space="preserve">
     <value>Помилка відправки</value>
   </data>
-  <data name="PostStatusFailedToSendDescription" xml:space="preserve">
-    <value>ПОМИЛКА. Не вдалося надіслати пост в Telegram. Відредагуйте публікацію, щоб запланувати її, або надішліть до Telegram зараз, натиснувши кнопку «Надіслати».</value>
+  <data name="StatusFailedToSendDescription" xml:space="preserve">
+    <value>ПОМИЛКА. Не вдалося надіслати в Telegram. Відредагуйте, щоб запланувати, або надішліть до Telegram зараз, натиснувши кнопку «Надіслати».</value>
   </data>
-  <data name="PostStatusNotScheduled" xml:space="preserve">
+  <data name="StatusNotScheduled" xml:space="preserve">
     <value>Не заплановано</value>
   </data>
-  <data name="PostStatusNotScheduledDescription" xml:space="preserve">
-    <value>УВАГА. Пост НЕ запланований і НЕ буде надісланий до Telegram у вказаний час. Спробуйте оновити щоб запланувати</value>
+  <data name="StatusNotScheduledDescription" xml:space="preserve">
+    <value>УВАГА. Подія НЕ запланована і НЕ буде надіслана до Telegram у вказаний час. Спробуйте відредагувати щоб запланувати</value>
   </data>
-  <data name="PostStatusScheduled" xml:space="preserve">
+  <data name="StatusScheduled" xml:space="preserve">
     <value>Заплановано</value>
   </data>
-  <data name="PostStatusScheduledDescription" xml:space="preserve">
-    <value>Пост заплановано та буде надіслано до Telegram у вказаний час</value>
+  <data name="StatusScheduledDescription" xml:space="preserve">
+    <value>Заплановано та буде надіслано до Telegram у вказаний час</value>
   </data>
-  <data name="PostStatusSent" xml:space="preserve">
+  <data name="StatusSent" xml:space="preserve">
     <value>Відправлено</value>
   </data>
-  <data name="PostStatusSentDescription" xml:space="preserve">
-    <value>Пост успішно відправлено до Telegram</value>
+  <data name="StatusSentDescription" xml:space="preserve">
+    <value>Успішно відправлено до Telegram</value>
   </data>
   <data name="ReleaseAt" xml:space="preserve">
     <value>Дата релізу:</value>
@@ -252,6 +255,9 @@
   <data name="SendStatus" xml:space="preserve">
     <value>Статус відправки</value>
   </data>
+  <data name="Start" xml:space="preserve">
+    <value>Початок</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Зберегти</value>
   </data>
@@ -263,5 +269,44 @@
   </data>
   <data name="Url" xml:space="preserve">
     <value>Посилання</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Підтвердити</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="CreateLottery" xml:space="preserve">
+    <value>Створити розіграш</value>
+  </data>
+  <data name="EditLottery" xml:space="preserve">
+    <value>Редагувати розіграш</value>
+  </data>
+  <data name="Lottery" xml:space="preserve">
+    <value>Розіграш</value>
+  </data>
+  <data name="LotteryIsNotSent" xml:space="preserve">
+    <value>Розіграш ще не відправлено. Дочекайтесь коли він відправиться або відправте зараз</value>
+  </data>
+  <data name="LotteryIsSent" xml:space="preserve">
+    <value>Розіграш вже відправлено</value>
+  </data>
+  <data name="LotteryReleaseDatetime" xml:space="preserve">
+    <value>Дати початку та кінця</value>
+  </data>
+  <data name="LotteryResult" xml:space="preserve">
+    <value>Результат розіграшу</value>
+  </data>
+  <data name="LotteryResultIsSent" xml:space="preserve">
+    <value>Результат розіграшу вже відправлено</value>
+  </data>
+  <data name="ParticipantsCount" xml:space="preserve">
+    <value>Кількість учасників</value>
+  </data>
+  <data name="Winners" xml:space="preserve">
+    <value>Переможці</value>
+  </data>
+  <data name="WinnersCount" xml:space="preserve">
+    <value>Кількість переможців</value>
   </data>
 </root>

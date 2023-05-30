@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TGHub.Application;
+using TGHub.Application.Services.Lotteries.Data;
+using TGHub.Application.Services.Lotteries.Interfaces;
 using TGHub.Application.Services.Posts.Data;
 using TGHub.Application.Services.Posts.Interfaces;
 
@@ -74,6 +76,47 @@ public static class WebApplicationExtensions
         catch (Exception e)
         {
             logger.LogError(e, "Error while scheduling posts");
+        }
+    }
+
+    public static async Task ScheduleLotteriesAsync(this WebApplication app)
+    {
+        await using var scope = app.Services.CreateAsyncScope();
+
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+        logger.LogInformation("Getting future lotteries to schedule");
+        try
+        {
+            var postService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
+            var lotteriesToSchedule = await postService.ListAsync(new LotteryFilter
+            {
+                From = DateTime.UtcNow,
+                Where = l => l.LotteryTelegramId == null || l.ResultTelegramId == null
+            });
+
+            logger.LogInformation($"Found {lotteriesToSchedule.Count} lotteries to schedule");
+            logger.LogInformation("Scheduling lotteries");
+
+            var lotteryScheduleService = scope.ServiceProvider.GetRequiredService<ILotteryScheduleService>();
+            await Task.WhenAll(lotteriesToSchedule.Select(async l =>
+            {
+                if (l.LotteryTelegramId == null && l.StartDateTime > DateTime.UtcNow)
+                {
+                    await lotteryScheduleService.ScheduleLotteryAsync(l);
+                }
+
+                if (l.ResultTelegramId == null && l.EndDateTime > DateTime.UtcNow)
+                {
+                    await lotteryScheduleService.ScheduleResultAsync(l);
+                }
+            }));
+
+            logger.LogInformation("Lotteries scheduled");
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error while scheduling lotteries");
         }
     }
 }

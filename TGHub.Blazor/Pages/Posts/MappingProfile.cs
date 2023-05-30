@@ -20,7 +20,6 @@ public class MappingProfile : IMapWith<object>
             PostSendStatus.NotScheduled => CalendarEventStatus.Warning,
             _ => throw new ArgumentOutOfRangeException(nameof(srs), srs, null)
         });
-        profile.CreateMap<Lottery, CalendarEventModel>().ReverseMap();
         profile.CreateMap<Post, CalendarEventModel>().ReverseMap();
         profile.CreateMap<PostAttachment, AttachmentTileModel>()
             .ForMember(dst => dst.Url,

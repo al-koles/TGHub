@@ -34,23 +34,23 @@
             switch (Status)
             {
                 case PostSendStatus.Sent:
-                    _status = UiStringsLoc[UiStrings.PostStatusSent];
-                    _statusDescription = UiStringsLoc[UiStrings.PostStatusSentDescription];
+                    _status = UiStringsLoc[UiStrings.StatusSent];
+                    _statusDescription = UiStringsLoc[UiStrings.StatusSentDescription];
                     _color = "green-400";
                     break;
                 case PostSendStatus.FailedToSend:
-                    _status = UiStringsLoc[UiStrings.PostStatusFailedToSend];
-                    _statusDescription = UiStringsLoc[UiStrings.PostStatusFailedToSendDescription];
+                    _status = UiStringsLoc[UiStrings.StatusFailedToSend];
+                    _statusDescription = UiStringsLoc[UiStrings.StatusFailedToSendDescription];
                     _color = "red-400";
                     break;
                 case PostSendStatus.Scheduled:
-                    _status = UiStringsLoc[UiStrings.PostStatusScheduled];
-                    _statusDescription = UiStringsLoc[UiStrings.PostStatusScheduledDescription];
+                    _status = UiStringsLoc[UiStrings.StatusScheduled];
+                    _statusDescription = UiStringsLoc[UiStrings.StatusScheduledDescription];
                     _color = "indigo-400";
                     break;
                 case PostSendStatus.NotScheduled:
-                    _status = UiStringsLoc[UiStrings.PostStatusNotScheduled];
-                    _statusDescription = UiStringsLoc[UiStrings.PostStatusNotScheduledDescription];
+                    _status = UiStringsLoc[UiStrings.StatusNotScheduled];
+                    _statusDescription = UiStringsLoc[UiStrings.StatusNotScheduledDescription];
                     _color = "yellow-400";
                     break;
             }

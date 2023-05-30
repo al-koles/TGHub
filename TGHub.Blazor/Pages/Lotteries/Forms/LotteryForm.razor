@@ -1,0 +1,214 @@
+﻿@using TGHub.Blazor.Data
+@using TGHub.Blazor.Pages.Lotteries.Models
+@using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using TGHub.Domain.Enums
+@using AutoMapper
+@using TGHub.Application.Resources
+@using TGHub.Application.Services.Lotteries.Interfaces
+@using TGHub.Application
+@inject IMapper Mapper
+@inject NavigationManager NavigationManager
+@inject IToastService ToastService
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject ILogger<LotteryForm> Logger
+@inject IServiceProvider ServiceProvider
+
+<div class="rounded-3xl w-full h-full px-8 py-4 bg-[@ColorStrings.C1]/40">
+    <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
+        <ObjectGraphDataAnnotationsValidator/>
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <PageHeaderTitle Text="@UiStringsLoc[IsEdit ? UiStrings.EditLottery : UiStrings.CreateLottery]"/>
+                <SubmitButton IsLoading="@_isLoading"/>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.LotteryReleaseDatetime]</label>
+                <CustomDateRangePicker @bind-StartDate="@Model.StartDateTime" @bind-EndDate="@Model.EndDateTime"
+                                       TimePicker="@true"/>
+                <ValidationMessage For="@(() => Model.StartDateTime)"/>
+                <ValidationMessage For="@(() => Model.EndDateTime)"/>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.Channel]</label>
+                <div class="flex">
+                    <ChannelSelector @bind-Channel="@Model.Creator" SetFromGlobal="@(!IsEdit)"/>
+                </div>
+                <ValidationMessage For="@(() => Model.Creator)"/>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.Title]</label>
+                <InputText class="@($"rounded-full w-full p-2 focus:outline-[{ColorStrings.C5}]")"
+                           @bind-Value="@Model.Title"/>
+                <ValidationMessage For="@(() => Model.Title)"/>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.WinnersCount]</label>
+                <InputNumber class="@($"rounded-full w-full p-2 focus:outline-[{ColorStrings.C5}]")"
+                             @bind-Value="@Model.WinnersCount"/>
+                <ValidationMessage For="@(() => Model.WinnersCount)"/>
+            </div>
+
+            <div class="flex flex-col">
+                <div class="flex gap-4">
+                    <label class="font-bold">@UiStringsLoc[UiStrings.Attachments]</label>
+                    <label>
+                        @UiStringsLoc[UiStrings.SelectFileFormat]:
+                        <InputSelect TValue="@MediaGroupFormat"
+                                     Value="@Model.AttachmentsFormat"
+                                     ValueExpression="@(() => Model.AttachmentsFormat)"
+                                     ValueChanged="@OnAttachmentsFormatChanged">
+                            @foreach (var attachmentFormat in Enum.GetValues<MediaGroupFormat>())
+                            {
+                                <option value="@attachmentFormat">@UiStringsLoc[attachmentFormat.ToString()]</option>
+                            }
+                        </InputSelect>
+                    </label>
+                </div>
+                <CustomInputFiles Files="@Model.Attachments"
+                                  InvalidFiles="@_invalidExtensionFiles"
+                                  FilesExpression="@(() => Model.Attachments)"
+                                  FilesChanged="@OnAttachmentsChanged"
+                                  AllowedFileFormats="@_attachmentsFormatsString"
+                                  UploadDirectory="@(Path.Combine(Constants.LotteryAttachmentsFolderName, Model.AttachmentsFolderId.ToString()))"/>
+                <ValidationMessage For="@(() => Model.Attachments)"/>
+                <div class="text-red-500">@_attachmentsValidationMessage</div>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.Content]</label>
+                <InputTextArea class="@($"min-h-[5rem] rounded-2xl w-full p-2 focus:outline-[{ColorStrings.C5}]")"
+                               @bind-Value="@Model.Content"/>
+                <ValidationMessage For="@(() => Model.Content)"/>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+
+    [Parameter]
+    public LotteryModel Model { get; set; } = new();
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public string RedirectUrl { get; set; } = null!;
+
+    private bool _isLoading;
+    private string _attachmentsFormatsString = string.Empty;
+    private List<CustomInputFileModel> _invalidExtensionFiles = new();
+    private string _attachmentsValidationMessage = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        _attachmentsFormatsString = Model.AttachmentsFormat.GetFileFormats();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (_isLoading)
+        {
+            return;
+        }
+        if (!ValidateAttachments())
+        {
+            return;
+        }
+        _isLoading = true;
+        await InvokeAsync(StateHasChanged);
+        try
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
+            Lottery? lottery;
+            if (IsEdit)
+            {
+                lottery = await lotteryService.FirstOrDefaultAsync(p => p.Id == Model.Id);
+                if (lottery == null)
+                {
+                    ToastService.ShowError(NotificationStringsLoc[NotificationStrings.MissingLottery]);
+                    return;
+                }
+                Mapper.Map(Model, lottery);
+                await lotteryService.UpdateAsync(lottery);
+            }
+            else
+            {
+                lottery = Mapper.Map<Lottery>(Model);
+                var id = await lotteryService.CreateAsync(lottery);
+                lottery.Id = id;
+            }
+            var lotteryScheduleService = scope.ServiceProvider.GetRequiredService<ILotteryScheduleService>();
+            if (lottery.StartDateTime > DateTime.UtcNow && lottery.LotteryTelegramId == null)
+            {
+                await lotteryScheduleService.ScheduleLotteryAsync(lottery);
+            }
+            if (lottery.EndDateTime > DateTime.UtcNow && lottery.ResultTelegramId == null)
+            {
+                await lotteryScheduleService.ScheduleResultAsync(lottery);
+            }
+            NavigationManager.NavigateTo(RedirectUrl ?? "/");
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.SubmitError]);
+            Logger.LogError(e, "Submit failed");
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void OnAttachmentsFormatChanged(MediaGroupFormat attachmentsFormat)
+    {
+        Model.AttachmentsFormat = attachmentsFormat;
+        _attachmentsFormatsString = attachmentsFormat.GetFileFormats();
+        if (Model.Attachments.Any())
+        {
+            ValidateAttachments();
+        }
+    }
+
+    private void OnAttachmentsChanged(List<CustomInputFileModel> attachments)
+    {
+        Model.Attachments = attachments;
+        ValidateAttachments();
+    }
+
+    private bool ValidateAttachments()
+    {
+        if (Model.AttachmentsFormat != MediaGroupFormat.Document)
+        {
+            _invalidExtensionFiles = Model.Attachments
+                .Where(a =>
+                    Model.AttachmentsFormat != AttachmentFormatsHelper.GetMediaGroupFormat(Path.GetExtension(a.File.Name)))
+                .ToList();
+            if (_invalidExtensionFiles.Any())
+            {
+                _attachmentsValidationMessage = string.Format(UiStringsLoc[UiStrings.InvalidExtensionFiles],
+                    string.Join(", ", _invalidExtensionFiles.Select(a => a.File.Name)));
+                StateHasChanged();
+                return false;
+            }
+        }
+        return GetValidExtensionsState();
+    }
+
+    private bool GetValidExtensionsState()
+    {
+        _invalidExtensionFiles.Clear();
+        _attachmentsValidationMessage = string.Empty;
+        StateHasChanged();
+        return true;
+    }
+
+}

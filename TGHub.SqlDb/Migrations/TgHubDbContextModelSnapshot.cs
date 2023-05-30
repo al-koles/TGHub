@@ -181,6 +181,12 @@ namespace TGHub.SqlDb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<Guid>("AttachmentsFolderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AttachmentsFormat")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -188,21 +194,21 @@ namespace TGHub.SqlDb.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FromDateTime")
+                    b.Property<DateTime>("EndDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("LotteryTelegramId")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("LotteryTelegramId")
+                        .HasColumnType("int");
 
-                    b.Property<long?>("ResultTelegramId")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("ResultTelegramId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ToDateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("WinnersCount")
                         .HasColumnType("int");
@@ -222,11 +228,14 @@ namespace TGHub.SqlDb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Link")
+                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LotteryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -249,6 +258,10 @@ namespace TGHub.SqlDb.Migrations
 
                     b.Property<int>("LotteryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("TelegramId")
                         .HasColumnType("bigint");

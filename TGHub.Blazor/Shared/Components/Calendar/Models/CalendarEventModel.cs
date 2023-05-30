@@ -3,7 +3,6 @@
 public class CalendarEventModel
 {
     public int Id { get; set; }
-    public long? TelegramId { get; set; }
     public string Title { get; set; } = null!;
     public DateTime ReleaseDateTime { get; set; }
     public CalendarEventStatus Status { get; set; }

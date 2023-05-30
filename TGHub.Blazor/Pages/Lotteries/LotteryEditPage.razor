@@ -1,0 +1,83 @@
+﻿@attribute [Authorize]
+@page "/lotteries/edit/{id:int}"
+@using TGHub.Application.Resources
+@using TGHub.Application.Services.Lotteries.Interfaces
+@using TGHub.Blazor.Data
+@using TGHub.Blazor.Pages.Lotteries.Forms
+@using TGHub.Blazor.Pages.Lotteries.Models
+@using TGHub.Domain.Enums
+@using AutoMapper
+@using TGHub.Application.Common
+@using Moq
+@using TGHub.Application
+
+@inject IToastService ToastService
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject NavigationManager NavigationManager
+@inject IMapper Mapper
+@inject LocalStorageProvider LocalStorageProvider
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IServiceProvider ServiceProvider
+
+<div class="h-full">
+    <LotteryForm Model="@_model" IsEdit="@true" RedirectUrl="@RedirectUrl"/>
+</div>
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? RedirectUrl { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private readonly LotteryModel _model = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
+
+        var lottery = await lotteryService.FirstOrDefaultAsync(l => l.Id == Id);
+        if (lottery == null)
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.NotFound]);
+            NavigationManager.NavigateTo(RedirectUrl ?? "/posts");
+            return;
+        }
+
+        var isLotteryPostCreator = lottery.Creator.AdministratorId == LocalStorageProvider.Id;
+        var isUserOwnerOfLotteryChannelEntity = await lotteryService
+            .FirstOrDefaultAsync(p =>
+                p.Id == Id &&
+                p.Creator.Channel.Administrators.Any(a => a.IsActive &&
+                                                          a.Role == ChannelRole.Owner &&
+                                                          a.AdministratorId == LocalStorageProvider.Id));
+        var isUserOwnerOfLotteryChannel = isUserOwnerOfLotteryChannelEntity != null;
+        var accessGranted = isLotteryPostCreator || isUserOwnerOfLotteryChannel;
+        if (!accessGranted)
+        {
+            ToastService.ShowWarning(UiStringsLoc[UiStrings.AccessDenied]);
+            NavigationManager.NavigateTo($"/access-denied?RedirectUrl={Uri.EscapeDataString(RedirectUrl ?? "/")}");
+            return;
+        }
+
+        Mapper.Map(lottery, _model);
+
+        _model.Attachments = lottery.Attachments.Select(a =>
+        {
+            var mockFile = new Mock<IBrowserFile>();
+            mockFile.Setup(file => file.Name).Returns(a.FileName);
+            var directory = Uri.EscapeDataString($"{Constants.LotteryAttachmentsFolderName}/{lottery.AttachmentsFolderId}");
+            return new CustomInputFileModel
+            {
+                File = mockFile.Object,
+                Url = $"/api/files?fileName={a.FileName}&directory={directory}&token={LocalStorageProvider.Token}",
+                UploadStatus = FileUploadStatus.Uploaded,
+                Format = AttachmentFormatsHelper.GetType(Path.GetExtension(a.FileName))
+            };
+        }).ToList();
+    }
+
+}

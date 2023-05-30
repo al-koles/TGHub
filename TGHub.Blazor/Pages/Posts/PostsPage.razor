@@ -12,7 +12,6 @@
 @using TGHub.Domain.Enums
 @using TGHub.Application.Common
 @using System.Globalization
-@using Calendar = TGHub.Blazor.Shared.Components.Calendar.Calendar
 
 @inject IMapper Mapper
 @inject NavigationManager NavigationManager
@@ -36,7 +35,7 @@
         </a>
     </div>
     <div class="grow w-full">
-        <Calendar Events="@_events" Year="@_year" Month="@_month" EventClick="@OnEventClickAsync"/>
+        <CustomCalendar Events="@_events" Year="@_year" Month="@_month" EventClick="@OnEventClickAsync"/>
     </div>
 </div>
 

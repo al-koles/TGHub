@@ -8,18 +8,18 @@ using TGHub.Domain.Enums;
 
 namespace TGHub.Telegram.Bot.Posts;
 
-internal class TgSendService : ITgSendService
+internal class TgPostService : ITgPostService
 {
     private readonly IFileStorage _fileStorage;
     private readonly ITelegramBotClient _telegramBotClient;
 
-    public TgSendService(ITelegramBotClient telegramBotClient, IFileStorage fileStorage)
+    public TgPostService(ITelegramBotClient telegramBotClient, IFileStorage fileStorage)
     {
         _telegramBotClient = telegramBotClient;
         _fileStorage = fileStorage;
     }
 
-    public async Task<int> SendPostAsync(Post post)
+    public async Task<int> SendAsync(Post post)
     {
         var filesPath = Path.Combine(Constants.PostAttachmentsFolderName, post.AttachmentsFolderId.ToString());
         var attachments = post.Attachments.ToArray();
