@@ -180,7 +180,10 @@
                 post.Id = id;
             }
             var postScheduleService = scope.ServiceProvider.GetRequiredService<IPostScheduleService>();
-            await postScheduleService.ScheduleAsync(post);
+            if (post.ReleaseDateTime > DateTime.UtcNow && post.TelegramId == null)
+            {
+                await postScheduleService.ScheduleAsync(post);
+            }
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
         catch (Exception e)

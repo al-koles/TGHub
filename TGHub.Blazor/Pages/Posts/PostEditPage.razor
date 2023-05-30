@@ -55,9 +55,8 @@
                                                           a.Role == ChannelRole.Owner &&
                                                           a.AdministratorId == LocalStorageProvider.Id));
         var isUserOwnerOfPostChannel = isUserOwnerOfPostChannelEntity != null;
-        var isPostSent = post.TelegramId != null;
-        var accessGranted = !isPostSent && (isUserPostCreator || isUserOwnerOfPostChannel);
-        if (!accessGranted)
+        var canEdit = isUserPostCreator || isUserOwnerOfPostChannel;
+        if (!canEdit)
         {
             ToastService.ShowWarning(UiStringsLoc[UiStrings.AccessDenied]);
             NavigationManager.NavigateTo($"/access-denied?RedirectUrl={Uri.EscapeDataString(RedirectUrl ?? "/")}");

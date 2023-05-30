@@ -303,6 +303,9 @@
   <data name="ParticipantsCount" xml:space="preserve">
     <value>Кількість учасників</value>
   </data>
+  <data name="PostIsSent" xml:space="preserve">
+    <value>Пост вже відправлено</value>
+  </data>
   <data name="Winners" xml:space="preserve">
     <value>Переможці</value>
   </data>

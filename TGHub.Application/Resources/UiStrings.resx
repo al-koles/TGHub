@@ -303,6 +303,9 @@
   <data name="ParticipantsCount" xml:space="preserve">
     <value>Participants count</value>
   </data>
+  <data name="PostIsSent" xml:space="preserve">
+    <value>Post is already sent</value>
+  </data>
   <data name="Winners" xml:space="preserve">
     <value>Winners</value>
   </data>

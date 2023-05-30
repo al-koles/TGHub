@@ -421,6 +421,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Post is already sent.
+        /// </summary>
+        public static string PostIsSent {
+            get {
+                return ResourceManager.GetString("PostIsSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Posts.
         /// </summary>
         public static string Posts {
