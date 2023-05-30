@@ -105,7 +105,7 @@ public class LotteryScheduleService : ILotteryScheduleService
             return LotterySendStatus.Sent;
         }
 
-        if (lottery.StartDateTime < DateTime.UtcNow)
+        if (lottery.EndDateTime < DateTime.UtcNow)
         {
             return LotterySendStatus.FailedToSend;
         }

@@ -394,6 +394,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Participants count.
+        /// </summary>
+        public static string ParticipantsCount {
+            get {
+                return ResourceManager.GetString("ParticipantsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pending.
         /// </summary>
         public static string Pending {

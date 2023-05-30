@@ -45,9 +45,14 @@ internal class TgLotteryService : ITgLotteryService
         var channelTgId = lottery.Creator.Channel.TelegramId;
         var winners = lottery.Participants.Where(p => p.IsWinner).Select(p => p.NickName);
 
+        var botName = await _telegramBotClient.GetMyNameAsync();
         var textMessage = await _telegramBotClient
             .SendTextMessageAsync(channelTgId,
-                $"Winners: {string.Join(", ", winners)}",
+                $"This lottery is over.{Environment.NewLine}" +
+                $"Participants count: {lottery.Participants.Count}. Predefined winners count: {lottery.WinnersCount}.{Environment.NewLine}" +
+                $"Winners: {string.Join(", ", winners.Select(w => '@' + w))}.{Environment.NewLine}" +
+                $"Winners were selected randomly by {botName.Name}. " +
+                $"if you are one of them, wait for the channel administrator to contact you.",
                 replyToMessageId: lottery.LotteryTelegramId);
         return textMessage.MessageId;
     }

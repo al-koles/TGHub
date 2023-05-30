@@ -16,7 +16,7 @@ public class LotteryModel : IMapWith<Lottery>
 
     [Required] public string Content { get; set; } = null!;
 
-    [Required] public int WinnersCount { get; set; }
+    [Required] [Range(1, int.MaxValue)] public int WinnersCount { get; set; }
 
     [Required] public DateTimeOffset? StartDateTime { get; set; }
 

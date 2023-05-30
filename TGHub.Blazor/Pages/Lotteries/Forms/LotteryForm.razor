@@ -48,6 +48,13 @@
             </div>
 
             <div class="flex flex-col">
+                <label class="font-bold">@UiStringsLoc[UiStrings.WinnersCount]</label>
+                <InputNumber class="@($"rounded-full w-full p-2 focus:outline-[{ColorStrings.C5}]")"
+                             @bind-Value="@Model.WinnersCount"/>
+                <ValidationMessage For="@(() => Model.WinnersCount)"/>
+            </div>
+
+            <div class="flex flex-col">
                 <div class="flex gap-4">
                     <label class="font-bold">@UiStringsLoc[UiStrings.Attachments]</label>
                     <label>
@@ -139,8 +146,14 @@
                 lottery.Id = id;
             }
             var lotteryScheduleService = scope.ServiceProvider.GetRequiredService<ILotteryScheduleService>();
-            await lotteryScheduleService.ScheduleLotteryAsync(lottery);
-            await lotteryScheduleService.ScheduleResultAsync(lottery);
+            if (lottery.StartDateTime > DateTime.UtcNow && lottery.LotteryTelegramId == null)
+            {
+                await lotteryScheduleService.ScheduleLotteryAsync(lottery);
+            }
+            if (lottery.EndDateTime > DateTime.UtcNow && lottery.ResultTelegramId == null)
+            {
+                await lotteryScheduleService.ScheduleResultAsync(lottery);
+            }
             NavigationManager.NavigateTo(RedirectUrl ?? "/");
         }
         catch (Exception e)

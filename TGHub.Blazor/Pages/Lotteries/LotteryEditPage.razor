@@ -55,8 +55,7 @@
                                                           a.Role == ChannelRole.Owner &&
                                                           a.AdministratorId == LocalStorageProvider.Id));
         var isUserOwnerOfLotteryChannel = isUserOwnerOfLotteryChannelEntity != null;
-        var isLotterySent = lottery.LotteryTelegramId != null;
-        var accessGranted = !isLotterySent && (isLotteryPostCreator || isUserOwnerOfLotteryChannel);
+        var accessGranted = isLotteryPostCreator || isUserOwnerOfLotteryChannel;
         if (!accessGranted)
         {
             ToastService.ShowWarning(UiStringsLoc[UiStrings.AccessDenied]);

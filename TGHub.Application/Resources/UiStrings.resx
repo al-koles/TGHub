@@ -300,6 +300,9 @@
   <data name="LotteryResultIsSent" xml:space="preserve">
     <value>Lottery result is already sent</value>
   </data>
+  <data name="ParticipantsCount" xml:space="preserve">
+    <value>Participants count</value>
+  </data>
   <data name="Winners" xml:space="preserve">
     <value>Winners</value>
   </data>

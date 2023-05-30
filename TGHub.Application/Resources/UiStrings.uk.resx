@@ -300,6 +300,9 @@
   <data name="LotteryResultIsSent" xml:space="preserve">
     <value>Результат розіграшу вже відправлено</value>
   </data>
+  <data name="ParticipantsCount" xml:space="preserve">
+    <value>Кількість учасників</value>
+  </data>
   <data name="Winners" xml:space="preserve">
     <value>Переможці</value>
   </data>
