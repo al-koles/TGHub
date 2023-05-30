@@ -9,8 +9,8 @@ public class Lottery : EntityBase
     public DateTime StartDateTime { get; set; }
     public DateTime EndDateTime { get; set; }
     public int WinnersCount { get; set; }
-    public long? LotteryTelegramId { get; set; }
-    public long? ResultTelegramId { get; set; }
+    public int? LotteryTelegramId { get; set; }
+    public int? ResultTelegramId { get; set; }
     public Guid AttachmentsFolderId { get; set; } = Guid.NewGuid();
     public MediaGroupFormat AttachmentsFormat { get; set; } = MediaGroupFormat.PhotoVideo;
 

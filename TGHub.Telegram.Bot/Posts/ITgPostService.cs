@@ -2,7 +2,7 @@
 
 namespace TGHub.Telegram.Bot.Posts;
 
-public interface ITgSendService
+public interface ITgPostService
 {
-    Task<int> SendPostAsync(Post post);
+    Task<int> SendAsync(Post post);
 }

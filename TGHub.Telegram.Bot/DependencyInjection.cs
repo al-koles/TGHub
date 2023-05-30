@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Telegram.Bot;
 using TGHub.Application.Interfaces;
 using TGHub.Telegram.Bot.Channels;
+using TGHub.Telegram.Bot.Lotteries;
 using TGHub.Telegram.Bot.Options;
 using TGHub.Telegram.Bot.Posts;
 
@@ -19,6 +20,7 @@ public static class DependencyInjection
         });
         services.AddTransient<ITgHubTelegramBotClient, TgHubTelegramBotClient>();
         services.AddTransient<ITgChannelService, TgChannelService>();
-        services.AddTransient<ITgSendService, TgSendService>();
+        services.AddTransient<ITgPostService, TgPostService>();
+        services.AddTransient<ITgLotteryService, TgLotteryService>();
     }
 }
