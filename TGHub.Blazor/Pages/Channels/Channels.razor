@@ -1,0 +1,43 @@
+﻿@page "/channels"
+@attribute [Authorize]
+@using TGHub.Application.Resources
+@using TGHub.Application.Services.Base
+@using TGHub.Blazor.Pages.Channels.Components
+@using TGHub.Domain.Entities
+@using TGHub.Application.Common
+@using TGHub.Application.Common.Filtering
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IServiceProvider ServiceProvider
+@inject LocalStorageProvider LocalStorageProvider
+
+<PageTitle>@UiStringsLoc[UiStrings.Channels]</PageTitle>
+
+<div class="h-full flex flex-col">
+    <div class="my-2">
+        <PageHeaderTitle Text="@UiStringsLoc[UiStrings.Channels]"/>
+    </div>
+    <div class="grid gap-2 w-full justify-center" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr))">
+        @foreach (var channel in _channels)
+        {
+            <ChannelCard Channel="@channel"/>
+        }
+    </div>
+</div>
+
+@code {
+
+    private List<Channel> _channels = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
+        var administratedChannels = await channelAdministratorService
+            .ListAsync(new FilterBase<ChannelAdministrator>
+            {
+                Where = a => a.IsActive && a.Channel.IsActive && a.AdministratorId == LocalStorageProvider.Id
+            });
+        _channels = administratedChannels.Select(a => a.Channel).ToList();
+    }
+
+}

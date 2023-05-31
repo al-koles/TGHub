@@ -312,4 +312,7 @@
   <data name="WinnersCount" xml:space="preserve">
     <value>Кількість переможців</value>
   </data>
+  <data name="Channels" xml:space="preserve">
+    <value>Канали</value>
+  </data>
 </root>

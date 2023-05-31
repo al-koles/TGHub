@@ -1,6 +1,9 @@
 ﻿@using TGHub.Application.Resources
 @using TGHub.Blazor.Resources
+@using Blazored.SessionStorage
+@using TGHub.Application.Common.SessionStorage
 @inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject SessionStorageProvider SessionStorageProvider
 
 <nav class="bg-[@ColorStrings.C3]/40 shadow-md">
     <div class="flex items-center justify-between max-w-7xl mx-auto px-4">
@@ -10,18 +13,13 @@
             </a>
             <ul class="flex flex-wrap items-center ml-4 space-x-4">
                 <li>
-                    <a href="/" class="text-gray-600 hover:text-gray-800">
-                        @UiStringsLoc[UiStrings.NavDashboard]
+                    <a href="/channels/@(SessionStorageProvider.SelectedChannelAdministratorData == null ? "" : SessionStorageProvider.SelectedChannelAdministratorData.ChannelId)" class="text-gray-600 hover:text-gray-800">
+                        @(SessionStorageProvider.SelectedChannelAdministratorData == null ? UiStringsLoc[UiStrings.Channels] : UiStringsLoc[UiStrings.Channel])
                     </a>
                 </li>
                 <li>
                     <a href="/lotteries" class="text-gray-600 hover:text-gray-800">
                         @UiStringsLoc[UiStrings.NavLotteries]
-                    </a>
-                </li>
-                <li>
-                    <a href="/comments" class="text-gray-600 hover:text-gray-800">
-                        @UiStringsLoc[UiStrings.NavComments]
                     </a>
                 </li>
                 <li>

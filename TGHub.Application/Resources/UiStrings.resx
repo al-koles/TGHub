@@ -312,4 +312,7 @@
   <data name="WinnersCount" xml:space="preserve">
     <value>Winners count</value>
   </data>
+  <data name="Channels" xml:space="preserve">
+    <value>Channels</value>
+  </data>
 </root>

@@ -114,31 +114,42 @@ internal class TgChannelService : ITgChannelService
                 });
             }
 
-            dbChannel.Administrators = dbChannel.Administrators
-                .Concat(administratorsToAdd.Select(tgAdmin =>
-                    new ChannelAdministrator
-                    {
-                        Role = tgAdmin.Status == ChatMemberStatus.Creator
-                            ? ChannelRole.Owner
-                            : ChannelRole.Administrator,
-                        IsActive = true,
-                        Administrator =
-                            existingDbUsersToAdd.FirstOrDefault(dbUser => dbUser.TelegramId == tgAdmin.User.Id)
-                            ?? new TgHubUser
-                            {
-                                TelegramId = tgAdmin.User.Id,
-                                FirstName = tgAdmin.User.FirstName,
-                                LastName = tgAdmin.User.LastName,
-                                UserName = tgAdmin.User.Username
-                            }
-                    }))
-                .ToList();
-
             foreach (var dbAdmin in dbChannel.Administrators)
             {
                 dbAdmin.IsActive = tgAdministrators.Any(tgAdmin =>
                     tgAdmin.User.Id == dbAdmin.Administrator.TelegramId);
             }
+
+            dbChannel.Administrators = dbChannel.Administrators
+                .Concat(administratorsToAdd.Select(tgAdmin =>
+                {
+                    var channelAdministrator = new ChannelAdministrator
+                    {
+                        Role = tgAdmin.Status == ChatMemberStatus.Creator
+                            ? ChannelRole.Owner
+                            : ChannelRole.Administrator,
+                        IsActive = true
+                    };
+                    var administrator = existingDbUsersToAdd
+                        .FirstOrDefault(dbUser => dbUser.TelegramId == tgAdmin.User.Id);
+                    if (administrator == null)
+                    {
+                        channelAdministrator.Administrator = new TgHubUser
+                        {
+                            TelegramId = tgAdmin.User.Id,
+                            FirstName = tgAdmin.User.FirstName,
+                            LastName = tgAdmin.User.LastName,
+                            UserName = tgAdmin.User.Username
+                        };
+                    }
+                    else
+                    {
+                        channelAdministrator.AdministratorId = administrator.Id;
+                    }
+
+                    return channelAdministrator;
+                }))
+                .ToList();
         }
         catch (Exception e)
         {
