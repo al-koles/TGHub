@@ -162,9 +162,11 @@
     <label class="font-bold mt-3">@UiStringsLoc[UiStrings.Winners]</label>
     <div class="rounded-xl max-h-[15rem] min-w-[7rem] bg-[@ColorStrings.C0] py-1 pl-1 pr-2 flex flex-col">
         <div class="grow grid grid-cols-3 w-full justify-items-center gap-2 overflow-y-auto py-2 pl-2 pr-1">
-            @foreach (var participant in LotteryInfo.Participants.Where(p => p.IsWinner))
+            @foreach (var winner in LotteryInfo.Participants.Where(p => p.IsWinner))
             {
-                @participant.NickName
+                <a href="@Constants.TgBaseUrl/@winner.NickName" target="_blank">
+                    @@@winner.NickName
+                </a>
             }
         </div>
     </div>

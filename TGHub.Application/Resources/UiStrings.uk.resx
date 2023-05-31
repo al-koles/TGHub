@@ -315,4 +315,16 @@
   <data name="Channels" xml:space="preserve">
     <value>Канали</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Ім'я</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Прізвище</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Профіль</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Юзернейм</value>
+  </data>
 </root>
