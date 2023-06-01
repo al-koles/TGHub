@@ -1,11 +1,11 @@
 ﻿@page "/channels"
-@attribute [Authorize]
 @using TGHub.Application.Resources
-@using TGHub.Application.Services.Base
+@using TGHub.Application.Services.Channels
 @using TGHub.Blazor.Pages.Channels.Components
 @using TGHub.Domain.Entities
 @using TGHub.Application.Common
 @using TGHub.Application.Common.Filtering
+@attribute [Authorize]
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject IServiceProvider ServiceProvider
 @inject LocalStorageProvider LocalStorageProvider
@@ -31,13 +31,13 @@
     protected override async Task OnInitializedAsync()
     {
         await using var scope = ServiceProvider.CreateAsyncScope();
-        var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
-        var administratedChannels = await channelAdministratorService
-            .ListAsync(new FilterBase<ChannelAdministrator>
+        var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
+        _channels = await channelService
+            .ListAsync(new FilterBase<Channel>
             {
-                Where = a => a.IsActive && a.Channel.IsActive && a.AdministratorId == LocalStorageProvider.Id
+                Where = ch => ch.IsActive &&
+                              ch.Administrators.Any(a => a.IsActive && a.AdministratorId == LocalStorageProvider.Id)
             });
-        _channels = administratedChannels.Select(a => a.Channel).ToList();
     }
 
 }

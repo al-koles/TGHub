@@ -1,18 +1,33 @@
 ﻿@using TGHub.Domain.Entities
-<div class="rounded-full border flex gap-2 h-12 overflow-hidden">
-    @if (string.IsNullOrEmpty(User.PhotoUrl))
-    {
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-             class="w-12 h-12">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/>
-        </svg>
-    }
-    else
-    {
-        <img src="@User.PhotoUrl"
-             alt="@User.FirstName?.FirstOrDefault()"
-             class="w-12 h-12 rounded-full background"/>
-    }
+<div class="rounded-full border flex gap-2 h-12">
+    <div class="relative">
+        @if (string.IsNullOrEmpty(User.PhotoUrl))
+        {
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                 class="w-12 h-12">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+        }
+        else
+        {
+            <img src="@User.PhotoUrl"
+                 alt="@User.FirstName?.FirstOrDefault()"
+                 class="w-12 h-12 rounded-full background"/>
+        }
+        @if (IsCrowned)
+        {
+            <div class="absolute left-0 top-0">
+                <div class="relative left-0 -translate-y-2/3"
+                     title="@CrownTitle">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 576 312" stroke="currentColor"
+                         class="w-full text-amber-500">
+                        <!--! Font Awesome Free 6.4.0 by @@fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/>
+                    </svg>
+                </div>
+            </div>
+        }
+    </div>
     <div class="flex flex-col grow pr-4">
         <div class="text-bold">@User.FirstName @User.LastName</div>
         <div class="text-sm">@User.UserName</div>
@@ -23,5 +38,11 @@
 
     [Parameter]
     public TgHubUser User { get; set; } = new();
+
+    [Parameter]
+    public bool IsCrowned { get; set; }
+
+    [Parameter]
+    public string CrownTitle { get; set; } = null!;
 
 }

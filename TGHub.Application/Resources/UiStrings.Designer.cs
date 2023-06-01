@@ -70,6 +70,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Administrators.
+        /// </summary>
+        public static string Administrators {
+            get {
+                return ResourceManager.GetString("Administrators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string Apply {
@@ -250,6 +259,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn OFF spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureSpamOff {
+            get {
+                return ResourceManager.GetString("EnsureSpamOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn ON spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureSpamOn {
+            get {
+                return ResourceManager.GetString("EnsureSpamOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {
@@ -421,6 +448,33 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string Off {
+            get {
+                return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        public static string On {
+            get {
+                return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User is channel owner.
+        /// </summary>
+        public static string Owner {
+            get {
+                return ResourceManager.GetString("Owner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Participants count.
         /// </summary>
         public static string ParticipantsCount {
@@ -471,6 +525,15 @@ namespace TGHub.Application.Resources {
         public static string Profile {
             get {
                 return ResourceManager.GetString("Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh from Telegram.
+        /// </summary>
+        public static string RefreshFromTg {
+            get {
+                return ResourceManager.GetString("RefreshFromTg", resourceCulture);
             }
         }
         
@@ -543,6 +606,15 @@ namespace TGHub.Application.Resources {
         public static string SendStatus {
             get {
                 return ResourceManager.GetString("SendStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam filtering.
+        /// </summary>
+        public static string Spam {
+            get {
+                return ResourceManager.GetString("Spam", resourceCulture);
             }
         }
         
@@ -687,6 +759,15 @@ namespace TGHub.Application.Resources {
         public static string WinnersCount {
             get {
                 return ResourceManager.GetString("WinnersCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
     }

@@ -61,6 +61,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to refresh channel {0}. Please try again.
+        /// </summary>
+        public static string ChannelRefreshError {
+            get {
+                return ResourceManager.GetString("ChannelRefreshError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refreshed channel {0}.
+        /// </summary>
+        public static string ChannelRefreshSuccess {
+            get {
+                return ResourceManager.GetString("ChannelRefreshSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error deleting. Please try again.
         /// </summary>
         public static string DeleteError {
@@ -120,6 +138,15 @@ namespace TGHub.Application.Resources {
         public static string LotterySent {
             get {
                 return ResourceManager.GetString("LotterySent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel {0} does not exist.
+        /// </summary>
+        public static string MissingChannel {
+            get {
+                return ResourceManager.GetString("MissingChannel", resourceCulture);
             }
         }
         
