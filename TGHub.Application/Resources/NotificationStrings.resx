@@ -147,6 +147,9 @@
   <data name="MissingChannel" xml:space="preserve">
     <value>Channel {0} does not exist</value>
   </data>
+  <data name="MissingCommentsGroup" xml:space="preserve">
+    <value>Not find comments group of Channel '{0}'. If there is one send something to it or refresh channel info</value>
+  </data>
   <data name="MissingLottery" xml:space="preserve">
     <value>Missing lottery "{0}". May be it was deleted</value>
   </data>
@@ -173,5 +176,8 @@
   </data>
   <data name="Test" xml:space="preserve">
     <value>Hello world</value>
+  </data>
+  <data name="UnBannError" xml:space="preserve">
+    <value>Failed to unbann user. Please try again</value>
   </data>
 </root>

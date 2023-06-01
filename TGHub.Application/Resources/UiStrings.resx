@@ -315,6 +315,15 @@
   <data name="Administrators" xml:space="preserve">
     <value>Administrators</value>
   </data>
+  <data name="BannContext" xml:space="preserve">
+    <value>Bann context</value>
+  </data>
+  <data name="BannedUsers" xml:space="preserve">
+    <value>Banned users</value>
+  </data>
+  <data name="BannedAt" xml:space="preserve">
+    <value>Banned at</value>
+  </data>
   <data name="Channels" xml:space="preserve">
     <value>Channels</value>
   </data>
@@ -353,5 +362,11 @@
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
+  </data>
+  <data name="BannedTo" xml:space="preserve">
+    <value>Banned to</value>
+  </data>
+  <data name="Unban" xml:space="preserve">
+    <value>Unban</value>
   </data>
 </root>

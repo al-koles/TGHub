@@ -315,6 +315,15 @@
   <data name="Administrators" xml:space="preserve">
     <value>Адміністратори</value>
   </data>
+  <data name="BannContext" xml:space="preserve">
+    <value>Контекст бану</value>
+  </data>
+  <data name="BannedUsers" xml:space="preserve">
+    <value>Забанені користувачі</value>
+  </data>
+  <data name="BannedAt" xml:space="preserve">
+    <value>Час бану</value>
+  </data>
   <data name="Channels" xml:space="preserve">
     <value>Канали</value>
   </data>
@@ -353,5 +362,11 @@
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Так</value>
+  </data>
+  <data name="BannedTo" xml:space="preserve">
+    <value>Забанено до</value>
+  </data>
+  <data name="Unban" xml:space="preserve">
+    <value>Розбанити</value>
   </data>
 </root>

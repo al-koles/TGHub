@@ -147,6 +147,9 @@
   <data name="MissingChannel" xml:space="preserve">
     <value>Канал {0} не існує</value>
   </data>
+  <data name="MissingCommentsGroup" xml:space="preserve">
+    <value>Не знайдено чат для коментарів для каналу '{0}'. Якщо такий чат є, напищіть щось у нього або оноввіть інформацію про канал</value>
+  </data>
   <data name="MissingLottery" xml:space="preserve">
     <value>Не знайдено розіграш "{0}". Схоже віт був видалений</value>
   </data>
@@ -173,5 +176,8 @@
   </data>
   <data name="Test" xml:space="preserve">
     <value>Привіт Світ!</value>
+  </data>
+  <data name="UnBannError" xml:space="preserve">
+    <value>Не вдалося розбанити користувача. Будь ласка спробуйте ще</value>
   </data>
 </root>

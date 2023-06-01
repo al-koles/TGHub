@@ -18,7 +18,7 @@
     {
         var modal = ModalService.Show<ChannelModal>(Channel.Name, new ModalParameters
         {
-            { nameof(ChannelModal.Channel), Channel },
+            { nameof(ChannelModal.ChannelId), Channel.Id },
             { nameof(ChannelModal.ChannelRefreshed), new EventCallback(this, StateHasChanged) }
         }, new ModalOptions
         {

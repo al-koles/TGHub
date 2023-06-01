@@ -115,6 +115,42 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bann context.
+        /// </summary>
+        public static string BannContext {
+            get {
+                return ResourceManager.GetString("BannContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned at.
+        /// </summary>
+        public static string BannedAt {
+            get {
+                return ResourceManager.GetString("BannedAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned to.
+        /// </summary>
+        public static string BannedTo {
+            get {
+                return ResourceManager.GetString("BannedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned users.
+        /// </summary>
+        public static string BannedUsers {
+            get {
+                return ResourceManager.GetString("BannedUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Buttons.
         /// </summary>
         public static string Buttons {
@@ -723,6 +759,15 @@ namespace TGHub.Application.Resources {
         public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unban.
+        /// </summary>
+        public static string Unban {
+            get {
+                return ResourceManager.GetString("Unban", resourceCulture);
             }
         }
         

@@ -151,6 +151,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not find comments group of Channel &apos;{0}&apos;. If there is one send something to it or refresh channel info.
+        /// </summary>
+        public static string MissingCommentsGroup {
+            get {
+                return ResourceManager.GetString("MissingCommentsGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing lottery &quot;{0}&quot;. May be it was deleted.
         /// </summary>
         public static string MissingLottery {
@@ -228,6 +237,15 @@ namespace TGHub.Application.Resources {
         public static string Test {
             get {
                 return ResourceManager.GetString("Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to unbann user. Please try again.
+        /// </summary>
+        public static string UnBannError {
+            get {
+                return ResourceManager.GetString("UnBannError", resourceCulture);
             }
         }
     }

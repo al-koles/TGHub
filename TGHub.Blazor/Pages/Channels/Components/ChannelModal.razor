@@ -28,7 +28,7 @@
         </button>
     </div>
     <div class="flex flex-wrap gap-2 p-2">
-        @foreach (var administrator in Channel.Administrators.Where(a => a.IsActive))
+        @foreach (var administrator in _channel.Administrators.Where(a => a.IsActive))
         {
             <UserTile User="@administrator.Administrator"
                       IsCrowned="@(administrator.Role == ChannelRole.Owner)" CrownTitle="@UiStringsLoc[UiStrings.Owner]"/>
@@ -38,8 +38,24 @@
 
 <div class="mt-3 flex gap-2">
     <label class="font-bold">@UiStringsLoc[UiStrings.Spam]</label>
-    <SimpleSwitcher Checked="@Channel.SpamOn" Click="@ShowSpamSwitchModal"/>
+    <SimpleSwitcher Checked="@_channel.SpamOn" Click="@ShowSpamSwitchModal"/>
 </div>
+
+@if (_channel.BannedUsers.Any())
+{
+    <div class="mt-3">
+        <label class="font-bold">@UiStringsLoc[UiStrings.BannedUsers]</label>
+        <div class="grid grid-cols-3 gap-2">
+            @foreach (var bannedUser in BannedUsers)
+            {
+                <button type="button" class="drop-shadow active:drop-shadow-none"
+                        @onclick="@(() => ShowBannedUserModal(bannedUser))">
+                    @bannedUser.TelegramId
+                </button>
+            }
+        </div>
+    </div>
+}
 
 @code {
 
@@ -50,12 +66,29 @@
     private BlazoredModalInstance Modal { get; set; } = null!;
 
     [Parameter]
-    public Channel Channel { get; set; } = new();
+    public int ChannelId { get; set; }
 
     [Parameter]
     public EventCallback ChannelRefreshed { get; set; }
 
     private bool _isRefreshing;
+    private Channel _channel = new();
+
+    private IEnumerable<BannedUser> BannedUsers => _channel.BannedUsers.OrderByDescending(u => u.BannDate);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
+        var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == ChannelId);
+        if (channel == null)
+        {
+            ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.MissingChannel], ChannelId));
+            await Modal.CloseAsync();
+            return;
+        }
+        _channel = channel;
+    }
 
     private async Task RefreshAsync()
     {
@@ -70,25 +103,25 @@
             await using var scope = ServiceProvider.CreateAsyncScope();
 
             var tgBotClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
-            await tgBotClient.CreateOrUpdateChannelFromTg(Channel.TelegramId);
+            await tgBotClient.CreateOrUpdateChannelFromTg(_channel.TelegramId);
 
             var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
-            var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == Channel.Id);
-            Mapper.Map(channel, Channel);
-            Modal.SetTitle(Channel.Name);
+            var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == _channel.Id);
+            Mapper.Map(channel, _channel);
+            Modal.SetTitle(_channel.Name);
             await ChannelRefreshed.InvokeAsync();
 
-            ToastService.ShowSuccess(string.Format(NotificationStringsLoc[NotificationStrings.ChannelRefreshSuccess], Channel.Name));
+            ToastService.ShowSuccess(string.Format(NotificationStringsLoc[NotificationStrings.ChannelRefreshSuccess], _channel.Name));
         }
         catch (NotFoundException e)
         {
-            ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.MissingChannel], Channel.Name));
-            Logger.LogError(e, "Error while trying to refresh channel {0}", Channel.Id);
+            ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.MissingChannel], _channel.Name));
+            Logger.LogError(e, "Error while trying to refresh channel {0}", _channel.Id);
         }
         catch (Exception e)
         {
-            ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.ChannelRefreshError], Channel.Name));
-            Logger.LogError(e, "Error while trying to refresh channel {0}", Channel.Id);
+            ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.ChannelRefreshError], _channel.Name));
+            Logger.LogError(e, "Error while trying to refresh channel {0}", _channel.Id);
         }
         finally
         {
@@ -99,8 +132,8 @@
 
     private async Task ShowSpamSwitchModal()
     {
-        var question = Channel.SpamOn ? UiStringsLoc[UiStrings.EnsureSpamOff] : UiStringsLoc[UiStrings.EnsureSpamOn];
-        var modal = ModalService.Show<YesCancelModal>(string.Format(question, Channel.Name));
+        var question = _channel.SpamOn ? UiStringsLoc[UiStrings.EnsureSpamOff] : UiStringsLoc[UiStrings.EnsureSpamOn];
+        var modal = ModalService.Show<YesCancelModal>(string.Format(question, _channel.Name));
         var result = await modal.Result;
         if (result.Confirmed)
         {
@@ -108,22 +141,30 @@
             {
                 await using var scope = ServiceProvider.CreateAsyncScope();
                 var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
-                var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == Channel.Id);
+                var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == _channel.Id);
                 channel!.SpamOn = !channel.SpamOn;
                 await channelService.UpdateAsync(channel);
-                Channel.SpamOn = channel.SpamOn;
+                _channel.SpamOn = channel.SpamOn;
             }
             catch (NotFoundException e)
             {
-                ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.MissingChannel], Channel.Name));
-                Logger.LogError(e, "Error while trying to set channel {0} SpamOn", Channel.Id);
+                ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.MissingChannel], _channel.Name));
+                Logger.LogError(e, "Error while trying to set channel {0} SpamOn", _channel.Id);
             }
             catch (Exception e)
             {
-                ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.SubmitError], Channel.Name));
-                Logger.LogError(e, "Error while trying to set channel {0} SpamOn", Channel.Id);
+                ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.SubmitError], _channel.Name));
+                Logger.LogError(e, "Error while trying to set channel {0} SpamOn", _channel.Id);
             }
         }
+    }
+
+    private void ShowBannedUserModal(BannedUser bannedUser)
+    {
+        ModalService.Show<BannedUserModal>(bannedUser.TelegramId.ToString(), new ModalParameters
+        {
+            { nameof(BannedUserModal.BannedUser), bannedUser }
+        });
     }
 
 }
