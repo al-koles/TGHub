@@ -115,6 +115,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to log out. Please try again.
+        /// </summary>
+        public static string LogOutError {
+            get {
+                return ResourceManager.GetString("LogOutError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You logged out.
+        /// </summary>
+        public static string LogOutSuccess {
+            get {
+                return ResourceManager.GetString("LogOutSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Lottery &quot;{0}&quot; was deleted.
         /// </summary>
         public static string LotteryDeleted {

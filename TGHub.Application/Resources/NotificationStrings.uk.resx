@@ -135,6 +135,12 @@
   <data name="Greeting" xml:space="preserve">
     <value>Вітаю</value>
   </data>
+  <data name="LogOutError" xml:space="preserve">
+    <value>Не вдалося вийти. Будь ласка спробуйте ще раз</value>
+  </data>
+  <data name="LogOutSuccess" xml:space="preserve">
+    <value>Ви вийшли</value>
+  </data>
   <data name="LotteryDeleted" xml:space="preserve">
     <value>Розіграш "{0}" видалено</value>
   </data>

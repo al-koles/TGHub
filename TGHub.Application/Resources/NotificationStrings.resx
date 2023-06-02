@@ -135,6 +135,12 @@
   <data name="Greeting" xml:space="preserve">
     <value>Hello</value>
   </data>
+  <data name="LogOutError" xml:space="preserve">
+    <value>Failed to log out. Please try again</value>
+  </data>
+  <data name="LogOutSuccess" xml:space="preserve">
+    <value>You logged out</value>
+  </data>
   <data name="LotteryDeleted" xml:space="preserve">
     <value>Lottery "{0}" was deleted</value>
   </data>

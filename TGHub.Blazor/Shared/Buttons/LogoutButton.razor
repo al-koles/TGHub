@@ -1,14 +1,16 @@
-﻿@using TGHub.Blazor.Shared.Loaders
+﻿@using TGHub.Application.Resources
 @using TGHub.Application.Common
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IToastService ToastService
 @inject ILogger<LogoutButton> Logger
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 
 <AuthorizeView>
     <button class="px-2 py-1 border rounded hover:bg-gray-700/ text-slate-50"
             @onclick="@LogOutAsync">
-        Log out
+        @UiStringsLoc[UiStrings.LogOut]
         @if (_isLoading)
         {
             <ElementLoader/>
@@ -26,12 +28,12 @@
         {
             _isLoading = true;
             await ((CustomAuthStateProvider)AuthenticationStateProvider).LogoutAsync();
-            ToastService.ShowInfo("You logged out");
+            ToastService.ShowInfo(NotificationStringsLoc[NotificationStrings.LogOutSuccess]);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            ToastService.ShowError("Logout error. Please try again.");
-            Logger.LogError("Login error. {0}", e.Message);
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.LogOutError]);
+            Logger.LogError(e, "Logout error");
         }
         finally
         {

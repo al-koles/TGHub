@@ -376,6 +376,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Log out.
+        /// </summary>
+        public static string LogOut {
+            get {
+                return ResourceManager.GetString("LogOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If you want to login with another account go to Telegram app or website, find chat with Telegram service notifications and click &quot;Terminate session&quot; button..
         /// </summary>
         public static string LogoutInstruction {

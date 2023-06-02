@@ -366,6 +366,9 @@
   <data name="BannedTo" xml:space="preserve">
     <value>Banned to</value>
   </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Log out</value>
+  </data>
   <data name="Unban" xml:space="preserve">
     <value>Unban</value>
   </data>
