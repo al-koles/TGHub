@@ -1,0 +1,33 @@
+﻿@using TGHub.Application.Resources
+@using TGHub.Blazor.Resources
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+
+<div class="grid grid-cols-2">
+    <button type="button"
+            class="bg-gray-400/80 hover:bg-bg-gray-400 text-[#ffffff] drop-shadow active:drop-shadow-none"
+            @onclick="@OnCancelClick">
+        @UiStringsLoc[UiStrings.Cancel]
+    </button>
+    <button type="button"
+            class="bg-[@ColorStrings.C5]/80 hover:bg-[@ColorStrings.C5] text-[#ffffff] drop-shadow active:drop-shadow-none"
+            @onclick="@OnYesClick">
+        @UiStringsLoc[UiStrings.Yes]
+    </button>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    private BlazoredModalInstance Modal { get; set; } = null!;
+
+    private Task OnYesClick()
+    {
+        return Modal.CloseAsync(ModalResult.Ok());
+    }
+
+    private Task OnCancelClick()
+    {
+        return Modal.CloseAsync(ModalResult.Cancel());
+    }
+
+}

@@ -7,4 +7,5 @@ public class Constants
     public const string LotteryAttachmentsFolderName = "lottery_attachments";
     public const string ProfilePhotosFolderName = "profile_photos";
     public const string FilesFolderName = "Files";
+    public const string TgBaseUrl = "https://t.me";
 }

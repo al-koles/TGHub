@@ -312,4 +312,64 @@
   <data name="WinnersCount" xml:space="preserve">
     <value>Кількість переможців</value>
   </data>
+  <data name="Administrators" xml:space="preserve">
+    <value>Адміністратори</value>
+  </data>
+  <data name="BannContext" xml:space="preserve">
+    <value>Контекст бану</value>
+  </data>
+  <data name="BannedUsers" xml:space="preserve">
+    <value>Забанені користувачі</value>
+  </data>
+  <data name="BannedAt" xml:space="preserve">
+    <value>Час бану</value>
+  </data>
+  <data name="Channels" xml:space="preserve">
+    <value>Канали</value>
+  </data>
+  <data name="EnsureSpamOff" xml:space="preserve">
+    <value>Ви впевнені що хочете ВИМКНУТИ фільтрування спаму для каналу '{0}'?</value>
+  </data>
+  <data name="EnsureSpamOn" xml:space="preserve">
+    <value>Ви впевнені що хочете УВІМКНУТИ фільтрування спаму для каналу '{0}'?</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Ім'я</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Прізвище</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Вимкнено</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>Увімкнено</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Цей користувач власник каналу</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Профіль</value>
+  </data>
+  <data name="RefreshFromTg" xml:space="preserve">
+    <value>Оновити з Telegram</value>
+  </data>
+  <data name="Spam" xml:space="preserve">
+    <value>Фільтрація спаму</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Юзернейм</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Так</value>
+  </data>
+  <data name="BannedTo" xml:space="preserve">
+    <value>Забанено до</value>
+  </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Вийти</value>
+  </data>
+  <data name="Unban" xml:space="preserve">
+    <value>Розбанити</value>
+  </data>
 </root>

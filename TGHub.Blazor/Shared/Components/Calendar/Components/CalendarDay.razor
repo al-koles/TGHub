@@ -1,10 +1,12 @@
-﻿@using TGHub.Blazor.Shared.Components.Calendar.Models
+﻿@using TGHub.Domain.Enums
+@using TGHub.Blazor.Shared.Components.Calendar.Models
 @using TGHub.Blazor.Resources
 @using TGHub.Blazor.Shared.Components.Calendar.Modals
 @using System.Globalization
 @inject NavigationManager NavigationManager
 
-<div class="relative h-full w-full text-sm">
+<div class="relative h-full w-full text-sm 
+            @(Date.Year != CalendarYear || Date.Month != (int)CalendarMonth ? "opacity-50" : "")">
     <div class="p-1 absolute w-full h-full top-0 left-0 flex flex-col items-center">
         <div class="flex items-center w-full justify-center">
             <div class="rounded-full w-5 h-5 flex items-center justify-center
@@ -33,6 +35,12 @@
 </div>
 
 @code {
+
+    [CascadingParameter]
+    private int CalendarYear { get; set; }
+
+    [CascadingParameter]
+    private Month CalendarMonth { get; set; }
 
     [Parameter]
     public DateTime Date { get; set; }

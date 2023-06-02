@@ -61,6 +61,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to refresh channel {0}. Please try again.
+        /// </summary>
+        public static string ChannelRefreshError {
+            get {
+                return ResourceManager.GetString("ChannelRefreshError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refreshed channel {0}.
+        /// </summary>
+        public static string ChannelRefreshSuccess {
+            get {
+                return ResourceManager.GetString("ChannelRefreshSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error deleting. Please try again.
         /// </summary>
         public static string DeleteError {
@@ -97,6 +115,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to log out. Please try again.
+        /// </summary>
+        public static string LogOutError {
+            get {
+                return ResourceManager.GetString("LogOutError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You logged out.
+        /// </summary>
+        public static string LogOutSuccess {
+            get {
+                return ResourceManager.GetString("LogOutSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Lottery &quot;{0}&quot; was deleted.
         /// </summary>
         public static string LotteryDeleted {
@@ -120,6 +156,24 @@ namespace TGHub.Application.Resources {
         public static string LotterySent {
             get {
                 return ResourceManager.GetString("LotterySent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel {0} does not exist.
+        /// </summary>
+        public static string MissingChannel {
+            get {
+                return ResourceManager.GetString("MissingChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not find comments group of Channel &apos;{0}&apos;. If there is one send something to it or refresh channel info.
+        /// </summary>
+        public static string MissingCommentsGroup {
+            get {
+                return ResourceManager.GetString("MissingCommentsGroup", resourceCulture);
             }
         }
         
@@ -201,6 +255,15 @@ namespace TGHub.Application.Resources {
         public static string Test {
             get {
                 return ResourceManager.GetString("Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to unbann user. Please try again.
+        /// </summary>
+        public static string UnBannError {
+            get {
+                return ResourceManager.GetString("UnBannError", resourceCulture);
             }
         }
     }

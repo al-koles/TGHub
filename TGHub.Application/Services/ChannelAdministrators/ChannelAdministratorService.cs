@@ -16,6 +16,7 @@ public class ChannelAdministratorService : Service<ChannelAdministrator>
     {
         var query = DbContext.ChannelAdministrators
             .Include(cha => cha.Channel)
+            .Include(cha => cha.Administrator)
             .AsNoTracking();
 
         if (filter == null)

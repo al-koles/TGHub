@@ -20,7 +20,6 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(BotController).Assembly)
     .AddApplicationPart(typeof(CultureController).Assembly);
 
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddOptions(builder.Configuration);
 builder.Services.AddTelegramBotClient();
 builder.Services.AddServerFileStorage();

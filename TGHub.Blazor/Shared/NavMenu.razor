@@ -1,27 +1,28 @@
 ﻿@using TGHub.Application.Resources
+@using TGHub.Application.Services.Base
 @using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using TGHub.Application.Common
 @inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject LocalStorageProvider LocalStorageProvider
+@inject IModalService ModalService
+@inject IServiceProvider ServiceProvider
 
 <nav class="bg-[@ColorStrings.C3]/40 shadow-md">
-    <div class="flex items-center justify-between max-w-7xl mx-auto px-4">
-        <div class="flex items-center">
+    <div class="flex flex-wrap items-center justify-between max-w-7xl mx-auto px-4">
+        <div class="flex flex-wrap items-center">
             <a href="/" class="flex items-center py-1 px-2 bg-[@ColorStrings.C1]">
                 <img class="h-10 w-auto mr-2" src="/icons/logo_icon_and_name.png" alt="Logo">
             </a>
             <ul class="flex flex-wrap items-center ml-4 space-x-4">
                 <li>
-                    <a href="/" class="text-gray-600 hover:text-gray-800">
-                        @UiStringsLoc[UiStrings.NavDashboard]
+                    <a href="/channels" class="text-gray-600 hover:text-gray-800">
+                        @UiStringsLoc[UiStrings.Channels]
                     </a>
                 </li>
                 <li>
                     <a href="/lotteries" class="text-gray-600 hover:text-gray-800">
                         @UiStringsLoc[UiStrings.NavLotteries]
-                    </a>
-                </li>
-                <li>
-                    <a href="/comments" class="text-gray-600 hover:text-gray-800">
-                        @UiStringsLoc[UiStrings.NavComments]
                     </a>
                 </li>
                 <li>
@@ -34,8 +35,24 @@
         <ChannelSelector SetGlobally="@true" SetFromGlobal="@true"/>
         <div class="flex flex-wrap items-center gap-10">
             <CultureSelector/>
-            <div class="flex flex-wrap items-center">
-                <a href="/profile" class="text-gray-600 hover:text-gray-800 mr-4">Profile</a>
+            <div class="flex flex-wrap items-center gap-2">
+                <button class="rounded-full border hover:outline outline-1 outline-[@ColorStrings.C5]"
+                        type="button"
+                        @onclick="@ShowProfile">
+                    @if (string.IsNullOrEmpty(LocalStorageProvider.PhotoUrl))
+                    {
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                             class="w-12 h-12">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    }
+                    else
+                    {
+                        <img src="@LocalStorageProvider.PhotoUrl"
+                             alt="@LocalStorageProvider.FirstName?.FirstOrDefault()"
+                             class="w-10 h-10 rounded-full background"/>
+                    }
+                </button>
                 <LogoutButton/>
             </div>
         </div>
@@ -43,5 +60,23 @@
 </nav>
 
 @code {
+
+    private TgHubUser? _currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var userService = scope.ServiceProvider.GetRequiredService<IService<TgHubUser>>();
+        _currentUser = await userService.FirstOrDefaultAsync(u => u.Id == LocalStorageProvider.Id);
+    }
+
+    private void ShowProfile()
+    {
+        if (_currentUser != null)
+        {
+            var modalParameters = new ModalParameters { { nameof(ProfileModal.User), _currentUser } };
+            ModalService.Show<ProfileModal>(UiStringsLoc[UiStrings.Profile], modalParameters);
+        }
+    }
 
 }

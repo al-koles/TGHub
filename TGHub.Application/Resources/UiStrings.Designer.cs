@@ -70,6 +70,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Administrators.
+        /// </summary>
+        public static string Administrators {
+            get {
+                return ResourceManager.GetString("Administrators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string Apply {
@@ -106,6 +115,42 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bann context.
+        /// </summary>
+        public static string BannContext {
+            get {
+                return ResourceManager.GetString("BannContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned at.
+        /// </summary>
+        public static string BannedAt {
+            get {
+                return ResourceManager.GetString("BannedAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned to.
+        /// </summary>
+        public static string BannedTo {
+            get {
+                return ResourceManager.GetString("BannedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned users.
+        /// </summary>
+        public static string BannedUsers {
+            get {
+                return ResourceManager.GetString("BannedUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Buttons.
         /// </summary>
         public static string Buttons {
@@ -138,6 +183,15 @@ namespace TGHub.Application.Resources {
         public static string Channel {
             get {
                 return ResourceManager.GetString("Channel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channels.
+        /// </summary>
+        public static string Channels {
+            get {
+                return ResourceManager.GetString("Channels", resourceCulture);
             }
         }
         
@@ -241,6 +295,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn OFF spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureSpamOff {
+            get {
+                return ResourceManager.GetString("EnsureSpamOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn ON spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureSpamOn {
+            get {
+                return ResourceManager.GetString("EnsureSpamOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {
@@ -268,6 +340,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First name.
+        /// </summary>
+        public static string FirstName {
+            get {
+                return ResourceManager.GetString("FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Some of selected files ({0}) have invalid extension. Remove them before submit..
         /// </summary>
         public static string InvalidExtensionFiles {
@@ -282,6 +363,24 @@ namespace TGHub.Application.Resources {
         public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last name.
+        /// </summary>
+        public static string LastName {
+            get {
+                return ResourceManager.GetString("LastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log out.
+        /// </summary>
+        public static string LogOut {
+            get {
+                return ResourceManager.GetString("LogOut", resourceCulture);
             }
         }
         
@@ -394,6 +493,33 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string Off {
+            get {
+                return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        public static string On {
+            get {
+                return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User is channel owner.
+        /// </summary>
+        public static string Owner {
+            get {
+                return ResourceManager.GetString("Owner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Participants count.
         /// </summary>
         public static string ParticipantsCount {
@@ -435,6 +561,24 @@ namespace TGHub.Application.Resources {
         public static string Posts {
             get {
                 return ResourceManager.GetString("Posts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile.
+        /// </summary>
+        public static string Profile {
+            get {
+                return ResourceManager.GetString("Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh from Telegram.
+        /// </summary>
+        public static string RefreshFromTg {
+            get {
+                return ResourceManager.GetString("RefreshFromTg", resourceCulture);
             }
         }
         
@@ -507,6 +651,15 @@ namespace TGHub.Application.Resources {
         public static string SendStatus {
             get {
                 return ResourceManager.GetString("SendStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam filtering.
+        /// </summary>
+        public static string Spam {
+            get {
+                return ResourceManager.GetString("Spam", resourceCulture);
             }
         }
         
@@ -619,11 +772,29 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unban.
+        /// </summary>
+        public static string Unban {
+            get {
+                return ResourceManager.GetString("Unban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Url.
         /// </summary>
         public static string Url {
             get {
                 return ResourceManager.GetString("Url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string Username {
+            get {
+                return ResourceManager.GetString("Username", resourceCulture);
             }
         }
         
@@ -642,6 +813,15 @@ namespace TGHub.Application.Resources {
         public static string WinnersCount {
             get {
                 return ResourceManager.GetString("WinnersCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
     }

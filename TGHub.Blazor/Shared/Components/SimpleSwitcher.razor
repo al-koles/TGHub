@@ -1,0 +1,32 @@
+﻿@using TGHub.Blazor.Resources
+<span>
+    <button class="relative flex items-center h-5"
+            type="button"
+            id="switcher"
+            @onclick="@Click">
+        <div class="w-8 h-3 rounded-full relative
+                    @(Checked ? $"bg-[{ColorStrings.C5}]" : "bg-gray-300")">
+        </div>
+        <div class="w-5 h-5 absolute rounded-full translate-x-@(Checked ? "3" : "0") drop-shadow
+                    @(Checked ? $"bg-[{ColorStrings.C5}]" : "bg-[#ffffff]")">
+        </div>
+    </button>
+    <label
+        class="inline-block pl-[0.15rem] hover:cursor-pointer"
+        for="switcher">
+        @Label
+    </label>
+</span>
+
+@code {
+
+    [Parameter]
+    public bool Checked { get; set; }
+
+    [Parameter]
+    public EventCallback Click { get; set; }
+
+    [Parameter]
+    public string Label { get; set; }
+
+}

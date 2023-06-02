@@ -17,7 +17,7 @@ public class ChannelService : Service<Channel>, IChannelService
         var query = DbContext.Channels
             .Include(ch => ch.Administrators)
             .ThenInclude(a => a.Administrator)
-            .AsNoTracking();
+            .Include(ch => ch.BannedUsers);
         return predicate == null ? query.FirstOrDefaultAsync() : query.FirstOrDefaultAsync(predicate);
     }
 

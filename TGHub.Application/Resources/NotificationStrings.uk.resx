@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ChannelRefreshError" xml:space="preserve">
+    <value>Не вдалося оновити канал {0}. Спробуйте ще раз</value>
+  </data>
+  <data name="ChannelRefreshSuccess" xml:space="preserve">
+    <value>Канал {0} оновлено</value>
+  </data>
   <data name="DeleteError" xml:space="preserve">
     <value>Помилка сталася при видаленні. Будь ласка спробуйте ще раз</value>
   </data>
@@ -129,6 +135,12 @@
   <data name="Greeting" xml:space="preserve">
     <value>Вітаю</value>
   </data>
+  <data name="LogOutError" xml:space="preserve">
+    <value>Не вдалося вийти. Будь ласка спробуйте ще раз</value>
+  </data>
+  <data name="LogOutSuccess" xml:space="preserve">
+    <value>Ви вийшли</value>
+  </data>
   <data name="LotteryDeleted" xml:space="preserve">
     <value>Розіграш "{0}" видалено</value>
   </data>
@@ -137,6 +149,12 @@
   </data>
   <data name="LotterySent" xml:space="preserve">
     <value>Розіграш "{0}" надіслано до Telegram каналу "{1}"</value>
+  </data>
+  <data name="MissingChannel" xml:space="preserve">
+    <value>Канал {0} не існує</value>
+  </data>
+  <data name="MissingCommentsGroup" xml:space="preserve">
+    <value>Не знайдено чат для коментарів для каналу '{0}'. Якщо такий чат є, напищіть щось у нього або оноввіть інформацію про канал</value>
   </data>
   <data name="MissingLottery" xml:space="preserve">
     <value>Не знайдено розіграш "{0}". Схоже віт був видалений</value>
@@ -164,5 +182,8 @@
   </data>
   <data name="Test" xml:space="preserve">
     <value>Привіт Світ!</value>
+  </data>
+  <data name="UnBannError" xml:space="preserve">
+    <value>Не вдалося розбанити користувача. Будь ласка спробуйте ще</value>
   </data>
 </root>

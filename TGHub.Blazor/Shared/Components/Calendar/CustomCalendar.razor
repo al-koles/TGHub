@@ -2,36 +2,40 @@
 @using TGHub.Blazor.Shared.Components.Calendar.Models
 @using System.Globalization
 @using TGHub.Blazor.Shared.Components.Calendar.Components
-<div class="h-full">
-    <table class="w-full h-full border-spacing-0">
-        <thead class="h-min">
-        <tr>
-            @foreach (var dayOfWeek in _daysOfWeek)
-            {
-                <th class="text-center">
-                    @dayOfWeek
-                </th>
-            }
-        </tr>
-        </thead>
-        <tbody>
-        @for (var i = 0; i < _weeksCount; i++)
-        {
-            var days = _dates.Skip(i * 7).Take(7);
-            <tr>
-                @foreach (var day in days)
+<CascadingValue Value="@Year">
+    <CascadingValue Value="@Month">
+        <div class="h-full">
+            <table class="w-full h-full border-spacing-0">
+                <thead class="h-min">
+                <tr>
+                    @foreach (var dayOfWeek in _daysOfWeek)
+                    {
+                        <th class="text-center">
+                            @dayOfWeek
+                        </th>
+                    }
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < _weeksCount; i++)
                 {
-                    var events = Events.Where(e => e.ReleaseDateTime.Date == day)
-                        .OrderBy(e => e.ReleaseDateTime).ToList();
-                    <td class="border w-[14%]">
-                        <CalendarDay Date="@day" Events="@events" EventClick="@EventClick"/>
-                    </td>
+                    var days = _dates.Skip(i * 7).Take(7);
+                    <tr>
+                        @foreach (var day in days)
+                        {
+                            var events = Events.Where(e => e.ReleaseDateTime.Date == day)
+                                .OrderBy(e => e.ReleaseDateTime).ToList();
+                            <td class="border w-[14%]">
+                                <CalendarDay Date="@day" Events="@events" EventClick="@EventClick"/>
+                            </td>
+                        }
+                    </tr>
                 }
-            </tr>
-        }
-        </tbody>
-    </table>
-</div>
+                </tbody>
+            </table>
+        </div>
+    </CascadingValue>
+</CascadingValue>
 
 @code {
 

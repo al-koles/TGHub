@@ -8,4 +8,5 @@ public interface ITgHubTelegramBotClient
     Task<int> SendPostAsync(Post post);
     Task<int> SendLotteryAsync(Lottery lottery);
     Task<int> SendLotteryResultAsync(Lottery lottery);
+    Task UnBannUserAsync(long tgUserId, long tgChatId);
 }
