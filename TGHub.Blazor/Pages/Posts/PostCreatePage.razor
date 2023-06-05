@@ -1,22 +1,26 @@
 ﻿@attribute [Authorize]
 @page "/posts/create"
-@using TGHub.Blazor.Pages.Posts.Forms
+@using System.Globalization
 @using TGHub.Blazor.Pages.Posts.Models
+@using TGHub.Blazor.Pages.Posts.Forms
 
 <div class="h-full">
     <PostForm Model="@_model" IsEdit="@false" RedirectUrl="@RedirectUrl"/>
 </div>
 
 @code {
-    
-    [Parameter] [SupplyParameterFromQuery]
+
+    [Parameter]
+    [SupplyParameterFromQuery]
     public string? RedirectUrl { get; set; }
 
-    [Parameter] [SupplyParameterFromQuery]
+    [Parameter]
+    [SupplyParameterFromQuery]
     public string? DefaultDate
     {
         get => _defaultDate?.ToString();
-        set => _defaultDate = DateOnly.TryParse(value, out var date) ?  date : null;
+        set => _defaultDate =
+            DateOnly.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ? date : null;
     }
 
     private DateOnly? _defaultDate;
