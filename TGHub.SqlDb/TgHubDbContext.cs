@@ -10,9 +10,10 @@ public class TgHubDbContext : DbContext, ITgHubDbContext
     {
     }
 
-    public DbSet<BannedUser> BannedUsers { get; set; } = null!;
-    public DbSet<BannTopic> BannTopics { get; set; } = null!;
-    public DbSet<BannWord> BannWords { get; set; } = null!;
+    public DbSet<BannUser> BannUsers { get; set; } = null!;
+    public DbSet<ArchiveBann> Banns { get; set; } = null!;
+    public DbSet<SpamMessage> SpamMessages { get; set; } = null!;
+    public DbSet<SpamWord> SpamWords { get; set; } = null!;
     public DbSet<Channel> Channels { get; set; } = null!;
     public DbSet<ChannelAdministrator> ChannelAdministrators { get; set; } = null!;
     public DbSet<Lottery> Lotteries { get; set; } = null!;

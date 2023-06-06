@@ -6,9 +6,10 @@ namespace TGHub.Application.Interfaces;
 
 public interface ITgHubDbContext : IDisposable, IAsyncDisposable
 {
-    DbSet<BannedUser> BannedUsers { get; set; }
-    DbSet<BannTopic> BannTopics { get; set; }
-    DbSet<BannWord> BannWords { get; set; }
+    DbSet<BannUser> BannUsers { get; set; }
+    DbSet<ArchiveBann> Banns { get; set; }
+    DbSet<SpamMessage> SpamMessages { get; set; }
+    DbSet<SpamWord> SpamWords { get; set; }
     DbSet<Channel> Channels { get; set; }
     DbSet<ChannelAdministrator> ChannelAdministrators { get; set; }
     DbSet<Lottery> Lotteries { get; set; }

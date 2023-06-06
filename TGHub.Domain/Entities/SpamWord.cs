@@ -1,6 +1,6 @@
 ﻿namespace TGHub.Domain.Entities;
 
-public class BannWord : EntityBase
+public class SpamWord : EntityBase
 {
     public string Value { get; set; } = null!;
 

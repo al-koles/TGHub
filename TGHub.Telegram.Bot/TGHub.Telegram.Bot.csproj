@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TGHub.Application\TGHub.Application.csproj" />
+      <ProjectReference Include="..\TGHub.SpamModeration\TGHub.SpamModeration.csproj" />
     </ItemGroup>
 
 </Project>

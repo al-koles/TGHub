@@ -5,12 +5,13 @@ public class Channel : EntityBase
     public long TelegramId { get; set; }
     public long? LinkedChatTelegramId { get; set; }
     public string Name { get; set; } = null!;
-    public bool SpamOn { get; set; }
+    public bool OffensiveSpamOn { get; set; }
+    public bool ListSpamOn { get; set; }
     public bool IsActive { get; set; }
     public string? LogoFileName { get; set; }
 
     public ICollection<ChannelAdministrator> Administrators { get; set; } = new List<ChannelAdministrator>();
-    public ICollection<BannTopic> BannTopics { get; set; } = new HashSet<BannTopic>();
-    public ICollection<BannWord> BannWords { get; set; } = new HashSet<BannWord>();
-    public ICollection<BannedUser> BannedUsers { get; set; } = new HashSet<BannedUser>();
+    public ICollection<SpamWord> SpamWords { get; set; } = new HashSet<SpamWord>();
+    public ICollection<SpamMessage> SpamMessages { get; set; } = new HashSet<SpamMessage>();
+    public ICollection<BannUser> BannUsers { get; set; } = new HashSet<BannUser>();
 }

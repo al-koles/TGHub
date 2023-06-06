@@ -44,4 +44,9 @@ internal class TgHubTelegramBotClient : ITgHubTelegramBotClient
     {
         return _tgChannelService.UnBannUserAsync(tgUserId, tgChatId);
     }
+
+    public Task CheckSpamAsync(long tgUserId, long tgChatId, string messageText)
+    {
+        throw new NotImplementedException();
+    }
 }
