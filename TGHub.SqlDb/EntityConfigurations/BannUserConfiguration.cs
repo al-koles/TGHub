@@ -22,6 +22,6 @@ public class BannUserConfiguration : IEntityTypeConfiguration<BannUser>
         builder.HasOne(e => e.BannInitiator)
             .WithMany(e => e.BannedUsers)
             .HasForeignKey(e => e.BannInitiatorId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

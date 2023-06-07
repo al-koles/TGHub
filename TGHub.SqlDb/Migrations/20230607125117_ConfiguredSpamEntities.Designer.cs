@@ -12,7 +12,7 @@ using TGHub.SqlDb;
 namespace TGHub.SqlDb.Migrations
 {
     [DbContext(typeof(TgHubDbContext))]
-    [Migration("20230606163459_ConfiguredSpamEntities")]
+    [Migration("20230607125117_ConfiguredSpamEntities")]
     partial class ConfiguredSpamEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -452,13 +452,11 @@ namespace TGHub.SqlDb.Migrations
                 {
                     b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "Initiator")
                         .WithMany("InitiatedArchiveBanns")
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("InitiatorId");
 
                     b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "UnBannInitiator")
                         .WithMany("InitiatedArchiveUnBanns")
-                        .HasForeignKey("UnBannInitiatorId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("UnBannInitiatorId");
 
                     b.HasOne("TGHub.Domain.Entities.BannUser", "User")
                         .WithMany("ArchiveBanns")
@@ -478,7 +476,7 @@ namespace TGHub.SqlDb.Migrations
                     b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "BannInitiator")
                         .WithMany("BannedUsers")
                         .HasForeignKey("BannInitiatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
                         .WithMany("BannUsers")

@@ -20,11 +20,11 @@ public class ArchiveBannConfiguration : IEntityTypeConfiguration<ArchiveBann>
         builder.HasOne(e => e.Initiator)
             .WithMany(e => e.InitiatedArchiveBanns)
             .HasForeignKey(e => e.InitiatorId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.ClientSetNull);
 
         builder.HasOne(e => e.UnBannInitiator)
             .WithMany(e => e.InitiatedArchiveUnBanns)
             .HasForeignKey(e => e.UnBannInitiatorId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.ClientSetNull);
     }
 }

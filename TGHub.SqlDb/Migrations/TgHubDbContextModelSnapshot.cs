@@ -450,13 +450,11 @@ namespace TGHub.SqlDb.Migrations
                 {
                     b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "Initiator")
                         .WithMany("InitiatedArchiveBanns")
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("InitiatorId");
 
                     b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "UnBannInitiator")
                         .WithMany("InitiatedArchiveUnBanns")
-                        .HasForeignKey("UnBannInitiatorId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("UnBannInitiatorId");
 
                     b.HasOne("TGHub.Domain.Entities.BannUser", "User")
                         .WithMany("ArchiveBanns")
@@ -476,7 +474,7 @@ namespace TGHub.SqlDb.Migrations
                     b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "BannInitiator")
                         .WithMany("BannedUsers")
                         .HasForeignKey("BannInitiatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
                         .WithMany("BannUsers")

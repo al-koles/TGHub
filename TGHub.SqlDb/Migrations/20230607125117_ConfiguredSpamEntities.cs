@@ -62,7 +62,7 @@ namespace TGHub.SqlDb.Migrations
                         column: x => x.BannInitiatorId,
                         principalTable: "ChannelAdministrator",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -135,8 +135,7 @@ namespace TGHub.SqlDb.Migrations
                         name: "FK_ArchiveBann_ChannelAdministrator_InitiatorId",
                         column: x => x.InitiatorId,
                         principalTable: "ChannelAdministrator",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ArchiveBann_ChannelAdministrator_UnBannInitiatorId",
                         column: x => x.UnBannInitiatorId,
