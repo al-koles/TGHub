@@ -3,7 +3,7 @@ using TGHub.Domain.Entities;
 
 namespace TGHub.Application.Services.Spam.Models;
 
-public class SpammerModel : IMapWith<BannUser>
+public class SpammerModel : IMapWith<Spammer>
 {
     public int ChannelId { get; set; }
     public long TelegramId { get; set; }

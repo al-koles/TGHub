@@ -12,6 +12,5 @@ public class Channel : EntityBase
 
     public ICollection<ChannelAdministrator> Administrators { get; set; } = new List<ChannelAdministrator>();
     public ICollection<SpamWord> SpamWords { get; set; } = new HashSet<SpamWord>();
-    public ICollection<SpamMessage> SpamMessages { get; set; } = new HashSet<SpamMessage>();
-    public ICollection<BannUser> BannUsers { get; set; } = new HashSet<BannUser>();
+    public ICollection<Spammer> Spammers { get; set; } = new HashSet<Spammer>();
 }

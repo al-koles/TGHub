@@ -12,9 +12,9 @@ public class ArchiveBannConfiguration : IEntityTypeConfiguration<ArchiveBann>
 
         builder.HasKey(e => e.Id);
 
-        builder.HasOne(e => e.User)
+        builder.HasOne(e => e.Spammer)
             .WithMany(e => e.ArchiveBanns)
-            .HasForeignKey(e => e.UserId)
+            .HasForeignKey(e => e.SpammerId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(e => e.Initiator)

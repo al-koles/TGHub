@@ -17,5 +17,5 @@ public class ChannelAdministrator : EntityBase
     public ICollection<Post> Posts = new HashSet<Post>();
     public ICollection<ArchiveBann> InitiatedArchiveBanns = new HashSet<ArchiveBann>();
     public ICollection<ArchiveBann> InitiatedArchiveUnBanns = new HashSet<ArchiveBann>();
-    public ICollection<BannUser> BannedUsers = new HashSet<BannUser>();
+    public ICollection<Spammer> BannedUsers = new HashSet<Spammer>();
 }

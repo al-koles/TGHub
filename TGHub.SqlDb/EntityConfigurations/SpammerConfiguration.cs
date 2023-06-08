@@ -4,18 +4,18 @@ using TGHub.Domain.Entities;
 
 namespace TGHub.SqlDb.EntityConfigurations;
 
-public class BannUserConfiguration : IEntityTypeConfiguration<BannUser>
+public class SpammerConfiguration : IEntityTypeConfiguration<Spammer>
 {
-    public void Configure(EntityTypeBuilder<BannUser> builder)
+    public void Configure(EntityTypeBuilder<Spammer> builder)
     {
-        builder.ToTable("BannUser");
+        builder.ToTable("Spammer");
 
         builder.HasKey(e => e.Id);
 
         builder.HasIndex(e => new { e.ChannelId, e.TelegramId }).IsUnique();
 
         builder.HasOne(e => e.Channel)
-            .WithMany(e => e.BannUsers)
+            .WithMany(e => e.Spammers)
             .HasForeignKey(e => e.ChannelId)
             .OnDelete(DeleteBehavior.Cascade);
 

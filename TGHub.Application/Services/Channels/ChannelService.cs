@@ -29,4 +29,13 @@ public class ChannelService : Service<Channel>, IChannelService
             await UpdateAsync(dbChannel);
         }
     }
+
+    public Task<List<Spammer>> GetBannedUsersAsync(int channelId)
+    {
+        return DbContext.Spammers
+            .Where(u => u.ChannelId == channelId &&
+                        u.BannDateTime != null)
+            .OrderByDescending(u => u.BannDateTime)
+            .ToListAsync();
+    }
 }

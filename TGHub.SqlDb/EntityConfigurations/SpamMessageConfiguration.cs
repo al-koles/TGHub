@@ -12,11 +12,11 @@ public class SpamMessageConfiguration : IEntityTypeConfiguration<SpamMessage>
 
         builder.HasKey(e => e.Id);
 
-        builder.HasIndex(e => new { e.ChannelId, e.TelegramId }).IsUnique();
+        builder.HasIndex(e => new { e.SpammerId, e.TelegramId }).IsUnique();
 
-        builder.HasOne(e => e.Channel)
+        builder.HasOne(e => e.Spammer)
             .WithMany(e => e.SpamMessages)
-            .HasForeignKey(e => e.ChannelId)
+            .HasForeignKey(e => e.SpammerId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

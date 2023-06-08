@@ -16,37 +16,45 @@ public class SpamService : Service<SpamMessage>, ISpamService
         _mapper = mapper;
     }
 
-    public async Task<bool> BannSpammerIfOutOfLimitAsync(SpammerModel spammer, int spamMessagesLimit = 5)
+    public async Task<Spammer> UpdateOrCreateSpammerAsync(SpammerModel spammerModel)
+    {
+        var spammer = await DbContext.Spammers
+            .FirstOrDefaultAsync(u => u.TelegramId == spammerModel.TelegramId &&
+                                      u.ChannelId == spammerModel.ChannelId);
+        if (spammer == null)
+        {
+            spammer = _mapper.Map<Spammer>(spammerModel);
+            await DbContext.Spammers.AddAsync(spammer);
+        }
+        else
+        {
+            _mapper.Map(spammerModel, spammer);
+        }
+
+        await DbContext.SaveChangesAsync();
+
+        return spammer;
+    }
+
+    public async Task<bool> BannSpammerIfOutOfLimitAsync(Spammer spammer, int spamMessagesLimit = 5)
     {
         DbContext.ChangeTracker.Clear();
         bool banned;
 
-        var bannUser = await DbContext.BannUsers
-            .FirstOrDefaultAsync(u => u.TelegramId == spammer.TelegramId && u.ChannelId == spammer.ChannelId);
-        if (bannUser == null)
-        {
-            bannUser = _mapper.Map<BannUser>(spammer);
-            await DbContext.BannUsers.AddAsync(bannUser);
-        }
-        else
-        {
-            _mapper.Map(spammer, bannUser);
-        }
-
-        var userIsAlreadyBanned = bannUser.BannDateTime != null;
-        if (userIsAlreadyBanned)
+        var spammerIsAlreadyBanned = spammer.BannDateTime != null;
+        if (spammerIsAlreadyBanned)
         {
             banned = true;
         }
         else
         {
-            var lastSpamMessages = await GetLastSpamMessagesAsync(spammer.ChannelId, spammer.TelegramId);
+            var lastSpamMessages = await GetLastSpamMessagesBySpammerAsync(spammer);
 
             var userIsOutOfSpamMessagesLimit = lastSpamMessages.Count > spamMessagesLimit;
             if (userIsOutOfSpamMessagesLimit)
             {
-                bannUser.BannDateTime = DateTime.UtcNow;
-                bannUser.BannContext = string.Join($"{Environment.NewLine}{Environment.NewLine}",
+                spammer.BannDateTime = DateTime.UtcNow;
+                spammer.BannContext = string.Join($"{Environment.NewLine}{Environment.NewLine}",
                     lastSpamMessages.Select(m => m.Value));
                 banned = true;
             }
@@ -60,27 +68,23 @@ public class SpamService : Service<SpamMessage>, ISpamService
         return banned;
     }
 
-    public async Task<List<SpamMessage>> GetLastSpamMessagesAsync(int channelId, long authorTgId)
+    public async Task<List<SpamMessage>> GetLastSpamMessagesBySpammerAsync(Spammer spammer)
     {
         var spamMessages = DbContext.SpamMessages
-            .Where(m => m.ChannelId == channelId && m.AuthorTelegramId == authorTgId);
+            .Where(m => m.SpammerId == spammer.Id);
 
-        var bannUser = await DbContext.BannUsers
-            .FirstOrDefaultAsync(u => u.ChannelId == channelId && u.TelegramId == authorTgId);
-        if (bannUser != null)
+        var spammerIsBanned = spammer.BannDateTime != null;
+        if (spammerIsBanned)
         {
-            if (bannUser.BannDateTime != null)
+            spamMessages = spamMessages.Where(m => m.DateTimeWritten > spammer.BannDateTime);
+        }
+        else
+        {
+            var lastArchiveBann = await DbContext.ArchiveBanns.OrderBy(b => b.From)
+                .LastOrDefaultAsync(b => b.SpammerId == spammer.Id);
+            if (lastArchiveBann != null)
             {
-                spamMessages = spamMessages.Where(m => m.DateTimeWritten > bannUser.BannDateTime);
-            }
-            else
-            {
-                var lastBann = await DbContext.Banns.OrderBy(b => b.From)
-                    .LastOrDefaultAsync(b => b.User.ChannelId == channelId && b.User.TelegramId == authorTgId);
-                if (lastBann != null)
-                {
-                    spamMessages = spamMessages.Where(m => m.DateTimeWritten > lastBann.From);
-                }
+                spamMessages = spamMessages.Where(m => m.DateTimeWritten > lastArchiveBann.From);
             }
         }
 

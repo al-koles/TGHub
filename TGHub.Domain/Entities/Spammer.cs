@@ -1,6 +1,6 @@
 ﻿namespace TGHub.Domain.Entities;
 
-public class BannUser : EntityBase
+public class Spammer : EntityBase
 {
     public long TelegramId { get; set; }
     public string? FirstName { get; set; }
@@ -16,4 +16,5 @@ public class BannUser : EntityBase
     public ChannelAdministrator? BannInitiator { get; set; }
 
     public ICollection<ArchiveBann> ArchiveBanns = new HashSet<ArchiveBann>();
+    public ICollection<SpamMessage> SpamMessages = new HashSet<SpamMessage>();
 }

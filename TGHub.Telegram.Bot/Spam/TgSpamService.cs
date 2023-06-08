@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using TGHub.Application;
 using TGHub.Application.Services.Channels;
 using TGHub.Application.Services.Spam;
 using TGHub.Application.Services.Spam.Models;
@@ -61,25 +62,6 @@ public class TgSpamService : ITgSpamService
 
         if (isOffensiveSpam || isListSpam)
         {
-            channel.SpamMessages.Add(new SpamMessage
-            {
-                TelegramId = message.MessageId,
-                Value = text,
-                AuthorTelegramId = message.From!.Id,
-                DateTimeWritten = DateTime.UtcNow,
-                Type = spamType,
-                Context = spamContext
-            });
-            try
-            {
-                await _channelService.UpdateAsync(channel);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Failed to create new spam message '{0}' of user '{1}' of chat '{2}'",
-                    message.MessageId, message.From.Id, message.Chat.Id);
-            }
-
             try
             {
                 await _telegramBotClient.DeleteMessageAsync(message.Chat.Id, message.MessageId);
@@ -90,15 +72,35 @@ public class TgSpamService : ITgSpamService
                     message.MessageId, message.From.Id, message.Chat.Id);
             }
 
-            var shouldBan = await _spamService.BannSpammerIfOutOfLimitAsync(new SpammerModel
+            var spammerModel = new SpammerModel
             {
                 ChannelId = channel.Id,
-                TelegramId = message.From.Id,
+                TelegramId = message.From!.Id,
                 FirstName = message.From.FirstName,
                 LastName = message.From.LastName,
                 UserName = message.From.Username
-            });
-            if (shouldBan)
+            };
+            var spammer = await _spamService.UpdateOrCreateSpammerAsync(spammerModel);
+            try
+            {
+                await _spamService.CreateAsync(new SpamMessage
+                {
+                    SpammerId = spammer.Id,
+                    TelegramId = message.MessageId,
+                    Value = text,
+                    DateTimeWritten = DateTime.UtcNow,
+                    Type = spamType,
+                    Context = spamContext
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to add spam message '{0}' of user '{1}' of chat '{2}'",
+                    message.MessageId, message.From.Id, message.Chat.Id);
+            }
+
+            var shouldBann = await _spamService.BannSpammerIfOutOfLimitAsync(spammer, Constants.SpamLimit);
+            if (shouldBann)
             {
                 try
                 {
