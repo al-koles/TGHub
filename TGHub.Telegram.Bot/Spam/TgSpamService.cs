@@ -63,13 +63,23 @@ public class TgSpamService : ITgSpamService
         {
             channel.SpamMessages.Add(new SpamMessage
             {
+                TelegramId = message.MessageId,
                 Value = text,
                 AuthorTelegramId = message.From!.Id,
                 DateTimeWritten = DateTime.UtcNow,
                 Type = spamType,
                 Context = spamContext
             });
-            await _channelService.UpdateAsync(channel);
+            try
+            {
+                await _channelService.UpdateAsync(channel);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to create new spam message '{0}' of user '{1}' of chat '{2}'",
+                    message.MessageId, message.From.Id, message.Chat.Id);
+            }
+
             try
             {
                 await _telegramBotClient.DeleteMessageAsync(message.Chat.Id, message.MessageId);

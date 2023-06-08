@@ -4,6 +4,7 @@ namespace TGHub.Domain.Entities;
 
 public class SpamMessage : EntityBase
 {
+    public int TelegramId { get; set; }
     public long AuthorTelegramId { get; set; }
     public string Value { get; set; } = null!;
     public DateTime DateTimeWritten { get; set; }

@@ -12,7 +12,7 @@ public class SpamMessageConfiguration : IEntityTypeConfiguration<SpamMessage>
 
         builder.HasKey(e => e.Id);
 
-        builder.HasIndex(e => new { e.ChannelId, e.AuthorTelegramId });
+        builder.HasIndex(e => new { e.ChannelId, e.TelegramId }).IsUnique();
 
         builder.HasOne(e => e.Channel)
             .WithMany(e => e.SpamMessages)

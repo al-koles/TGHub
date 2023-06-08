@@ -18,40 +18,41 @@ public class SpamService : Service<SpamMessage>, ISpamService
 
     public async Task<bool> BannSpammerIfOutOfLimitAsync(SpammerModel spammer, int spamMessagesLimit = 5)
     {
+        DbContext.ChangeTracker.Clear();
         bool banned;
 
         var bannUser = await DbContext.BannUsers
             .FirstOrDefaultAsync(u => u.TelegramId == spammer.TelegramId && u.ChannelId == spammer.ChannelId);
         if (bannUser == null)
         {
-            await DbContext.BannUsers.AddAsync(_mapper.Map<BannUser>(spammer));
-            banned = false;
+            bannUser = _mapper.Map<BannUser>(spammer);
+            await DbContext.BannUsers.AddAsync(bannUser);
         }
         else
         {
             _mapper.Map(spammer, bannUser);
+        }
 
-            var userIsAlreadyBanned = bannUser.BannDateTime != null;
-            if (userIsAlreadyBanned)
+        var userIsAlreadyBanned = bannUser.BannDateTime != null;
+        if (userIsAlreadyBanned)
+        {
+            banned = true;
+        }
+        else
+        {
+            var lastSpamMessages = await GetLastSpamMessagesAsync(spammer.ChannelId, spammer.TelegramId);
+
+            var userIsOutOfSpamMessagesLimit = lastSpamMessages.Count > spamMessagesLimit;
+            if (userIsOutOfSpamMessagesLimit)
             {
+                bannUser.BannDateTime = DateTime.UtcNow;
+                bannUser.BannContext = string.Join($"{Environment.NewLine}{Environment.NewLine}",
+                    lastSpamMessages.Select(m => m.Value));
                 banned = true;
             }
             else
             {
-                var lastSpamMessages = await GetLastSpamMessagesAsync(spammer.ChannelId, spammer.TelegramId);
-
-                var userIsOutOfSpamMessagesLimit = lastSpamMessages.Count > spamMessagesLimit;
-                if (userIsOutOfSpamMessagesLimit)
-                {
-                    bannUser.BannDateTime = DateTime.UtcNow;
-                    bannUser.BannContext = string.Join($"{Environment.NewLine}{Environment.NewLine}",
-                        lastSpamMessages.Select(m => m.Value));
-                    banned = true;
-                }
-                else
-                {
-                    banned = false;
-                }
+                banned = false;
             }
         }
 
@@ -59,12 +60,13 @@ public class SpamService : Service<SpamMessage>, ISpamService
         return banned;
     }
 
-    public async Task<List<SpamMessage>> GetLastSpamMessagesAsync(int channelId, long userId)
+    public async Task<List<SpamMessage>> GetLastSpamMessagesAsync(int channelId, long authorTgId)
     {
-        var spamMessages = DbContext.SpamMessages.Where(m => m.ChannelId == channelId);
+        var spamMessages = DbContext.SpamMessages
+            .Where(m => m.ChannelId == channelId && m.AuthorTelegramId == authorTgId);
 
         var bannUser = await DbContext.BannUsers
-            .FirstOrDefaultAsync(u => u.ChannelId == channelId && u.TelegramId == userId);
+            .FirstOrDefaultAsync(u => u.ChannelId == channelId && u.TelegramId == authorTgId);
         if (bannUser != null)
         {
             if (bannUser.BannDateTime != null)
@@ -74,7 +76,7 @@ public class SpamService : Service<SpamMessage>, ISpamService
             else
             {
                 var lastBann = await DbContext.Banns.OrderBy(b => b.From)
-                    .LastOrDefaultAsync(b => b.UserId == userId);
+                    .LastOrDefaultAsync(b => b.User.ChannelId == channelId && b.User.TelegramId == authorTgId);
                 if (lastBann != null)
                 {
                     spamMessages = spamMessages.Where(m => m.DateTimeWritten > lastBann.From);
