@@ -13,6 +13,7 @@ using TGHub.Application.Services.Lotteries.Jobs;
 using TGHub.Application.Services.Posts;
 using TGHub.Application.Services.Posts.Interfaces;
 using TGHub.Application.Services.Posts.Jobs;
+using TGHub.Application.Services.Spam;
 using TGHub.Domain.Entities;
 
 namespace TGHub.Application;
@@ -28,6 +29,7 @@ public static class DependencyInjection
 
         services.AddTransient<IService<TgHubUser>, Service<TgHubUser>>();
         services.AddTransient<IChannelService, ChannelService>();
+        services.AddTransient<ISpamService, SpamService>();
         services.AddTransient<IPostService, PostService>();
         services.AddTransient<IPostScheduleService, PostScheduleService>();
         services.AddTransient<IService<ChannelAdministrator>, ChannelAdministratorService>();

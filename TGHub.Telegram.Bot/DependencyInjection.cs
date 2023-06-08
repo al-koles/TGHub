@@ -6,6 +6,7 @@ using TGHub.Telegram.Bot.Channels;
 using TGHub.Telegram.Bot.Lotteries;
 using TGHub.Telegram.Bot.Options;
 using TGHub.Telegram.Bot.Posts;
+using TGHub.Telegram.Bot.Spam;
 
 namespace TGHub.Telegram.Bot;
 
@@ -22,5 +23,6 @@ public static class DependencyInjection
         services.AddTransient<ITgChannelService, TgChannelService>();
         services.AddTransient<ITgPostService, TgPostService>();
         services.AddTransient<ITgLotteryService, TgLotteryService>();
+        services.AddTransient<ITgSpamService, TgSpamService>();
     }
 }

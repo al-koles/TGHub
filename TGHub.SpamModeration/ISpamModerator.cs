@@ -2,5 +2,5 @@
 
 public interface ISpamModerator : IDisposable
 {
-    Task<bool> ScanTextAsync(string text, double minScore = 0.7);
+    Task<bool> ScanTextIsNotSpamAsync(string text, double minScore = 0.7);
 }

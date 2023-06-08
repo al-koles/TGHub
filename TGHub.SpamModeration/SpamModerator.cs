@@ -24,14 +24,14 @@ public class SpamModerator : ISpamModerator
         });
     }
 
-    public async Task<bool> ScanTextAsync(string text, double minScore = 0.7)
+    public async Task<bool> ScanTextIsNotSpamAsync(string text, double minScore = 0.7)
     {
         using var textStream = new MemoryStream(Encoding.UTF8.GetBytes(text));
         var screen = await _client.TextModeration.ScreenTextAsync("text/plain", textStream, classify: true);
         return screen.Classification == null ||
-               screen.Classification.Category1.Score > minScore ||
-               screen.Classification.Category2.Score > minScore ||
-               screen.Classification.Category3.Score > minScore;
+               (screen.Classification.Category1.Score <= minScore &&
+                screen.Classification.Category2.Score <= minScore &&
+                screen.Classification.Category3.Score <= minScore);
     }
 
     public void Dispose()
