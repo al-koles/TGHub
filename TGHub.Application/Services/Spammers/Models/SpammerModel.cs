@@ -1,7 +1,7 @@
 ﻿using TGHub.Application.Common.Mappings;
 using TGHub.Domain.Entities;
 
-namespace TGHub.Application.Services.Spam.Models;
+namespace TGHub.Application.Services.Spammers.Models;
 
 public class SpammerModel : IMapWith<Spammer>
 {

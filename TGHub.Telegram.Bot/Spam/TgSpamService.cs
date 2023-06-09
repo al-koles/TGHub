@@ -3,8 +3,10 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using TGHub.Application;
 using TGHub.Application.Services.Channels;
-using TGHub.Application.Services.Spam;
-using TGHub.Application.Services.Spam.Models;
+using TGHub.Application.Services.Spammers;
+using TGHub.Application.Services.Spammers.Models;
+using TGHub.Application.Services.SpamMessages;
+using TGHub.Application.Services.SpamWords;
 using TGHub.Domain.Entities;
 using TGHub.Domain.Enums;
 using TGHub.SpamModeration;
@@ -15,17 +17,22 @@ public class TgSpamService : ITgSpamService
 {
     private readonly IChannelService _channelService;
     private readonly ILogger<TgSpamService> _logger;
+    private readonly ISpammerService _spammerService;
+    private readonly ISpamMessageService _spamMessageService;
     private readonly ISpamModerator _spamModerator;
-    private readonly ISpamService _spamService;
+    private readonly ISpamWordsService _spamWordsService;
     private readonly ITelegramBotClient _telegramBotClient;
 
     public TgSpamService(IChannelService channelService, ISpamModerator spamModerator,
-        ITelegramBotClient telegramBotClient, ISpamService spamService, ILogger<TgSpamService> logger)
+        ITelegramBotClient telegramBotClient, ISpamMessageService spamMessageService,
+        ISpammerService spammerService, ISpamWordsService spamWordsService, ILogger<TgSpamService> logger)
     {
         _channelService = channelService;
         _spamModerator = spamModerator;
         _telegramBotClient = telegramBotClient;
-        _spamService = spamService;
+        _spamMessageService = spamMessageService;
+        _spammerService = spammerService;
+        _spamWordsService = spamWordsService;
         _logger = logger;
     }
 
@@ -54,7 +61,7 @@ public class TgSpamService : ITgSpamService
         var isListSpam = false;
         if (channel.ListSpamOn)
         {
-            var spamWordsFound = await _spamService.FindSpamWordsAsync(text, channel.Id);
+            var spamWordsFound = await _spamWordsService.FindSpamWordsAsync(text, channel.Id);
             isListSpam = spamWordsFound.Any();
             spamContext = string.Join(", ", spamWordsFound);
             spamType = spamType | SpamMessageType.SpamWordFound;
@@ -80,10 +87,10 @@ public class TgSpamService : ITgSpamService
                 LastName = message.From.LastName,
                 UserName = message.From.Username
             };
-            var spammer = await _spamService.UpdateOrCreateSpammerAsync(spammerModel);
+            var spammer = await _spammerService.UpdateOrCreateSpammerAsync(spammerModel);
             try
             {
-                await _spamService.CreateAsync(new SpamMessage
+                await _spamMessageService.CreateAsync(new SpamMessage
                 {
                     SpammerId = spammer.Id,
                     TelegramId = message.MessageId,
@@ -99,7 +106,7 @@ public class TgSpamService : ITgSpamService
                     message.MessageId, message.From.Id, message.Chat.Id);
             }
 
-            var shouldBann = await _spamService.BannSpammerIfOutOfLimitAsync(spammer, Constants.SpamLimit);
+            var shouldBann = await _spammerService.BannSpammerIfOutOfLimitAsync(spammer, Constants.SpamLimit);
             if (shouldBann)
             {
                 try

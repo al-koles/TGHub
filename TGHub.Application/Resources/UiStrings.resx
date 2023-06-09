@@ -318,8 +318,8 @@
   <data name="BannContext" xml:space="preserve">
     <value>Bann context</value>
   </data>
-  <data name="BannedUsers" xml:space="preserve">
-    <value>Banned users</value>
+  <data name="BannedSpammers" xml:space="preserve">
+    <value>Banned spammers</value>
   </data>
   <data name="BannedAt" xml:space="preserve">
     <value>Banned at</value>
@@ -371,5 +371,44 @@
   </data>
   <data name="Unban" xml:space="preserve">
     <value>Unban</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="AutoBannContext" xml:space="preserve">
+    <value>Banned automatically due to revisited spam message limit. Spam Messages:</value>
+  </data>
+  <data name="Banned" xml:space="preserve">
+    <value>Banned</value>
+  </data>
+  <data name="BannHistory" xml:space="preserve">
+    <value>Bann history</value>
+  </data>
+  <data name="BannInitiator" xml:space="preserve">
+    <value>Bann initiator</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="UnbannedAt" xml:space="preserve">
+    <value>Unbanned at</value>
+  </data>
+  <data name="EnshureUnbann" xml:space="preserve">
+    <value>Are you sure you want to unbann user '{0}'?</value>
+  </data>
+  <data name="LastSpamMessages" xml:space="preserve">
+    <value>Last spam messages</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SpamMessages" xml:space="preserve">
+    <value>Spam messages</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="UnBanContext" xml:space="preserve">
+    <value>Unbann context</value>
   </data>
 </root>

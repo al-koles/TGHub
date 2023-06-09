@@ -318,8 +318,8 @@
   <data name="BannContext" xml:space="preserve">
     <value>Контекст бану</value>
   </data>
-  <data name="BannedUsers" xml:space="preserve">
-    <value>Забанені користувачі</value>
+  <data name="BannedSpammers" xml:space="preserve">
+    <value>Забанені спамери</value>
   </data>
   <data name="BannedAt" xml:space="preserve">
     <value>Час бану</value>
@@ -371,5 +371,44 @@
   </data>
   <data name="Unban" xml:space="preserve">
     <value>Розбанити</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Активний</value>
+  </data>
+  <data name="AutoBannContext" xml:space="preserve">
+    <value>Забанено автоматично через перевищення ліміту спам-повідомлень. Спам-повідомлення:</value>
+  </data>
+  <data name="Banned" xml:space="preserve">
+    <value>Забанено</value>
+  </data>
+  <data name="BannHistory" xml:space="preserve">
+    <value>Історія банів</value>
+  </data>
+  <data name="BannInitiator" xml:space="preserve">
+    <value>Ініціатор бану</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="UnbannedAt" xml:space="preserve">
+    <value>Час розбану</value>
+  </data>
+  <data name="EnshureUnbann" xml:space="preserve">
+    <value>Ви впевнені, що хочете розбанити користувача '{0}'?</value>
+  </data>
+  <data name="LastSpamMessages" xml:space="preserve">
+    <value>Останні спам-повідомлення</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Ім'я</value>
+  </data>
+  <data name="SpamMessages" xml:space="preserve">
+    <value>Спам-повідомлення</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Час</value>
+  </data>
+  <data name="UnBanContext" xml:space="preserve">
+    <value>Контекст розбану</value>
   </data>
 </root>

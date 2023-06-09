@@ -1,0 +1,115 @@
+﻿@using TGHub.Application.Resources
+@using TGHub.Application.Services.ArchiveBanns
+@using TGHub.Application.Services.Base
+@using TGHub.Application.Services.Spammers
+@using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using TGHub.Application.Common
+@using TGHub.Application.Interfaces
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject IToastService ToastService
+@inject IServiceProvider ServiceProvider
+@inject ILogger<BannedUserModal> Logger
+@inject LocalStorageProvider LocalStorageProvider
+
+@if (_isUnBanning)
+{
+    <ElementLoader/>
+}
+<div>
+    <label class="font-bold">@UiStringsLoc[UiStrings.UnBanContext]:</label>
+    <textarea @bind="@_context" class="@($"bg-[{ColorStrings.C0}] rounded-xl w-full p-2 focus:outline-[{ColorStrings.C5}]")"></textarea>
+</div>
+<div class="grid grid-cols-2 mt-3">
+    <button type="button"
+            class="bg-gray-400/80 hover:bg-bg-gray-400 text-[#ffffff] drop-shadow active:drop-shadow-none"
+            @onclick="@OnCancelClick">
+        @UiStringsLoc[UiStrings.Cancel]
+    </button>
+    <button type="button"
+            class="bg-[@ColorStrings.C5]/80 hover:bg-[@ColorStrings.C5] text-[#ffffff] drop-shadow active:drop-shadow-none"
+            @onclick="@OnYesClick">
+        @UiStringsLoc[UiStrings.Yes]
+    </button>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    private BlazoredModalInstance Modal { get; set; } = null!;
+
+    [Parameter]
+    public Spammer Spammer { get; set; } = new();
+
+    private bool _isUnBanning;
+    private string _context;
+
+    private async Task OnYesClick()
+    {
+        await UnBannAsync();
+        await Modal.CloseAsync(ModalResult.Ok());
+    }
+
+    private Task OnCancelClick()
+    {
+        return Modal.CloseAsync(ModalResult.Cancel());
+    }
+
+    private async Task UnBannAsync()
+    {
+        if (Spammer.Channel.LinkedChatTelegramId == null)
+        {
+            ToastService.ShowWarning(string.Format(NotificationStringsLoc[NotificationStrings.MissingCommentsGroup], Spammer.Channel.Name));
+            return;
+        }
+        if (_isUnBanning)
+        {
+            return;
+        }
+        _isUnBanning = true;
+        StateHasChanged();
+        try
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+
+            var tgBotClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
+            await tgBotClient.UnBannUserAsync(Spammer.TelegramId, Spammer.Channel.LinkedChatTelegramId.Value);
+
+            var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
+            var unBannInitiator = await channelAdministratorService
+                .FirstOrDefaultAsync(a => a.AdministratorId == LocalStorageProvider.Id &&
+                                          a.ChannelId == Spammer.ChannelId);
+
+            var archiveBannService = scope.ServiceProvider.GetRequiredService<IArchiveBannService>();
+            await archiveBannService.CreateAsync(new ArchiveBann
+            {
+                From = Spammer.BannDateTime!.Value,
+                To = DateTime.UtcNow,
+                Context = _context,
+                SpammerId = Spammer.Id,
+                InitiatorId = Spammer.BannInitiatorId,
+                UnBannInitiatorId = unBannInitiator?.Id
+            });
+
+            Spammer.BannDateTime = null;
+            Spammer.BannInitiator = null;
+            Spammer.BannInitiatorId = null;
+            Spammer.BannContext = null;
+
+            var spammerService = scope.ServiceProvider.GetRequiredService<ISpammerService>();
+            await spammerService.UpdateAsync(Spammer);
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.UnBannError]);
+            Logger.LogError(e, "Failed to unbann user {0}", Spammer.Id);
+        }
+        finally
+        {
+            _isUnBanning = false;
+            StateHasChanged();
+        }
+    }
+
+}

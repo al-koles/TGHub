@@ -51,9 +51,6 @@ public class BotController : ControllerBase
                 case UpdateType.Message:
                     await AnswerMessage(update);
                     break;
-                case UpdateType.ChannelPost:
-                    await AnswerPost(update);
-                    break;
                 case UpdateType.MyChatMember:
                     await MyChatMember(update);
                     break;
