@@ -1,5 +1,4 @@
 ﻿@using TGHub.Application.Resources
-@using TGHub.Application.Services.ArchiveBanns
 @using TGHub.Application.Services.Base
 @using TGHub.Application.Services.Spammers
 @using TGHub.Blazor.Resources
@@ -18,7 +17,7 @@
     <ElementLoader/>
 }
 <div>
-    <label class="font-bold">@UiStringsLoc[UiStrings.UnBanContext]:</label>
+    <label class="font-bold">@UiStringsLoc[UiStrings.BannContext]:</label>
     <textarea @bind="@_context" class="@($"bg-[{ColorStrings.C0}] rounded-xl w-full p-2 focus:outline-[{ColorStrings.C5}]")"></textarea>
 </div>
 <div class="grid grid-cols-2 mt-3">
@@ -47,7 +46,7 @@
 
     private async Task OnYesClick()
     {
-        await UnBannAsync();
+        await BannAsync();
         await Modal.CloseAsync(ModalResult.Ok());
     }
 
@@ -56,7 +55,7 @@
         return Modal.CloseAsync(ModalResult.Cancel());
     }
 
-    private async Task UnBannAsync()
+    private async Task BannAsync()
     {
         if (Spammer.Channel.LinkedChatTelegramId == null)
         {
@@ -74,42 +73,31 @@
             await using var scope = ServiceProvider.CreateAsyncScope();
 
             var tgBotClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
-            await tgBotClient.UnBannUserAsync(Spammer.TelegramId, Spammer.Channel.LinkedChatTelegramId.Value);
+            await tgBotClient.BannUserAsync(Spammer.TelegramId, Spammer.Channel.LinkedChatTelegramId.Value);
 
             var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
-            var unBannInitiator = await channelAdministratorService
+            var bannInitiator = await channelAdministratorService
                 .FirstOrDefaultAsync(a => a.AdministratorId == LocalStorageProvider.Id &&
                                           a.ChannelId == Spammer.ChannelId);
 
-            var archiveBannService = scope.ServiceProvider.GetRequiredService<IArchiveBannService>();
-            await archiveBannService.CreateAsync(new ArchiveBann
-            {
-                From = Spammer.BannDateTime!.Value,
-                To = DateTime.UtcNow,
-                Context = _context,
-                SpammerId = Spammer.Id,
-                InitiatorId = Spammer.BannInitiatorId,
-                UnBannInitiatorId = unBannInitiator?.Id
-            });
-
-            Spammer.BannDateTime = null;
-            Spammer.BannInitiator = null;
-            Spammer.BannInitiatorId = null;
-            Spammer.BannContext = null;
+            Spammer.BannDateTime = DateTime.UtcNow;
+            Spammer.BannInitiator = bannInitiator;
+            Spammer.BannInitiatorId = bannInitiator!.Id;
+            Spammer.BannContext = _context;
 
             var spammerService = scope.ServiceProvider.GetRequiredService<ISpammerService>();
             await spammerService.UpdateAsync(Spammer);
         }
         catch (Exception e)
         {
-            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.UnBannError]);
-            Logger.LogError(e, "Failed to unbann user {0}", Spammer.Id);
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.BannError]);
+            Logger.LogError(e, "Failed to bann user {0}", Spammer.Id);
         }
         finally
         {
             _isUnBanning = false;
             StateHasChanged();
-            ToastService.ShowSuccess(NotificationStringsLoc[NotificationStrings.UnBannSuccess]);
+            ToastService.ShowSuccess(NotificationStringsLoc[NotificationStrings.BannSuccess]);
         }
     }
 

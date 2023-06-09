@@ -1,5 +1,9 @@
-﻿<h3>SpamMessageModal</h3>
+﻿@using TGHub.Domain.Entities
+<h3>SpamMessageModal</h3>
 
 @code {
-    
+
+    [Parameter]
+    public SpamMessage SpamMessage { get; set; } = new();
+
 }

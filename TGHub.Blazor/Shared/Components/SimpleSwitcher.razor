@@ -1,5 +1,5 @@
 ﻿@using TGHub.Blazor.Resources
-<span>
+<div>
     <button class="relative flex items-center h-5"
             type="button"
             id="switcher"
@@ -11,12 +11,15 @@
                     @(Checked ? $"bg-[{ColorStrings.C5}]" : "bg-[#ffffff]")">
         </div>
     </button>
-    <label
-        class="inline-block pl-[0.15rem] hover:cursor-pointer"
-        for="switcher">
-        @Label
-    </label>
-</span>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label
+            class="inline-block pl-[0.15rem] hover:cursor-pointer"
+            for="switcher">
+            @Label
+        </label>
+    }
+</div>
 
 @code {
 

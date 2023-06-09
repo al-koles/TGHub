@@ -40,6 +40,16 @@ public class SpammerService : Service<Spammer>, ISpammerService
             query = query.Where(filter.Where);
         }
 
+        if (filter.Skip.HasValue)
+        {
+            query = query.Skip(filter.Skip.Value);
+        }
+
+        if (filter.Take.HasValue)
+        {
+            query = query.Take(filter.Take.Value);
+        }
+
         return query.Sort(filter).ToListAsync();
     }
 

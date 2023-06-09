@@ -327,11 +327,11 @@
   <data name="Channels" xml:space="preserve">
     <value>Channels</value>
   </data>
-  <data name="EnsureSpamOff" xml:space="preserve">
-    <value>Are you sure you want to turn OFF spam filtering for channel '{0}'?</value>
+  <data name="EnsureOffensiveSpamOff" xml:space="preserve">
+    <value>Are you sure you want to turn OFF automatic spam filtering for channel '{0}'?</value>
   </data>
-  <data name="EnsureSpamOn" xml:space="preserve">
-    <value>Are you sure you want to turn ON spam filtering for channel '{0}'?</value>
+  <data name="EnsureOffensiveSpamOn" xml:space="preserve">
+    <value>Are you sure you want to turn ON automatic spam filtering for channel '{0}'?</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>First name</value>
@@ -354,8 +354,8 @@
   <data name="RefreshFromTg" xml:space="preserve">
     <value>Refresh from Telegram</value>
   </data>
-  <data name="Spam" xml:space="preserve">
-    <value>Spam filtering</value>
+  <data name="OffensiveSpamFiltering" xml:space="preserve">
+    <value>Offensive spam filtering</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>
@@ -402,6 +402,9 @@
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="SpamMessage" xml:space="preserve">
+    <value>Spam message</value>
+  </data>
   <data name="SpamMessages" xml:space="preserve">
     <value>Spam messages</value>
   </data>
@@ -410,5 +413,20 @@
   </data>
   <data name="UnBanContext" xml:space="preserve">
     <value>Unbann context</value>
+  </data>
+  <data name="EnsureListSpamOff" xml:space="preserve">
+    <value>Are you sure you want to turn OFF spam-list spam filtering for channel '{0}'?</value>
+  </data>
+  <data name="EnsureListSpamOn" xml:space="preserve">
+    <value>Are you sure you want to turn ON spam-list spam filtering for channel '{0}'?</value>
+  </data>
+  <data name="ListSpamFiltering" xml:space="preserve">
+    <value>Spam-list spam filtering</value>
+  </data>
+  <data name="EnterSpamWord" xml:space="preserve">
+    <value>Enter spam word...</value>
+  </data>
+  <data name="SpamWords" xml:space="preserve">
+    <value>Spam-terms list</value>
   </data>
 </root>

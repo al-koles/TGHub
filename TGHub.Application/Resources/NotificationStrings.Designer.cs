@@ -61,6 +61,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to bann user. Please try again.
+        /// </summary>
+        public static string BannError {
+            get {
+                return ResourceManager.GetString("BannError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned user.
+        /// </summary>
+        public static string BannSuccess {
+            get {
+                return ResourceManager.GetString("BannSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to refresh channel {0}. Please try again.
         /// </summary>
         public static string ChannelRefreshError {
@@ -264,6 +282,15 @@ namespace TGHub.Application.Resources {
         public static string UnBannError {
             get {
                 return ResourceManager.GetString("UnBannError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unbanned user.
+        /// </summary>
+        public static string UnBannSuccess {
+            get {
+                return ResourceManager.GetString("UnBannSuccess", resourceCulture);
             }
         }
     }

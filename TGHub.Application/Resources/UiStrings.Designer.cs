@@ -349,20 +349,47 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to turn OFF spam filtering for channel &apos;{0}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to turn OFF spam-list spam filtering for channel &apos;{0}&apos;?.
         /// </summary>
-        public static string EnsureSpamOff {
+        public static string EnsureListSpamOff {
             get {
-                return ResourceManager.GetString("EnsureSpamOff", resourceCulture);
+                return ResourceManager.GetString("EnsureListSpamOff", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to turn ON spam filtering for channel &apos;{0}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to turn ON spam-list spam filtering for channel &apos;{0}&apos;?.
         /// </summary>
-        public static string EnsureSpamOn {
+        public static string EnsureListSpamOn {
             get {
-                return ResourceManager.GetString("EnsureSpamOn", resourceCulture);
+                return ResourceManager.GetString("EnsureListSpamOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn OFF automatic spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureOffensiveSpamOff {
+            get {
+                return ResourceManager.GetString("EnsureOffensiveSpamOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn ON automatic spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureOffensiveSpamOn {
+            get {
+                return ResourceManager.GetString("EnsureOffensiveSpamOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter spam word....
+        /// </summary>
+        public static string EnterSpamWord {
+            get {
+                return ResourceManager.GetString("EnterSpamWord", resourceCulture);
             }
         }
         
@@ -435,6 +462,15 @@ namespace TGHub.Application.Resources {
         public static string LastSpamMessages {
             get {
                 return ResourceManager.GetString("LastSpamMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam-list spam filtering.
+        /// </summary>
+        public static string ListSpamFiltering {
+            get {
+                return ResourceManager.GetString("ListSpamFiltering", resourceCulture);
             }
         }
         
@@ -570,6 +606,15 @@ namespace TGHub.Application.Resources {
         public static string Off {
             get {
                 return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offensive spam filtering.
+        /// </summary>
+        public static string OffensiveSpamFiltering {
+            get {
+                return ResourceManager.GetString("OffensiveSpamFiltering", resourceCulture);
             }
         }
         
@@ -727,11 +772,11 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spam filtering.
+        ///   Looks up a localized string similar to Spam message.
         /// </summary>
-        public static string Spam {
+        public static string SpamMessage {
             get {
-                return ResourceManager.GetString("Spam", resourceCulture);
+                return ResourceManager.GetString("SpamMessage", resourceCulture);
             }
         }
         
@@ -741,6 +786,15 @@ namespace TGHub.Application.Resources {
         public static string SpamMessages {
             get {
                 return ResourceManager.GetString("SpamMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam-terms list.
+        /// </summary>
+        public static string SpamWords {
+            get {
+                return ResourceManager.GetString("SpamWords", resourceCulture);
             }
         }
         

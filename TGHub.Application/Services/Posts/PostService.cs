@@ -30,6 +30,16 @@ public class PostService : Service<Post>, IPostService
             query = query.Where(filter.Where);
         }
 
+        if (filter.Skip.HasValue)
+        {
+            query = query.Skip(filter.Skip.Value);
+        }
+
+        if (filter.Take.HasValue)
+        {
+            query = query.Take(filter.Take.Value);
+        }
+
         if (filter is PostFilter postFilter)
         {
             if (postFilter.From.HasValue)

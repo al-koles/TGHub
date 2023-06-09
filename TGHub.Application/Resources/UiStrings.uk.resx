@@ -327,11 +327,11 @@
   <data name="Channels" xml:space="preserve">
     <value>Канали</value>
   </data>
-  <data name="EnsureSpamOff" xml:space="preserve">
-    <value>Ви впевнені що хочете ВИМКНУТИ фільтрування спаму для каналу '{0}'?</value>
+  <data name="EnsureOffensiveSpamOff" xml:space="preserve">
+    <value>Ви впевнені що хочете ВИМКНУТИ автоматичне фільтрування спаму для каналу '{0}'?</value>
   </data>
-  <data name="EnsureSpamOn" xml:space="preserve">
-    <value>Ви впевнені що хочете УВІМКНУТИ фільтрування спаму для каналу '{0}'?</value>
+  <data name="EnsureOffensiveSpamOn" xml:space="preserve">
+    <value>Ви впевнені що хочете УВІМКНУТИ автоматичне фільтрування спаму для каналу '{0}'?</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Ім'я</value>
@@ -354,8 +354,8 @@
   <data name="RefreshFromTg" xml:space="preserve">
     <value>Оновити з Telegram</value>
   </data>
-  <data name="Spam" xml:space="preserve">
-    <value>Фільтрація спаму</value>
+  <data name="OffensiveSpamFiltering" xml:space="preserve">
+    <value>Автоматична фільтрація  спаму</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Юзернейм</value>
@@ -402,6 +402,9 @@
   <data name="Name" xml:space="preserve">
     <value>Ім'я</value>
   </data>
+  <data name="SpamMessage" xml:space="preserve">
+    <value>Спам-повідомлення</value>
+  </data>
   <data name="SpamMessages" xml:space="preserve">
     <value>Спам-повідомлення</value>
   </data>
@@ -410,5 +413,20 @@
   </data>
   <data name="UnBanContext" xml:space="preserve">
     <value>Контекст розбану</value>
+  </data>
+  <data name="EnsureListSpamOff" xml:space="preserve">
+    <value>Ви впевнені що хочете ВИМКНУТИ  фільтрування спаму за допомогою спам-термінів для каналу '{0}'?</value>
+  </data>
+  <data name="EnsureListSpamOn" xml:space="preserve">
+    <value>Ви впевнені що хочете УВІМКНУТИ фільтрування спаму за допомогою спам-термінів для каналу '{0}'?</value>
+  </data>
+  <data name="ListSpamFiltering" xml:space="preserve">
+    <value>Фільтрація спаму за спам-термінами</value>
+  </data>
+  <data name="EnterSpamWord" xml:space="preserve">
+    <value>Введіть спам-термін...</value>
+  </data>
+  <data name="SpamWords" xml:space="preserve">
+    <value>Список спам-термінів</value>
   </data>
 </root>

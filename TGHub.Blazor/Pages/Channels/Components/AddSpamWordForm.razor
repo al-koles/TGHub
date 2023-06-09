@@ -1,0 +1,61 @@
+﻿@using TGHub.Application.Resources
+@using TGHub.Application.Services.SpamWords
+@using TGHub.Blazor.Pages.Channels.Data
+@using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using AutoMapper
+@inject IServiceProvider ServiceProvider
+@inject IToastService ToastService
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject ILogger<AddSpamWordForm> Logger
+@inject IMapper Mapper
+<EditForm Model="@_spamWordModel" OnValidSubmit="@OnValidSubmitAsync">
+    <ObjectGraphDataAnnotationsValidator/>
+    <div class="flex w-full">
+        <div class="grow">
+            <InputText class="@($"rounded-full w-full p-2 focus:outline-[{ColorStrings.C5}]")"
+                       @bind-Value="@_spamWordModel.Value"
+                       placeholder="@UiStringsLoc[UiStrings.EnterSpamWord]"/>
+            <ValidationMessage For="@(() => _spamWordModel.Value)"/>
+        </div>
+        <button type="submit" class="h-full rounded-lg flex items-center p-2 text-[@ColorStrings.C5]/80 hover:text-[@ColorStrings.C5]">
+            @UiStringsLoc[UiStrings.Submit]
+        </button>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int ChannelId { get; set; }
+
+    [Parameter]
+    public EventCallback<SpamWord> SpamWordAdded { get; set; }
+
+    private SpamWordModel _spamWordModel = new();
+
+    protected override void OnParametersSet()
+    {
+        _spamWordModel.ChannelId = ChannelId;
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var spamWordsService = scope.ServiceProvider.GetRequiredService<ISpamWordsService>();
+        try
+        {
+            var spamWord = Mapper.Map<SpamWord>(_spamWordModel);
+            await spamWordsService.CreateAsync(spamWord);
+            await SpamWordAdded.InvokeAsync(spamWord);
+            _spamWordModel.Value = null;
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.SubmitError]);
+            Logger.LogError(e, "Failed to create spam word '{0}' for channel '{1}'", _spamWordModel.Value, ChannelId);
+        }
+    }
+
+}
