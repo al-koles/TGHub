@@ -79,7 +79,7 @@
         <div class="grid grid-cols-3 gap-2 max-h-[15-rem] overflow-y-auto justify-items-center">
             @foreach (var bannedUser in _bannedSpammers)
             {
-                <button type="button" class="drop-shadow active:drop-shadow-none"
+                <button type="button" class="drop-shadow active:drop-shadow-none text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]"
                         @onclick="@(() => ShowBannedUserModal(bannedUser))">
                     @bannedUser.TelegramId
                 </button>

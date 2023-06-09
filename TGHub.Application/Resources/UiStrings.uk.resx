@@ -355,7 +355,7 @@
     <value>Оновити з Telegram</value>
   </data>
   <data name="OffensiveSpamFiltering" xml:space="preserve">
-    <value>Автоматична фільтрація  спаму</value>
+    <value>Фільтрація  образливої лексики</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Юзернейм</value>
