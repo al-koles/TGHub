@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TGHub.Application.Common.Filtering;
@@ -51,6 +52,18 @@ public class SpammerService : Service<Spammer>, ISpammerService
         }
 
         return query.Sort(filter).ToListAsync();
+    }
+
+    public override Task<Spammer?> FirstOrDefaultAsync(Expression<Func<Spammer, bool>>? predicate = null)
+    {
+        var query = DbContext.Spammers
+            .Include(s => s.Channel)
+            .Include(s => s.BannInitiator)
+            .ThenInclude(i => i == null ? null : i.Administrator);
+
+        return predicate == null
+            ? query.FirstOrDefaultAsync()
+            : query.FirstOrDefaultAsync(predicate);
     }
 
     public async Task<Spammer> UpdateOrCreateSpammerAsync(SpammerModel spammerModel)

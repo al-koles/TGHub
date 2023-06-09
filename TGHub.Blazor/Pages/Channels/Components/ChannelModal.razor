@@ -292,7 +292,8 @@
         ModalService.Show<SpamMessageModal>(UiStringsLoc[UiStrings.SpamMessage],
             new ModalParameters
             {
-                { nameof(SpamMessageModal.SpamMessage), spamMessage }
+                { nameof(SpamMessageModal.SpamMessage), spamMessage },
+                { nameof(SpamMessageModal.Spammer), spamMessage.Spammer }
             },
             new ModalOptions
             {

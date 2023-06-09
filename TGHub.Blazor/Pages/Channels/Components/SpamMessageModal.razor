@@ -1,9 +1,11 @@
 ﻿@using TGHub.Application.Resources
+@using TGHub.Application.Services.Spammers
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using System.Globalization
 @inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IServiceProvider ServiceProvider
 
 <div>
     <label class="font-bold mr-1">@UiStringsLoc[UiStrings.Reason]: </label>
@@ -23,12 +25,12 @@
     <label class="font-bold">@UiStringsLoc[UiStrings.Time]:</label>
     @SpamMessage.DateTimeWritten.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern)
 </div>
-@if (SpamMessage.Spammer != null)
+@if (Spammer != null)
 {
     <div class="mt-3">
         <label class="font-bold">@UiStringsLoc[UiStrings.Spammer]:</label>
         <button @onclick="@ShowSpammerModal" class="text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]">
-            @SpamMessage.Spammer?.TelegramId
+            @Spammer?.TelegramId
         </button>
     </div>
 }
@@ -47,17 +49,26 @@
     [Parameter]
     public SpamMessage SpamMessage { get; set; } = new();
 
-    private void ShowSpammerModal()
+    [Parameter]
+    public Spammer? Spammer { get; set; }
+
+    private async Task ShowSpammerModal()
     {
-        ModalService.Show<SpammerModal>(SpamMessage.Spammer.TelegramId.ToString(),
-            new ModalParameters
-            {
-                { nameof(SpammerModal.Spammer), SpamMessage.Spammer }
-            },
-            new ModalOptions
-            {
-                Size = ModalSize.Large
-            });
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var spammerService = scope.ServiceProvider.GetRequiredService<ISpammerService>();
+        var spammer = await spammerService.FirstOrDefaultAsync(s => s.Id == Spammer!.Id);
+        if (spammer != null)
+        {
+            ModalService.Show<SpammerModal>(spammer.TelegramId.ToString(),
+                new ModalParameters
+                {
+                    { nameof(SpammerModal.Spammer), spammer }
+                },
+                new ModalOptions
+                {
+                    Size = ModalSize.Large
+                });
+        }
     }
 
 }

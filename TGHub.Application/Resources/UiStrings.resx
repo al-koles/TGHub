@@ -444,4 +444,10 @@
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="Bann" xml:space="preserve">
+    <value>Bann</value>
+  </data>
+  <data name="EnshureBann" xml:space="preserve">
+    <value>Are you sure you want to bann user '{0}'?</value>
+  </data>
 </root>

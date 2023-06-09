@@ -444,4 +444,10 @@
   <data name="Type" xml:space="preserve">
     <value>Тип</value>
   </data>
+  <data name="Bann" xml:space="preserve">
+    <value>Забанити</value>
+  </data>
+  <data name="EnshureBann" xml:space="preserve">
+    <value>Ви впевнені, що хочете забанити користувача '{0}'?</value>
+  </data>
 </root>

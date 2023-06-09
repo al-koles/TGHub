@@ -17,8 +17,24 @@
         var colorClass = _status == SpammerStatus.Active ? "green-500" : "red-500";
         var statusText = _status == SpammerStatus.Active ? UiStringsLoc[UiStrings.Active] : UiStringsLoc[UiStrings.Banned];
     }
-    <span class="float-right border-2 border-@colorClass text-@colorClass px-1 py-0.5 uppercase font-bold text-sm">
-        @statusText
+    <span class="float-right flex flex-wrap items-center gap-1">
+        <span class="border-2 border-@colorClass text-@colorClass px-1 py-0.5 uppercase font-bold text-sm">
+            @statusText
+        </span>
+        @if (_status == SpammerStatus.Active)
+        {
+            <button class="rounded px-2 py-1 bg-red-700/80 hover:bg-red-700 text-[#ffffff]"
+                    @onclick="@OpenBannModal">
+                @UiStringsLoc[UiStrings.Bann]
+            </button>
+        }
+        else
+        {
+            <button class="rounded px-2 py-1 bg-[@ColorStrings.C5]/80 hover:bg-[@ColorStrings.C5] text-[#ffffff]"
+                    @onclick="@OpenUnBannModal">
+                @UiStringsLoc[UiStrings.Unban]
+            </button>
+        }
     </span>
 </div>
 @if (!string.IsNullOrEmpty(Spammer.FirstName))
@@ -43,10 +59,6 @@
     <div>
         <label class="font-bold mt-3">@UiStringsLoc[UiStrings.BannedAt]:</label>
         @Spammer.BannDateTime?.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern)
-        <button type="button" class="relative inline float-right rounded px-2 py-1 bg-[@ColorStrings.C5]/80 hover:bg-[@ColorStrings.C5] text-[#ffffff]"
-                @onclick="@OpenUnBannModalAsync">
-            @UiStringsLoc[UiStrings.Unban]
-        </button>
     </div>
     if (Spammer.BannInitiator != null)
     {
@@ -87,7 +99,7 @@
                      @onclick="@(() => OpenArchiveBannModalAsync(bann))">
                     <div>
                         <label class="font-bold">@UiStringsLoc[UiStrings.BannedAt]:</label>
-                        @bann.From.ToString(CultureInfo.CurrentCulture.DateTimeFormat.UniversalSortableDateTimePattern)
+                        @bann.From.ToString(CultureInfo.CurrentCulture.DateTimeFormat.SortableDateTimePattern)
                     </div>
                     <div>
                         <label class="font-bold">@UiStringsLoc[UiStrings.UnbannedAt]:</label>
@@ -107,7 +119,7 @@
             @foreach (var spamMessage in Spammer.SpamMessages)
             {
                 <div class="bg-[#ffffff] rounded-xl p-2 hover:-translate-y-0.5 hover:drop-shadow-md hover:bg-gray-100 cursor-pointer"
-                     @onclick="@(() => OpenSpamMessageModalAsync(spamMessage))">
+                     @onclick="@(() => OpenSpamMessageModal(spamMessage))">
                     <div>
                         <label class="font-bold">@UiStringsLoc[UiStrings.Time]:</label>
                         @spamMessage.DateTimeWritten.ToString(CultureInfo.CurrentCulture.DateTimeFormat.SortableDateTimePattern)
@@ -168,23 +180,31 @@
         ModalService.Show<ArchiveBannModal>();
     }
 
-    private async Task OpenSpamMessageModalAsync(SpamMessage spamMessage)
+    private void OpenSpamMessageModal(SpamMessage spamMessage)
     {
-        ModalService.Show<SpamMessageModal>();
+        ModalService.Show<SpamMessageModal>(UiStringsLoc[UiStrings.SpamMessage],
+            new ModalParameters
+            {
+                { nameof(SpamMessageModal.SpamMessage), spamMessage }
+            });
     }
 
-    private async Task OpenUnBannModalAsync()
+    private void OpenUnBannModal()
     {
-        var question = string.Format(UiStringsLoc[UiStrings.EnshureUnbann], Spammer.Id);
-        var unBannModal = ModalService.Show<UnBannModal>(question, new ModalParameters
+        var question = string.Format(UiStringsLoc[UiStrings.EnshureUnbann], Spammer.TelegramId);
+        ModalService.Show<UnBannModal>(question, new ModalParameters
         {
             { nameof(UnBannModal.Spammer), Spammer }
         });
-        var unBannResult = await unBannModal.Result;
-        if (unBannResult == ModalResult.Ok())
+    }
+
+    private void OpenBannModal()
+    {
+        var question = string.Format(UiStringsLoc[UiStrings.EnshureBann], Spammer.TelegramId);
+        ModalService.Show<BannModal>(question, new ModalParameters
         {
-            await RefreshAsync();
-        }
+            { nameof(BannModal.Spammer), Spammer }
+        });
     }
 
 }

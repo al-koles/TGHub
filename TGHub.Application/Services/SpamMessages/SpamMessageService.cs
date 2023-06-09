@@ -16,6 +16,7 @@ public class SpamMessageService : Service<SpamMessage>, ISpamMessageService
     {
         var query = DbContext.SpamMessages
             .Include(m => m.Spammer)
+            .ThenInclude(s => s.Channel)
             .AsNoTracking();
 
         if (filter == null)
