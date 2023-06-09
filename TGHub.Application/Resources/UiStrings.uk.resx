@@ -423,10 +423,25 @@
   <data name="ListSpamFiltering" xml:space="preserve">
     <value>Фільтрація спаму за спам-термінами</value>
   </data>
+  <data name="AutoSpamReason" xml:space="preserve">
+    <value>визначено автоматично</value>
+  </data>
   <data name="EnterSpamWord" xml:space="preserve">
     <value>Введіть спам-термін...</value>
   </data>
+  <data name="ListSpamReason" xml:space="preserve">
+    <value>знайдені такі спам-терміни:</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Причина</value>
+  </data>
+  <data name="Spammer" xml:space="preserve">
+    <value>Спаммер</value>
+  </data>
   <data name="SpamWords" xml:space="preserve">
     <value>Список спам-термінів</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Тип</value>
   </data>
 </root>

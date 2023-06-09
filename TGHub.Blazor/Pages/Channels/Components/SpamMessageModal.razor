@@ -1,9 +1,63 @@
-﻿@using TGHub.Domain.Entities
-<h3>SpamMessageModal</h3>
+﻿@using TGHub.Application.Resources
+@using TGHub.Blazor.Resources
+@using TGHub.Domain.Entities
+@using TGHub.Domain.Enums
+@using System.Globalization
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+
+<div>
+    <label class="font-bold mr-1">@UiStringsLoc[UiStrings.Reason]: </label>
+    @if ((SpamMessage.Type & SpamMessageType.OffensiveLanguage) == SpamMessageType.OffensiveLanguage)
+    {
+        <span>@UiStringsLoc[UiStrings.AutoSpamReason]</span>
+    }
+    @if ((SpamMessage.Type & SpamMessageType.SpamWordFound) == SpamMessageType.SpamWordFound)
+    {
+        <span>
+            @UiStringsLoc[UiStrings.ListSpamReason]
+            @SpamMessage.Context
+        </span>
+    }
+</div>
+<div class="mt-3">
+    <label class="font-bold">@UiStringsLoc[UiStrings.Time]:</label>
+    @SpamMessage.DateTimeWritten.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern)
+</div>
+@if (SpamMessage.Spammer != null)
+{
+    <div class="mt-3">
+        <label class="font-bold">@UiStringsLoc[UiStrings.Spammer]:</label>
+        <button @onclick="@ShowSpammerModal" class="text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]">
+            @SpamMessage.Spammer?.TelegramId
+        </button>
+    </div>
+}
+<div class="mt-3">
+    <label class="font-bold">@UiStringsLoc[UiStrings.SpamMessage]:</label>
+    <div class="whitespace-pre-wrap">
+        @((MarkupString)SpamMessage.Value)
+    </div>
+</div>
 
 @code {
 
+    [CascadingParameter]
+    private IModalService ModalService { get; set; } = null!;
+
     [Parameter]
     public SpamMessage SpamMessage { get; set; } = new();
+
+    private void ShowSpammerModal()
+    {
+        ModalService.Show<SpammerModal>(SpamMessage.Spammer.TelegramId.ToString(),
+            new ModalParameters
+            {
+                { nameof(SpammerModal.Spammer), SpamMessage.Spammer }
+            },
+            new ModalOptions
+            {
+                Size = ModalSize.Large
+            });
+    }
 
 }

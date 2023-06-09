@@ -423,10 +423,25 @@
   <data name="ListSpamFiltering" xml:space="preserve">
     <value>Spam-list spam filtering</value>
   </data>
+  <data name="AutoSpamReason" xml:space="preserve">
+    <value>defined automatically</value>
+  </data>
   <data name="EnterSpamWord" xml:space="preserve">
     <value>Enter spam word...</value>
   </data>
+  <data name="ListSpamReason" xml:space="preserve">
+    <value>found such spam words:</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="Spammer" xml:space="preserve">
+    <value>Spammer</value>
+  </data>
   <data name="SpamWords" xml:space="preserve">
     <value>Spam-terms list</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
   </data>
 </root>

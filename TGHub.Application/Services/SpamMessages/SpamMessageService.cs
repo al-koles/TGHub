@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TGHub.Application.Common.Filtering;
 using TGHub.Application.Interfaces;
 using TGHub.Application.Services.Base;
 using TGHub.Domain.Entities;
@@ -9,6 +10,35 @@ public class SpamMessageService : Service<SpamMessage>, ISpamMessageService
 {
     public SpamMessageService(ITgHubDbContext dbContext) : base(dbContext)
     {
+    }
+
+    public override Task<List<SpamMessage>> ListAsync(FilterBase<SpamMessage>? filter = null)
+    {
+        var query = DbContext.SpamMessages
+            .Include(m => m.Spammer)
+            .AsNoTracking();
+
+        if (filter == null)
+        {
+            return query.ToListAsync();
+        }
+
+        if (filter.Where != null)
+        {
+            query = query.Where(filter.Where);
+        }
+
+        if (filter.Skip.HasValue)
+        {
+            query = query.Skip(filter.Skip.Value);
+        }
+
+        if (filter.Take.HasValue)
+        {
+            query = query.Take(filter.Take.Value);
+        }
+
+        return query.Sort(filter).ToListAsync();
     }
 
     public async Task<List<SpamMessage>> GetLastSpamMessagesBySpammerAsync(Spammer spammer)
