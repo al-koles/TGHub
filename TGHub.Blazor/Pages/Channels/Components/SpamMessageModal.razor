@@ -11,7 +11,11 @@
     <label class="font-bold mr-1">@UiStringsLoc[UiStrings.Reason]: </label>
     @if ((SpamMessage.Type & SpamMessageType.OffensiveLanguage) == SpamMessageType.OffensiveLanguage)
     {
-        <span>@UiStringsLoc[UiStrings.AutoSpamReason]</span>
+        <span>@UiStringsLoc[UiStrings.OffensiveSpamReason]</span>
+    }
+    @if (SpamMessage.Type == (SpamMessageType.OffensiveLanguage | SpamMessageType.SpamWordFound))
+    {
+        <span class="mx-1">@UiStringsLoc[UiStrings.And]</span>
     }
     @if ((SpamMessage.Type & SpamMessageType.SpamWordFound) == SpamMessageType.SpamWordFound)
     {

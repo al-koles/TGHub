@@ -423,8 +423,8 @@
   <data name="ListSpamFiltering" xml:space="preserve">
     <value>Фільтрація спаму за спам-термінами</value>
   </data>
-  <data name="AutoSpamReason" xml:space="preserve">
-    <value>визначено автоматично</value>
+  <data name="OffensiveSpamReason" xml:space="preserve">
+    <value>виявлено образливу лексику</value>
   </data>
   <data name="EnterSpamWord" xml:space="preserve">
     <value>Введіть спам-термін...</value>
@@ -443,6 +443,9 @@
   </data>
   <data name="Type" xml:space="preserve">
     <value>Тип</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>та</value>
   </data>
   <data name="Bann" xml:space="preserve">
     <value>Забанити</value>

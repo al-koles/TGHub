@@ -423,8 +423,8 @@
   <data name="ListSpamFiltering" xml:space="preserve">
     <value>Spam-list spam filtering</value>
   </data>
-  <data name="AutoSpamReason" xml:space="preserve">
-    <value>defined automatically</value>
+  <data name="OffensiveSpamReason" xml:space="preserve">
+    <value>found offensive language</value>
   </data>
   <data name="EnterSpamWord" xml:space="preserve">
     <value>Enter spam word...</value>
@@ -443,6 +443,9 @@
   </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>and</value>
   </data>
   <data name="Bann" xml:space="preserve">
     <value>Bann</value>
