@@ -63,8 +63,11 @@ public class TgSpamService : ITgSpamService
         {
             var spamWordsFound = await _spamWordsService.FindSpamWordsAsync(text, channel.Id);
             isListSpam = spamWordsFound.Any();
-            spamContext = string.Join(", ", spamWordsFound);
-            spamType = spamType | SpamMessageType.SpamWordFound;
+            if (isListSpam)
+            {
+                spamContext = string.Join(", ", spamWordsFound);
+                spamType = spamType | SpamMessageType.SpamWordFound;
+            }
         }
 
         if (isOffensiveSpam || isListSpam)

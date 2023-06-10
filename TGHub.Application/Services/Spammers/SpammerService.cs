@@ -106,9 +106,8 @@ public class SpammerService : Service<Spammer>, ISpammerService
             if (userIsOutOfSpamMessagesLimit)
             {
                 spammer.BannDateTime = DateTime.UtcNow;
-                spammer.BannContext = string.Join($"{Environment.NewLine}",
-                    lastSpamMessages.Select(m =>
-                        $"{m.DateTimeWritten.ToString(CultureInfo.InvariantCulture.DateTimeFormat.SortableDateTimePattern)} {m.Value}"));
+                spammer.BannContext = string.Join($";{Environment.NewLine}",
+                    lastSpamMessages.Select(m => m.Value));
                 DbContext.ChangeTracker.Clear();
                 await UpdateAsync(spammer);
                 banned = true;
