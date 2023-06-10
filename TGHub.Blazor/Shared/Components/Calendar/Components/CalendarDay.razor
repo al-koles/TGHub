@@ -9,19 +9,19 @@
             @(Date.Year != CalendarYear || Date.Month != (int)CalendarMonth ? "opacity-50" : "")">
     <div class="p-1 absolute w-full h-full top-0 left-0 flex flex-col items-center">
         <div class="flex items-center w-full justify-center">
-            <div class="rounded-full w-5 h-5 flex items-center justify-center
+            <div class="rounded-full px-1 py-0.5 min-w-[1.5rem] flex items-center justify-center
                         @(Date == DateTime.Today ? $"bg-[{ColorStrings.C5}]/30" : "")
-                        hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5] hover:cursor-pointer">
-                <div @onclick="@OnDayClick">
+                        hover:outline hover:outline-1 hover:outline-[@ColorStrings.C5] hover:cursor-pointer"
+                 @onclick="@OnDayClick">
+                @if (Date.Day == 1)
+                {
+                    @Date.Date.ToString(CultureInfo.CurrentCulture.DateTimeFormat.MonthDayPattern)
+                }
+                else
+                {
                     @Date.Day
-                </div>
+                }
             </div>
-            @if (Date.Day == 1)
-            {
-                <div>
-                    @(Date.Date.ToString(CultureInfo.CurrentCulture.DateTimeFormat.MonthDayPattern).Replace("1", ""))
-                </div>
-            }
         </div>
         <div class="grow w-full overflow-y-auto mt-1">
             <div class="w-[95%] flex flex-col gap-1 py-1 pl-1">
