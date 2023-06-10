@@ -4,9 +4,9 @@ using Blazored.SessionStorage;
 using Blazored.Toast;
 using TGHub.Application;
 using TGHub.Application.Common.Mappings;
-using TGHub.Blazor.Data;
 using TGHub.Blazor.Extensions;
 using TGHub.ServerFileStorage;
+using TGHub.SpamModeration;
 using TGHub.SqlDb;
 using TGHub.Telegram.Bot;
 using TGHub.WebApiCore.Controllers.Culture;
@@ -21,6 +21,7 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(CultureController).Assembly);
 
 builder.Services.AddOptions(builder.Configuration);
+builder.Services.AddSpamModeration();
 builder.Services.AddTelegramBotClient();
 builder.Services.AddServerFileStorage();
 builder.Services.AddBlazoredLocalStorage();

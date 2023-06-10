@@ -1,9 +1,13 @@
 ﻿@using TGHub.Application.Resources
 @using TGHub.Application.Services.Channels
+@using TGHub.Application.Services.Spammers
+@using TGHub.Application.Services.SpamMessages
+@using TGHub.Application.Services.SpamWords
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
-@using AutoMapper
+@using System.Globalization
+@using TGHub.Application.Common.Filtering
 @using TGHub.Application.Interfaces
 @using TGHub.Application.Common.Exceptions
 @inject IStringLocalizer<UiStrings> UiStringsLoc
@@ -11,7 +15,6 @@
 @inject IToastService ToastService
 @inject ILogger<ChannelModal> Logger
 @inject IServiceProvider ServiceProvider
-@inject IMapper Mapper
 
 <div>
     <div class="flex justify-between gap-3">
@@ -21,7 +24,7 @@
                         @(_isRefreshing ? "animate-spin" : "")"
                 title="@UiStringsLoc[UiStrings.RefreshFromTg]"
                 disabled="@_isRefreshing"
-                @onclick="@RefreshAsync">
+                @onclick="@RefreshFromTgAsync">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
             </svg>
@@ -36,22 +39,72 @@
     </div>
 </div>
 
-<div class="mt-3 flex gap-2">
-    <label class="font-bold">@UiStringsLoc[UiStrings.Spam]</label>
-    <SimpleSwitcher Checked="@_channel.SpamOn" Click="@ShowSpamSwitchModal"/>
+<div class="mt-3 flex flex-wrap gap-4">
+    <div class="flex items-center gap-1">
+        <label class="font-bold">@UiStringsLoc[UiStrings.OffensiveSpamFiltering]</label>
+        <SimpleSwitcher Checked="@_channel.OffensiveSpamOn" Click="@ShowOffensiveSpamSwitchModal"/>
+    </div>
+    <div class="flex items-center gap-1">
+        <label class="font-bold">@UiStringsLoc[UiStrings.ListSpamFiltering]</label>
+        <SimpleSwitcher Checked="@_channel.ListSpamOn" Click="@ShowListSpamSwitchModal"/>
+    </div>
 </div>
 
-@if (_channel.BannedUsers.Any())
+<div class="mt-3">
+    <label class="font-bold">@UiStringsLoc[UiStrings.SpamWords]</label>
+    <div class="rounded-lg bg-[@ColorStrings.C0] p-1">
+        <AddSpamWordForm ChannelId="@ChannelId"/>
+        <div class="grid grid-cols-3 gap-2 max-h-[15-rem] overflow-y-auto justify-items-center p-2">
+            @foreach (var spamWord in _spamWords)
+            {
+                <div class="relative">
+                    @spamWord.Value
+                    <button class="absolute left-full top-0 text-gray-400 hover:text-gray-500"
+                            title="@UiStringsLoc[UiStrings.Delete]"
+                            @onclick="@(() => RemoveSpamWord(spamWord))">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (_bannedSpammers.Any())
 {
     <div class="mt-3">
-        <label class="font-bold">@UiStringsLoc[UiStrings.BannedUsers]</label>
-        <div class="grid grid-cols-3 gap-2">
-            @foreach (var bannedUser in BannedUsers)
+        <label class="font-bold">@UiStringsLoc[UiStrings.BannedSpammers]</label>
+        <div class="grid grid-cols-3 gap-2 max-h-[15-rem] overflow-y-auto justify-items-center">
+            @foreach (var bannedUser in _bannedSpammers)
             {
-                <button type="button" class="drop-shadow active:drop-shadow-none"
+                <button type="button" class="drop-shadow active:drop-shadow-none text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]"
                         @onclick="@(() => ShowBannedUserModal(bannedUser))">
                     @bannedUser.TelegramId
                 </button>
+            }
+        </div>
+    </div>
+}
+
+@if (_lastSpamMessages.Any())
+{
+    <div class="mt-3">
+        <label class="font-bold">@UiStringsLoc[UiStrings.LastSpamMessages]</label>
+        <div class="max-h-[15rem] overflow-y-auto p-1 bg-[@ColorStrings.C0] rounded-xl flex flex-col gap-0.5">
+            @foreach (var spamMessage in _lastSpamMessages)
+            {
+                <div class="bg-[#ffffff] rounded-xl p-2 hover:-translate-y-0.5 hover:drop-shadow-md hover:bg-gray-100 cursor-pointer"
+                     @onclick="@(() => ShowSpamMessageModal(spamMessage))">
+                    <div>
+                        <label class="font-bold">@UiStringsLoc[UiStrings.Time]:</label>
+                        @spamMessage.DateTimeWritten.ToString(CultureInfo.CurrentCulture.DateTimeFormat.SortableDateTimePattern)
+                    </div>
+                    <div class="text-sm line-clamp-2 text-gray-700 overflow-x-hidden whitespace-pre-wrap">
+                        @((MarkupString)spamMessage.Value)
+                    </div>
+                </div>
             }
         </div>
     </div>
@@ -73,10 +126,16 @@
 
     private bool _isRefreshing;
     private Channel _channel = new();
-
-    private IEnumerable<BannedUser> BannedUsers => _channel.BannedUsers.OrderByDescending(u => u.BannDate);
+    private List<Spammer> _bannedSpammers = new();
+    private List<SpamMessage> _lastSpamMessages = new();
+    private List<SpamWord> _spamWords = new();
 
     protected override async Task OnParametersSetAsync()
+    {
+        await RefreshFromDbAsync();
+    }
+
+    private async Task RefreshFromDbAsync()
     {
         await using var scope = ServiceProvider.CreateAsyncScope();
         var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
@@ -88,9 +147,33 @@
             return;
         }
         _channel = channel;
+
+        var spammerService = scope.ServiceProvider.GetRequiredService<ISpammerService>();
+        _bannedSpammers = await spammerService.ListAsync(new FilterBase<Spammer>
+        {
+            Where = s => s.ChannelId == ChannelId && s.BannDateTime != null,
+            SortBy = s => s.BannDateTime!,
+            SortDirection = SortDirection.Descending
+        });
+
+        var spamMessageService = scope.ServiceProvider.GetRequiredService<ISpamMessageService>();
+        _lastSpamMessages = await spamMessageService.ListAsync(new FilterBase<SpamMessage>
+        {
+            Where = m => m.Spammer.ChannelId == ChannelId,
+            Take = 20,
+            SortBy = m => m.DateTimeWritten,
+            SortDirection = SortDirection.Descending
+        });
+
+        var spamWordsService = scope.ServiceProvider.GetRequiredService<ISpamWordsService>();
+        _spamWords = await spamWordsService.ListAsync(new FilterBase<SpamWord>
+        {
+            Where = w => w.ChannelId == ChannelId,
+            SortBy = w => w.Value
+        });
     }
 
-    private async Task RefreshAsync()
+    private async Task RefreshFromTgAsync()
     {
         if (_isRefreshing)
         {
@@ -105,9 +188,8 @@
             var tgBotClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
             await tgBotClient.CreateOrUpdateChannelFromTg(_channel.TelegramId);
 
-            var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
-            var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == _channel.Id);
-            Mapper.Map(channel, _channel);
+            await RefreshFromDbAsync();
+
             Modal.SetTitle(_channel.Name);
             await ChannelRefreshed.InvokeAsync();
 
@@ -130,9 +212,11 @@
         }
     }
 
-    private async Task ShowSpamSwitchModal()
+    private async Task ShowOffensiveSpamSwitchModal()
     {
-        var question = _channel.SpamOn ? UiStringsLoc[UiStrings.EnsureSpamOff] : UiStringsLoc[UiStrings.EnsureSpamOn];
+        var question = _channel.OffensiveSpamOn
+            ? UiStringsLoc[UiStrings.EnsureOffensiveSpamOff]
+            : UiStringsLoc[UiStrings.EnsureOffensiveSpamOn];
         var modal = ModalService.Show<YesCancelModal>(string.Format(question, _channel.Name));
         var result = await modal.Result;
         if (result.Confirmed)
@@ -142,9 +226,9 @@
                 await using var scope = ServiceProvider.CreateAsyncScope();
                 var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
                 var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == _channel.Id);
-                channel!.SpamOn = !channel.SpamOn;
+                channel!.OffensiveSpamOn = !channel.OffensiveSpamOn;
                 await channelService.UpdateAsync(channel);
-                _channel.SpamOn = channel.SpamOn;
+                _channel.OffensiveSpamOn = channel.OffensiveSpamOn;
             }
             catch (NotFoundException e)
             {
@@ -159,12 +243,77 @@
         }
     }
 
-    private void ShowBannedUserModal(BannedUser bannedUser)
+    private async Task ShowListSpamSwitchModal()
     {
-        ModalService.Show<BannedUserModal>(bannedUser.TelegramId.ToString(), new ModalParameters
+        var question = _channel.ListSpamOn
+            ? UiStringsLoc[UiStrings.EnsureListSpamOff]
+            : UiStringsLoc[UiStrings.EnsureListSpamOn];
+        var modal = ModalService.Show<YesCancelModal>(string.Format(question, _channel.Name));
+        var result = await modal.Result;
+        if (result.Confirmed)
         {
-            { nameof(BannedUserModal.BannedUser), bannedUser }
-        });
+            try
+            {
+                await using var scope = ServiceProvider.CreateAsyncScope();
+                var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
+                var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == _channel.Id);
+                channel!.ListSpamOn = !channel.ListSpamOn;
+                await channelService.UpdateAsync(channel);
+                _channel.ListSpamOn = channel.ListSpamOn;
+            }
+            catch (NotFoundException e)
+            {
+                ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.MissingChannel], _channel.Name));
+                Logger.LogError(e, "Error while trying to set channel {0} SpamOn", _channel.Id);
+            }
+            catch (Exception e)
+            {
+                ToastService.ShowError(string.Format(NotificationStringsLoc[NotificationStrings.SubmitError], _channel.Name));
+                Logger.LogError(e, "Error while trying to set channel {0} SpamOn", _channel.Id);
+            }
+        }
+    }
+
+    private void ShowBannedUserModal(Spammer spammer)
+    {
+        ModalService.Show<SpammerModal>(spammer.TelegramId.ToString(),
+            new ModalParameters
+            {
+                { nameof(SpammerModal.SpammerId), spammer.Id }
+            },
+            new ModalOptions
+            {
+                Size = ModalSize.Large
+            });
+    }
+
+    private void ShowSpamMessageModal(SpamMessage spamMessage)
+    {
+        ModalService.Show<SpamMessageModal>(UiStringsLoc[UiStrings.SpamMessage],
+            new ModalParameters
+            {
+                { nameof(SpamMessageModal.SpamMessage), spamMessage },
+                { nameof(SpamMessageModal.Spammer), spamMessage.Spammer }
+            },
+            new ModalOptions
+            {
+                Size = ModalSize.Medium
+            });
+    }
+
+    private async Task RemoveSpamWord(SpamWord spamWord)
+    {
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var spamWordsService = scope.ServiceProvider.GetRequiredService<ISpamWordsService>();
+        try
+        {
+            await spamWordsService.DeleteAsync(spamWord);
+            _spamWords.Remove(spamWord);
+        }
+        catch
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.DeleteError]);
+        }
     }
 
 }

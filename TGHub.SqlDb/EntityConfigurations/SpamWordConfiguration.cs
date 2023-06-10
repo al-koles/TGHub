@@ -4,17 +4,17 @@ using TGHub.Domain.Entities;
 
 namespace TGHub.SqlDb.EntityConfigurations;
 
-public class BanWordConfiguration : IEntityTypeConfiguration<BannWord>
+public class SpamWordConfiguration : IEntityTypeConfiguration<SpamWord>
 {
-    public void Configure(EntityTypeBuilder<BannWord> builder)
+    public void Configure(EntityTypeBuilder<SpamWord> builder)
     {
-        builder.ToTable("BannWord");
+        builder.ToTable("SpamWord");
 
         builder.HasKey(e => e.Id);
 
         builder.HasOne(e => e.Channel)
-            .WithMany(e => e.BannWords)
+            .WithMany(e => e.SpamWords)
             .HasForeignKey(e => e.ChannelId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

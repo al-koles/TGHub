@@ -61,6 +61,24 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to bann user. Please try again.
+        /// </summary>
+        public static string BannError {
+            get {
+                return ResourceManager.GetString("BannError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned user.
+        /// </summary>
+        public static string BannSuccess {
+            get {
+                return ResourceManager.GetString("BannSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to refresh channel {0}. Please try again.
         /// </summary>
         public static string ChannelRefreshError {
@@ -196,6 +214,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spammer {0} does not exist.
+        /// </summary>
+        public static string MissingSpammer {
+            get {
+                return ResourceManager.GetString("MissingSpammer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;No your administrated channels detected. Go to Telegram and add &lt;a target=&quot;_blank&quot; href=&quot;https://t.me/tghub_manager_bot&quot;&gt;@tghub_manager_bot&lt;/a&gt; to any of your administrated channels&lt;/p&gt;.
         /// </summary>
         public static string NoAdministratedChannels {
@@ -264,6 +291,15 @@ namespace TGHub.Application.Resources {
         public static string UnBannError {
             get {
                 return ResourceManager.GetString("UnBannError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unbanned user.
+        /// </summary>
+        public static string UnBannSuccess {
+            get {
+                return ResourceManager.GetString("UnBannSuccess", resourceCulture);
             }
         }
     }

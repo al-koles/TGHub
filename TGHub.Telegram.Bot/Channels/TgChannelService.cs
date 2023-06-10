@@ -80,6 +80,11 @@ internal class TgChannelService : ITgChannelService
         return _telegramBotClient.UnbanChatMemberAsync(new ChatId(tgChatId), tgUserId, true);
     }
 
+    public Task BannUserAsync(long tgUserId, long tgChatId)
+    {
+        return _telegramBotClient.BanChatMemberAsync(new ChatId(tgChatId), tgUserId);
+    }
+
     private async Task CreateChannelFromTgAsync(Chat tgChannel)
     {
         var channel = new Channel();

@@ -16,8 +16,7 @@ public class ChannelService : Service<Channel>, IChannelService
     {
         var query = DbContext.Channels
             .Include(ch => ch.Administrators)
-            .ThenInclude(a => a.Administrator)
-            .Include(ch => ch.BannedUsers);
+            .ThenInclude(a => a.Administrator);
         return predicate == null ? query.FirstOrDefaultAsync() : query.FirstOrDefaultAsync(predicate);
     }
 
@@ -29,5 +28,14 @@ public class ChannelService : Service<Channel>, IChannelService
             dbChannel.IsActive = false;
             await UpdateAsync(dbChannel);
         }
+    }
+
+    public Task<List<Spammer>> GetBannedUsersAsync(int channelId)
+    {
+        return DbContext.Spammers
+            .Where(u => u.ChannelId == channelId &&
+                        u.BannDateTime != null)
+            .OrderByDescending(u => u.BannDateTime)
+            .ToListAsync();
     }
 }

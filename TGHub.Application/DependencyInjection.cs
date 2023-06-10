@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using TGHub.Application.Common;
 using TGHub.Application.Common.SessionStorage;
+using TGHub.Application.Services.ArchiveBanns;
 using TGHub.Application.Services.Base;
 using TGHub.Application.Services.ChannelAdministrators;
 using TGHub.Application.Services.Channels;
@@ -13,6 +14,9 @@ using TGHub.Application.Services.Lotteries.Jobs;
 using TGHub.Application.Services.Posts;
 using TGHub.Application.Services.Posts.Interfaces;
 using TGHub.Application.Services.Posts.Jobs;
+using TGHub.Application.Services.Spammers;
+using TGHub.Application.Services.SpamMessages;
+using TGHub.Application.Services.SpamWords;
 using TGHub.Domain.Entities;
 
 namespace TGHub.Application;
@@ -28,6 +32,10 @@ public static class DependencyInjection
 
         services.AddTransient<IService<TgHubUser>, Service<TgHubUser>>();
         services.AddTransient<IChannelService, ChannelService>();
+        services.AddTransient<ISpamMessageService, SpamMessageService>();
+        services.AddTransient<ISpammerService, SpammerService>();
+        services.AddTransient<ISpamWordsService, SpamWordsService>();
+        services.AddTransient<IArchiveBannService, ArchiveBannService>();
         services.AddTransient<IPostService, PostService>();
         services.AddTransient<IPostScheduleService, PostScheduleService>();
         services.AddTransient<IService<ChannelAdministrator>, ChannelAdministratorService>();

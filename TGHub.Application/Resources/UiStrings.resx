@@ -318,8 +318,8 @@
   <data name="BannContext" xml:space="preserve">
     <value>Bann context</value>
   </data>
-  <data name="BannedUsers" xml:space="preserve">
-    <value>Banned users</value>
+  <data name="BannedSpammers" xml:space="preserve">
+    <value>Banned spammers</value>
   </data>
   <data name="BannedAt" xml:space="preserve">
     <value>Banned at</value>
@@ -327,11 +327,11 @@
   <data name="Channels" xml:space="preserve">
     <value>Channels</value>
   </data>
-  <data name="EnsureSpamOff" xml:space="preserve">
-    <value>Are you sure you want to turn OFF spam filtering for channel '{0}'?</value>
+  <data name="EnsureOffensiveSpamOff" xml:space="preserve">
+    <value>Are you sure you want to turn OFF automatic spam filtering for channel '{0}'?</value>
   </data>
-  <data name="EnsureSpamOn" xml:space="preserve">
-    <value>Are you sure you want to turn ON spam filtering for channel '{0}'?</value>
+  <data name="EnsureOffensiveSpamOn" xml:space="preserve">
+    <value>Are you sure you want to turn ON automatic spam filtering for channel '{0}'?</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>First name</value>
@@ -354,8 +354,8 @@
   <data name="RefreshFromTg" xml:space="preserve">
     <value>Refresh from Telegram</value>
   </data>
-  <data name="Spam" xml:space="preserve">
-    <value>Spam filtering</value>
+  <data name="OffensiveSpamFiltering" xml:space="preserve">
+    <value>Offensive spam filtering</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>
@@ -371,5 +371,95 @@
   </data>
   <data name="Unban" xml:space="preserve">
     <value>Unban</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="AutoBannContext" xml:space="preserve">
+    <value>Banned automatically due to revisited spam message limit. Spam Messages:</value>
+  </data>
+  <data name="Banned" xml:space="preserve">
+    <value>Banned</value>
+  </data>
+  <data name="BannHistory" xml:space="preserve">
+    <value>Bann history</value>
+  </data>
+  <data name="BannInitiator" xml:space="preserve">
+    <value>Bann initiator</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="UnbannedAt" xml:space="preserve">
+    <value>Unbanned at</value>
+  </data>
+  <data name="EnshureUnbann" xml:space="preserve">
+    <value>Are you sure you want to unbann user '{0}'?</value>
+  </data>
+  <data name="LastSpamMessages" xml:space="preserve">
+    <value>Last spam messages</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SpamMessage" xml:space="preserve">
+    <value>Spam message</value>
+  </data>
+  <data name="SpamMessages" xml:space="preserve">
+    <value>Spam messages</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="UnBanContext" xml:space="preserve">
+    <value>Unbann context</value>
+  </data>
+  <data name="EnsureListSpamOff" xml:space="preserve">
+    <value>Are you sure you want to turn OFF spam-list spam filtering for channel '{0}'?</value>
+  </data>
+  <data name="EnsureListSpamOn" xml:space="preserve">
+    <value>Are you sure you want to turn ON spam-list spam filtering for channel '{0}'?</value>
+  </data>
+  <data name="ListSpamFiltering" xml:space="preserve">
+    <value>Spam-list spam filtering</value>
+  </data>
+  <data name="OffensiveSpamReason" xml:space="preserve">
+    <value>found offensive language</value>
+  </data>
+  <data name="EnterSpamWord" xml:space="preserve">
+    <value>Enter spam word...</value>
+  </data>
+  <data name="ListSpamReason" xml:space="preserve">
+    <value>found such spam words:</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="Spammer" xml:space="preserve">
+    <value>Spammer</value>
+  </data>
+  <data name="SpamWords" xml:space="preserve">
+    <value>Spam-terms list</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="Bann" xml:space="preserve">
+    <value>Bann</value>
+  </data>
+  <data name="EnshureBann" xml:space="preserve">
+    <value>Are you sure you want to bann user '{0}'?</value>
+  </data>
+  <data name="ArchiveBann" xml:space="preserve">
+    <value>Archive bann</value>
+  </data>
+  <data name="UnBannInitiator" xml:space="preserve">
+    <value>Unbann initiator</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
   </data>
 </root>

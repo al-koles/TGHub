@@ -22,22 +22,7 @@ namespace TGHub.SqlDb.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ChannelBannTopic", b =>
-                {
-                    b.Property<int>("BannTopicsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ChannelsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BannTopicsId", "ChannelsId");
-
-                    b.HasIndex("ChannelsId");
-
-                    b.ToTable("ChannelBannTopic");
-                });
-
-            modelBuilder.Entity("TGHub.Domain.Entities.BannedUser", b =>
+            modelBuilder.Entity("TGHub.Domain.Entities.ArchiveBann", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,67 +30,36 @@ namespace TGHub.SqlDb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("BannDate")
+                    b.Property<string>("BannContext")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("From")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("BannTo")
+                    b.Property<int?>("InitiatorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpammerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("To")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ChannelId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Context")
-                        .IsRequired()
+                    b.Property<string>("UnBannContext")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("TelegramId")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("UnBannInitiatorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChannelId", "TelegramId")
-                        .IsUnique();
+                    b.HasIndex("InitiatorId");
 
-                    b.ToTable("BannedUser", (string)null);
-                });
+                    b.HasIndex("SpammerId");
 
-            modelBuilder.Entity("TGHub.Domain.Entities.BannTopic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasIndex("UnBannInitiatorId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BannTopic", (string)null);
-                });
-
-            modelBuilder.Entity("TGHub.Domain.Entities.BannWord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ChannelId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChannelId");
-
-                    b.ToTable("BannWord", (string)null);
+                    b.ToTable("ArchiveBann", (string)null);
                 });
 
             modelBuilder.Entity("TGHub.Domain.Entities.Channel", b =>
@@ -122,6 +76,9 @@ namespace TGHub.SqlDb.Migrations
                     b.Property<long?>("LinkedChatTelegramId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("ListSpamOn")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LogoFileName")
                         .HasColumnType("nvarchar(max)");
 
@@ -129,7 +86,7 @@ namespace TGHub.SqlDb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("SpamOn")
+                    b.Property<bool>("OffensiveSpamOn")
                         .HasColumnType("bit");
 
                     b.Property<long>("TelegramId")
@@ -362,6 +319,106 @@ namespace TGHub.SqlDb.Migrations
                     b.ToTable("PostButton", (string)null);
                 });
 
+            modelBuilder.Entity("TGHub.Domain.Entities.Spammer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("BannContext")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("BannDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("BannInitiatorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("TelegramId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BannInitiatorId");
+
+                    b.HasIndex("ChannelId", "TelegramId")
+                        .IsUnique();
+
+                    b.ToTable("Spammer", (string)null);
+                });
+
+            modelBuilder.Entity("TGHub.Domain.Entities.SpamMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTimeWritten")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SpammerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TelegramId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpammerId", "TelegramId")
+                        .IsUnique();
+
+                    b.ToTable("SpamMessage", (string)null);
+                });
+
+            modelBuilder.Entity("TGHub.Domain.Entities.SpamWord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChannelId");
+
+                    b.ToTable("SpamWord", (string)null);
+                });
+
             modelBuilder.Entity("TGHub.Domain.Entities.TgHubUser", b =>
                 {
                     b.Property<int>("Id")
@@ -393,41 +450,27 @@ namespace TGHub.SqlDb.Migrations
                     b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("ChannelBannTopic", b =>
+            modelBuilder.Entity("TGHub.Domain.Entities.ArchiveBann", b =>
                 {
-                    b.HasOne("TGHub.Domain.Entities.BannTopic", null)
-                        .WithMany()
-                        .HasForeignKey("BannTopicsId")
+                    b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "Initiator")
+                        .WithMany("InitiatedArchiveBanns")
+                        .HasForeignKey("InitiatorId");
+
+                    b.HasOne("TGHub.Domain.Entities.Spammer", "Spammer")
+                        .WithMany("ArchiveBanns")
+                        .HasForeignKey("SpammerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TGHub.Domain.Entities.Channel", null)
-                        .WithMany()
-                        .HasForeignKey("ChannelsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "UnBannInitiator")
+                        .WithMany("InitiatedArchiveUnBanns")
+                        .HasForeignKey("UnBannInitiatorId");
 
-            modelBuilder.Entity("TGHub.Domain.Entities.BannedUser", b =>
-                {
-                    b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
-                        .WithMany("BannedUsers")
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Initiator");
 
-                    b.Navigation("Channel");
-                });
+                    b.Navigation("Spammer");
 
-            modelBuilder.Entity("TGHub.Domain.Entities.BannWord", b =>
-                {
-                    b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
-                        .WithMany("BannWords")
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Channel");
+                    b.Navigation("UnBannInitiator");
                 });
 
             modelBuilder.Entity("TGHub.Domain.Entities.ChannelAdministrator", b =>
@@ -515,17 +558,63 @@ namespace TGHub.SqlDb.Migrations
                     b.Navigation("Post");
                 });
 
+            modelBuilder.Entity("TGHub.Domain.Entities.Spammer", b =>
+                {
+                    b.HasOne("TGHub.Domain.Entities.ChannelAdministrator", "BannInitiator")
+                        .WithMany("BannedUsers")
+                        .HasForeignKey("BannInitiatorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
+                        .WithMany("Spammers")
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BannInitiator");
+
+                    b.Navigation("Channel");
+                });
+
+            modelBuilder.Entity("TGHub.Domain.Entities.SpamMessage", b =>
+                {
+                    b.HasOne("TGHub.Domain.Entities.Spammer", "Spammer")
+                        .WithMany("SpamMessages")
+                        .HasForeignKey("SpammerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Spammer");
+                });
+
+            modelBuilder.Entity("TGHub.Domain.Entities.SpamWord", b =>
+                {
+                    b.HasOne("TGHub.Domain.Entities.Channel", "Channel")
+                        .WithMany("SpamWords")
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Channel");
+                });
+
             modelBuilder.Entity("TGHub.Domain.Entities.Channel", b =>
                 {
                     b.Navigation("Administrators");
 
-                    b.Navigation("BannWords");
+                    b.Navigation("SpamWords");
 
-                    b.Navigation("BannedUsers");
+                    b.Navigation("Spammers");
                 });
 
             modelBuilder.Entity("TGHub.Domain.Entities.ChannelAdministrator", b =>
                 {
+                    b.Navigation("BannedUsers");
+
+                    b.Navigation("InitiatedArchiveBanns");
+
+                    b.Navigation("InitiatedArchiveUnBanns");
+
                     b.Navigation("Lotteries");
 
                     b.Navigation("Posts");
@@ -543,6 +632,13 @@ namespace TGHub.SqlDb.Migrations
                     b.Navigation("Attachments");
 
                     b.Navigation("Buttons");
+                });
+
+            modelBuilder.Entity("TGHub.Domain.Entities.Spammer", b =>
+                {
+                    b.Navigation("ArchiveBanns");
+
+                    b.Navigation("SpamMessages");
                 });
 
             modelBuilder.Entity("TGHub.Domain.Entities.TgHubUser", b =>

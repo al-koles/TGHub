@@ -44,4 +44,9 @@ internal class TgHubTelegramBotClient : ITgHubTelegramBotClient
     {
         return _tgChannelService.UnBannUserAsync(tgUserId, tgChatId);
     }
+
+    public Task BannUserAsync(long tgUserId, long tgChatId)
+    {
+        return _tgChannelService.BannUserAsync(tgUserId, tgChatId);
+    }
 }

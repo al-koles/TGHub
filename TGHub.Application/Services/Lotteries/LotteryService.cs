@@ -30,6 +30,16 @@ public class LotteryService : Service<Lottery>, ILotteryService
             query = query.Where(filter.Where);
         }
 
+        if (filter.Skip.HasValue)
+        {
+            query = query.Skip(filter.Skip.Value);
+        }
+
+        if (filter.Take.HasValue)
+        {
+            query = query.Take(filter.Take.Value);
+        }
+
         if (filter is LotteryFilter lotteryFilter)
         {
             if (lotteryFilter.From.HasValue)

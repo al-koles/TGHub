@@ -8,6 +8,7 @@ using TGHub.Application.Services.Channels;
 using TGHub.Application.Services.Lotteries.Interfaces;
 using TGHub.Domain.Entities;
 using TGHub.Telegram.Bot.Channels;
+using TGHub.Telegram.Bot.Spam;
 
 namespace TGHub.Telegram.Bot;
 
@@ -20,15 +21,18 @@ public class BotController : ControllerBase
     private readonly ILotteryService _lotteryService;
     private readonly ITelegramBotClient _telegramBotClient;
     private readonly ITgChannelService _tgChannelService;
+    private readonly ITgSpamService _tgSpamService;
 
     public BotController(ITelegramBotClient telegramBotClient, IChannelService channelService,
-        ILogger<BotController> logger, ITgChannelService tgChannelService, ILotteryService lotteryService)
+        ILogger<BotController> logger, ITgChannelService tgChannelService, ILotteryService lotteryService,
+        ITgSpamService tgSpamService)
     {
         _telegramBotClient = telegramBotClient;
         _channelService = channelService;
         _logger = logger;
         _tgChannelService = tgChannelService;
         _lotteryService = lotteryService;
+        _tgSpamService = tgSpamService;
     }
 
     [HttpPost]
@@ -46,9 +50,6 @@ public class BotController : ControllerBase
             {
                 case UpdateType.Message:
                     await AnswerMessage(update);
-                    break;
-                case UpdateType.ChannelPost:
-                    await AnswerPost(update);
                     break;
                 case UpdateType.MyChatMember:
                     await MyChatMember(update);
@@ -72,15 +73,61 @@ public class BotController : ControllerBase
             return;
         }
 
-        if (message.Type == MessageType.Text)
+        Channel? channel = null;
+        switch (message.Chat.Type)
         {
-            await _telegramBotClient.SendTextMessageAsync(message.Chat.Id, message.Text,
-                replyToMessageId: message.MessageId);
+            case ChatType.Channel:
+                channel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == message.Chat.Id);
+                if (channel == null)
+                {
+                    await _tgChannelService.CreateOrUpdateChannelFromTgAsync(message.Chat.Id);
+                    channel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == message.Chat.Id);
+                }
+
+                break;
+            case ChatType.Supergroup:
+                channel = await _channelService.FirstOrDefaultAsync(ch => ch.LinkedChatTelegramId == message.Chat.Id);
+                if (channel == null)
+                {
+                    var tgSupergroup = await _telegramBotClient.GetChatAsync(message.Chat.Id);
+                    if (tgSupergroup.LinkedChatId != null)
+                    {
+                        channel = await _channelService
+                            .FirstOrDefaultAsync(ch => ch.TelegramId == tgSupergroup.LinkedChatId);
+                        if (channel == null)
+                        {
+                            await _tgChannelService.CreateOrUpdateChannelFromTgAsync(tgSupergroup.LinkedChatId.Value);
+                            channel = await _channelService
+                                .FirstOrDefaultAsync(ch => ch.TelegramId == tgSupergroup.LinkedChatId);
+                        }
+                        else
+                        {
+                            channel.LinkedChatTelegramId = tgSupergroup.Id;
+                            channel.IsActive = true;
+                            await _channelService.UpdateAsync(channel);
+                        }
+                    }
+                }
+
+                break;
         }
-        else
+
+        if (channel != null)
         {
-            await _telegramBotClient.SendTextMessageAsync(message.Chat.Id, "I understand only text",
-                replyToMessageId: message.MessageId);
+            string messageText = null!;
+            if (!string.IsNullOrEmpty(message.Text))
+            {
+                messageText = message.Text;
+            }
+            else if (!string.IsNullOrEmpty(message.Caption))
+            {
+                messageText = message.Caption;
+            }
+
+            if (!string.IsNullOrEmpty(messageText))
+            {
+                await _tgSpamService.CheckMessageForSpamAsync(message, messageText);
+            }
         }
     }
 

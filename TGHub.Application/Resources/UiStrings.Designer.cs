@@ -70,6 +70,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string Active {
+            get {
+                return ResourceManager.GetString("Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Administrators.
         /// </summary>
         public static string Administrators {
@@ -79,11 +88,29 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to and.
+        /// </summary>
+        public static string And {
+            get {
+                return ResourceManager.GetString("And", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string Apply {
             get {
                 return ResourceManager.GetString("Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Archive bann.
+        /// </summary>
+        public static string ArchiveBann {
+            get {
+                return ResourceManager.GetString("ArchiveBann", resourceCulture);
             }
         }
         
@@ -115,11 +142,38 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Banned automatically due to revisited spam message limit. Spam Messages:.
+        /// </summary>
+        public static string AutoBannContext {
+            get {
+                return ResourceManager.GetString("AutoBannContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bann.
+        /// </summary>
+        public static string Bann {
+            get {
+                return ResourceManager.GetString("Bann", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bann context.
         /// </summary>
         public static string BannContext {
             get {
                 return ResourceManager.GetString("BannContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banned.
+        /// </summary>
+        public static string Banned {
+            get {
+                return ResourceManager.GetString("Banned", resourceCulture);
             }
         }
         
@@ -133,6 +187,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Banned spammers.
+        /// </summary>
+        public static string BannedSpammers {
+            get {
+                return ResourceManager.GetString("BannedSpammers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Banned to.
         /// </summary>
         public static string BannedTo {
@@ -142,11 +205,20 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Banned users.
+        ///   Looks up a localized string similar to Bann history.
         /// </summary>
-        public static string BannedUsers {
+        public static string BannHistory {
             get {
-                return ResourceManager.GetString("BannedUsers", resourceCulture);
+                return ResourceManager.GetString("BannHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bann initiator.
+        /// </summary>
+        public static string BannInitiator {
+            get {
+                return ResourceManager.GetString("BannInitiator", resourceCulture);
             }
         }
         
@@ -295,20 +367,65 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to turn OFF spam filtering for channel &apos;{0}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to bann user &apos;{0}&apos;?.
         /// </summary>
-        public static string EnsureSpamOff {
+        public static string EnshureBann {
             get {
-                return ResourceManager.GetString("EnsureSpamOff", resourceCulture);
+                return ResourceManager.GetString("EnshureBann", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to turn ON spam filtering for channel &apos;{0}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to unbann user &apos;{0}&apos;?.
         /// </summary>
-        public static string EnsureSpamOn {
+        public static string EnshureUnbann {
             get {
-                return ResourceManager.GetString("EnsureSpamOn", resourceCulture);
+                return ResourceManager.GetString("EnshureUnbann", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn OFF spam-list spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureListSpamOff {
+            get {
+                return ResourceManager.GetString("EnsureListSpamOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn ON spam-list spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureListSpamOn {
+            get {
+                return ResourceManager.GetString("EnsureListSpamOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn OFF automatic spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureOffensiveSpamOff {
+            get {
+                return ResourceManager.GetString("EnsureOffensiveSpamOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to turn ON automatic spam filtering for channel &apos;{0}&apos;?.
+        /// </summary>
+        public static string EnsureOffensiveSpamOn {
+            get {
+                return ResourceManager.GetString("EnsureOffensiveSpamOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter spam word....
+        /// </summary>
+        public static string EnterSpamWord {
+            get {
+                return ResourceManager.GetString("EnterSpamWord", resourceCulture);
             }
         }
         
@@ -372,6 +489,33 @@ namespace TGHub.Application.Resources {
         public static string LastName {
             get {
                 return ResourceManager.GetString("LastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last spam messages.
+        /// </summary>
+        public static string LastSpamMessages {
+            get {
+                return ResourceManager.GetString("LastSpamMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam-list spam filtering.
+        /// </summary>
+        public static string ListSpamFiltering {
+            get {
+                return ResourceManager.GetString("ListSpamFiltering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to found such spam words:.
+        /// </summary>
+        public static string ListSpamReason {
+            get {
+                return ResourceManager.GetString("ListSpamReason", resourceCulture);
             }
         }
         
@@ -448,6 +592,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comments.
         /// </summary>
         public static string NavComments {
@@ -498,6 +651,24 @@ namespace TGHub.Application.Resources {
         public static string Off {
             get {
                 return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offensive spam filtering.
+        /// </summary>
+        public static string OffensiveSpamFiltering {
+            get {
+                return ResourceManager.GetString("OffensiveSpamFiltering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to found offensive language.
+        /// </summary>
+        public static string OffensiveSpamReason {
+            get {
+                return ResourceManager.GetString("OffensiveSpamReason", resourceCulture);
             }
         }
         
@@ -570,6 +741,15 @@ namespace TGHub.Application.Resources {
         public static string Profile {
             get {
                 return ResourceManager.GetString("Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reason.
+        /// </summary>
+        public static string Reason {
+            get {
+                return ResourceManager.GetString("Reason", resourceCulture);
             }
         }
         
@@ -655,11 +835,38 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spam filtering.
+        ///   Looks up a localized string similar to Spammer.
         /// </summary>
-        public static string Spam {
+        public static string Spammer {
             get {
-                return ResourceManager.GetString("Spam", resourceCulture);
+                return ResourceManager.GetString("Spammer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam message.
+        /// </summary>
+        public static string SpamMessage {
+            get {
+                return ResourceManager.GetString("SpamMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam messages.
+        /// </summary>
+        public static string SpamMessages {
+            get {
+                return ResourceManager.GetString("SpamMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spam-terms list.
+        /// </summary>
+        public static string SpamWords {
+            get {
+                return ResourceManager.GetString("SpamWords", resourceCulture);
             }
         }
         
@@ -669,6 +876,15 @@ namespace TGHub.Application.Resources {
         public static string Start {
             get {
                 return ResourceManager.GetString("Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
             }
         }
         
@@ -763,6 +979,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string Time {
+            get {
+                return ResourceManager.GetString("Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
         public static string Title {
@@ -772,11 +997,56 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unban.
         /// </summary>
         public static string Unban {
             get {
                 return ResourceManager.GetString("Unban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unbann context.
+        /// </summary>
+        public static string UnBanContext {
+            get {
+                return ResourceManager.GetString("UnBanContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unbanned at.
+        /// </summary>
+        public static string UnbannedAt {
+            get {
+                return ResourceManager.GetString("UnbannedAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unbann initiator.
+        /// </summary>
+        public static string UnBannInitiator {
+            get {
+                return ResourceManager.GetString("UnBannInitiator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string Unknown {
+            get {
+                return ResourceManager.GetString("Unknown", resourceCulture);
             }
         }
         

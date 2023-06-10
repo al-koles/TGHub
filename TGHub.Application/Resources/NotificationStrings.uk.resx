@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BannError" xml:space="preserve">
+    <value>Не вдалося забанити користувача. Будь ласка спробуйте ще</value>
+  </data>
+  <data name="BannSuccess" xml:space="preserve">
+    <value>Користувача забанено</value>
+  </data>
   <data name="ChannelRefreshError" xml:space="preserve">
     <value>Не вдалося оновити канал {0}. Спробуйте ще раз</value>
   </data>
@@ -162,6 +168,9 @@
   <data name="MissingPost" xml:space="preserve">
     <value>Не знайдено пост "{0}". Схоже віт був видалений</value>
   </data>
+  <data name="MissingSpammer" xml:space="preserve">
+    <value>Не знайдено спаммера "{0}". Схоже віт був видалений</value>
+  </data>
   <data name="NoAdministratedChannels" xml:space="preserve">
     <value>&lt;p&gt;Адміністрованих каналів не виявлено. Перейдіть у Telegram і додайте &lt;a target="_blank"  href="https://t.me/tghub_manager_bot"&gt;@tghub_manager_bot&lt;/a&gt; до будь-якого каналу, яким ви керуєте&lt;/p&gt;</value>
   </data>
@@ -185,5 +194,8 @@
   </data>
   <data name="UnBannError" xml:space="preserve">
     <value>Не вдалося розбанити користувача. Будь ласка спробуйте ще</value>
+  </data>
+  <data name="UnBannSuccess" xml:space="preserve">
+    <value>Користувача розбанено</value>
   </data>
 </root>
