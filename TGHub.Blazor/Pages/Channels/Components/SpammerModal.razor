@@ -12,6 +12,7 @@
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 @inject IServiceProvider ServiceProvider
 @inject IToastService ToastService
+@inject ILocalDateTimeManager LocalDateTimeManager
 
 <div class="mt-3">
     <label class="font-bold">TelegramId:</label>
@@ -152,6 +153,11 @@
     private List<ArchiveBann> _archiveBanns = new();
     private SpammerStatus _status;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LocalDateTimeManager.SetFromJsAsync();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         await RefreshAsync();
@@ -170,6 +176,10 @@
             return;
         }
         _spammer = spammer;
+        if (_spammer.BannDateTime.HasValue)
+        {
+            _spammer.BannDateTime = LocalDateTimeManager.Convert(_spammer.BannDateTime.Value, To.Local);
+        }
 
         var spamMessageService = scope.ServiceProvider.GetRequiredService<ISpamMessageService>();
         _spamMessages = await spamMessageService.ListAsync(new FilterBase<SpamMessage>
@@ -178,6 +188,10 @@
             SortBy = m => m.DateTimeWritten,
             SortDirection = SortDirection.Descending
         });
+        foreach (var spamMessage in _spamMessages)
+        {
+            spamMessage.DateTimeWritten = LocalDateTimeManager.Convert(spamMessage.DateTimeWritten, To.Local);
+        }
 
         var archiveBannService = scope.ServiceProvider.GetRequiredService<IArchiveBannService>();
         _archiveBanns = await archiveBannService.ListAsync(new FilterBase<ArchiveBann>
@@ -186,6 +200,11 @@
             SortBy = b => b.From,
             SortDirection = SortDirection.Descending
         });
+        foreach (var archiveBann in _archiveBanns)
+        {
+            archiveBann.From = LocalDateTimeManager.Convert(archiveBann.From, To.Local);
+            archiveBann.To = LocalDateTimeManager.Convert(archiveBann.To, To.Local);
+        }
 
         _status = _spammer.BannDateTime == null ? SpammerStatus.Active : SpammerStatus.Banned;
         StateHasChanged();
