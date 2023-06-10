@@ -14,6 +14,7 @@
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 @inject ILogger<LotteryForm> Logger
 @inject IServiceProvider ServiceProvider
+@inject ILocalDateTimeManager LocalDateTimeManager
 
 <div class="rounded-3xl w-full h-full px-8 py-4 bg-[@ColorStrings.C1]/40">
     <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
@@ -125,6 +126,8 @@
         await InvokeAsync(StateHasChanged);
         try
         {
+            await LocalDateTimeManager.SetFromJsAsync();
+
             await using var scope = ServiceProvider.CreateAsyncScope();
             var lotteryService = scope.ServiceProvider.GetRequiredService<ILotteryService>();
             Lottery? lottery;
@@ -136,15 +139,24 @@
                     ToastService.ShowError(NotificationStringsLoc[NotificationStrings.MissingLottery]);
                     return;
                 }
+
+                lottery.StartDateTime = LocalDateTimeManager.Convert(lottery.StartDateTime, To.Utc);
+                lottery.EndDateTime = LocalDateTimeManager.Convert(lottery.EndDateTime, To.Utc);
+
                 Mapper.Map(Model, lottery);
                 await lotteryService.UpdateAsync(lottery);
             }
             else
             {
                 lottery = Mapper.Map<Lottery>(Model);
+
+                lottery.StartDateTime = LocalDateTimeManager.Convert(lottery.StartDateTime, To.Utc);
+                lottery.EndDateTime = LocalDateTimeManager.Convert(lottery.EndDateTime, To.Utc);
+
                 var id = await lotteryService.CreateAsync(lottery);
                 lottery.Id = id;
             }
+
             var lotteryScheduleService = scope.ServiceProvider.GetRequiredService<ILotteryScheduleService>();
             if (lottery.StartDateTime > DateTime.UtcNow && lottery.LotteryTelegramId == null)
             {

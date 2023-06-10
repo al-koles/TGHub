@@ -15,6 +15,7 @@
 @inject IToastService ToastService
 @inject ILogger<ChannelModal> Logger
 @inject IServiceProvider ServiceProvider
+@inject ILocalDateTimeManager LocalDateTimeManager
 
 <div>
     <div class="flex justify-between gap-3">
@@ -130,6 +131,11 @@
     private List<SpamMessage> _lastSpamMessages = new();
     private List<SpamWord> _spamWords = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LocalDateTimeManager.SetFromJsAsync();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         await RefreshFromDbAsync();
@@ -164,6 +170,10 @@
             SortBy = m => m.DateTimeWritten,
             SortDirection = SortDirection.Descending
         });
+        foreach (var lastSpamMessage in _lastSpamMessages)
+        {
+            lastSpamMessage.DateTimeWritten = LocalDateTimeManager.Convert(lastSpamMessage.DateTimeWritten, To.Local);
+        }
 
         var spamWordsService = scope.ServiceProvider.GetRequiredService<ISpamWordsService>();
         _spamWords = await spamWordsService.ListAsync(new FilterBase<SpamWord>
@@ -276,7 +286,7 @@
 
     private void ShowBannedUserModal(Spammer spammer)
     {
-        ModalService.Show<SpammerModal>(spammer.TelegramId.ToString(),
+        ModalService.Show<SpammerModal>(UiStringsLoc[UiStrings.Spammer],
             new ModalParameters
             {
                 { nameof(SpammerModal.SpammerId), spammer.Id }

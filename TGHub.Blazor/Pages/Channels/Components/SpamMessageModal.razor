@@ -1,11 +1,9 @@
 ﻿@using TGHub.Application.Resources
-@using TGHub.Application.Services.Spammers
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using System.Globalization
 @inject IStringLocalizer<UiStrings> UiStringsLoc
-@inject IServiceProvider ServiceProvider
 
 <div>
     <label class="font-bold mr-1">@UiStringsLoc[UiStrings.Reason]: </label>
@@ -56,23 +54,17 @@
     [Parameter]
     public Spammer? Spammer { get; set; }
 
-    private async Task ShowSpammerModal()
+    private void ShowSpammerModal()
     {
-        await using var scope = ServiceProvider.CreateAsyncScope();
-        var spammerService = scope.ServiceProvider.GetRequiredService<ISpammerService>();
-        var spammer = await spammerService.FirstOrDefaultAsync(s => s.Id == Spammer!.Id);
-        if (spammer != null)
-        {
-            ModalService.Show<SpammerModal>(spammer.TelegramId.ToString(),
-                new ModalParameters
-                {
-                    { nameof(SpammerModal.SpammerId), spammer.Id }
-                },
-                new ModalOptions
-                {
-                    Size = ModalSize.Large
-                });
-        }
+        ModalService.Show<SpammerModal>(UiStringsLoc[UiStrings.Spammer],
+            new ModalParameters
+            {
+                { nameof(SpammerModal.SpammerId), SpamMessage.SpammerId }
+            },
+            new ModalOptions
+            {
+                Size = ModalSize.Large
+            });
     }
 
 }

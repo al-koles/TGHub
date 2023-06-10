@@ -30,16 +30,6 @@ public class LotteryService : Service<Lottery>, ILotteryService
             query = query.Where(filter.Where);
         }
 
-        if (filter.Skip.HasValue)
-        {
-            query = query.Skip(filter.Skip.Value);
-        }
-
-        if (filter.Take.HasValue)
-        {
-            query = query.Take(filter.Take.Value);
-        }
-
         if (filter is LotteryFilter lotteryFilter)
         {
             if (lotteryFilter.From.HasValue)
@@ -67,7 +57,19 @@ public class LotteryService : Service<Lottery>, ILotteryService
             }
         }
 
-        return query.Sort(filter).ToListAsync();
+        query = query.Sort(filter);
+
+        if (filter.Skip.HasValue)
+        {
+            query = query.Skip(filter.Skip.Value);
+        }
+
+        if (filter.Take.HasValue)
+        {
+            query = query.Take(filter.Take.Value);
+        }
+
+        return query.ToListAsync();
     }
 
     public override Task<Lottery?> FirstOrDefaultAsync(Expression<Func<Lottery, bool>>? predicate = null)

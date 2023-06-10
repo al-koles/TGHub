@@ -20,6 +20,7 @@
 @inject IServiceProvider ServiceProvider
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 @inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject ILocalDateTimeManager LocalDateTimeManager
 
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
@@ -84,6 +85,9 @@
         var lottery = await lotteryService.FirstOrDefaultAsync(p => p.Id == id);
         if (lottery != null)
         {
+            lottery.StartDateTime = LocalDateTimeManager.Convert(lottery.StartDateTime, To.Local);
+            lottery.EndDateTime = LocalDateTimeManager.Convert(lottery.EndDateTime, To.Local);
+
             var parameters = new ModalParameters()
                 .Add(nameof(LotteryInfoModal.LotteryInfo), lottery);
             var options = new ModalOptions
@@ -124,16 +128,20 @@
 
     private async Task RefreshEventsAsync()
     {
+        await LocalDateTimeManager.SetFromJsAsync();
+
         var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
         var lastDayOfWeek = firstDayOfWeek + 6;
 
         var from = new DateTime(_year, (int)_month, 1);
         var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
         from = from.AddDays(-1 * daysToFirstDayOfWeek);
+        from = LocalDateTimeManager.Convert(from, To.Utc);
 
         var to = new DateTime(_year, (int)_month, 1).AddMonths(1).AddDays(-1);
         var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
         to = to.AddDays(daysToWeekEndCount);
+        to = LocalDateTimeManager.Convert(to, To.Utc);
 
         var filter = new LotteryFilter
         {
@@ -160,6 +168,10 @@
         {
             var lotteryAsyncStatus = lotteryScheduleService.GetLotterySendStatusAsync(lottery);
             var resultAsyncStatus = lotteryScheduleService.GetResultSendStatusAsync(lottery);
+
+            lottery.StartDateTime = LocalDateTimeManager.Convert(lottery.StartDateTime, To.Local);
+            lottery.EndDateTime = LocalDateTimeManager.Convert(lottery.EndDateTime, To.Local);
+
             _events.AddRange(new[]
             {
                 new CalendarEventModel

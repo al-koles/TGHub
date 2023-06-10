@@ -8,7 +8,8 @@
                  TimePicker="@TimePicker"
                  SingleDatePicker="@SingleDatePicker"
                  DateFormat="@CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern"
-                 CustomDateFunction="@(date => date.Date == DateTime.UtcNow.Date ? $"outline outline-1 outline-[{ColorStrings.C5}]" : true)">
+                 CustomDateFunction="@(date => date.Date == DateTime.UtcNow.Date ? $"outline outline-1 outline-[{ColorStrings.C5}]" : true)"
+                 TimePicker24Hour="@true">
     <PickerTemplate Context="pickerContext">
         <div id="@pickerContext.Id" @onclick="pickerContext.Toggle"
              class="bg-white rounded-full w-full px-3 py-2 focus:outline-[@ColorStrings.C5] cursor-pointer

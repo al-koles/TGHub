@@ -18,6 +18,7 @@
 @inject ISchedulerFactory SchedulerFactory
 @inject IFileStorage FileStorage
 @inject IServiceProvider ServiceProvider
+@inject ILocalDateTimeManager LocalDateTimeManager
 
 <div class="rounded-3xl w-full h-full px-8 py-4 bg-[@ColorStrings.C1]/40">
     <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
@@ -159,6 +160,8 @@
         await InvokeAsync(StateHasChanged);
         try
         {
+            await LocalDateTimeManager.SetFromJsAsync();
+
             await using var scope = ServiceProvider.CreateAsyncScope();
             var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
             Post? post;
@@ -171,11 +174,13 @@
                     return;
                 }
                 Mapper.Map(Model, post);
+                post.ReleaseDateTime = LocalDateTimeManager.Convert(post.ReleaseDateTime, To.Utc);
                 await postService.UpdateAsync(post);
             }
             else
             {
                 post = Mapper.Map<Post>(Model);
+                post.ReleaseDateTime = LocalDateTimeManager.Convert(post.ReleaseDateTime, To.Utc);
                 var id = await postService.CreateAsync(post);
                 post.Id = id;
             }

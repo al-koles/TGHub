@@ -41,6 +41,8 @@ public class SpammerService : Service<Spammer>, ISpammerService
             query = query.Where(filter.Where);
         }
 
+        query = query.Sort(filter);
+
         if (filter.Skip.HasValue)
         {
             query = query.Skip(filter.Skip.Value);
@@ -51,7 +53,7 @@ public class SpammerService : Service<Spammer>, ISpammerService
             query = query.Take(filter.Take.Value);
         }
 
-        return query.Sort(filter).ToListAsync();
+        return query.ToListAsync();
     }
 
     public override Task<Spammer?> FirstOrDefaultAsync(Expression<Func<Spammer, bool>>? predicate = null)
@@ -104,9 +106,8 @@ public class SpammerService : Service<Spammer>, ISpammerService
             if (userIsOutOfSpamMessagesLimit)
             {
                 spammer.BannDateTime = DateTime.UtcNow;
-                spammer.BannContext = string.Join($"{Environment.NewLine}",
-                    lastSpamMessages.Select(m =>
-                        $"{m.DateTimeWritten.ToString(CultureInfo.InvariantCulture.DateTimeFormat.SortableDateTimePattern)} {m.Value}"));
+                spammer.BannContext = string.Join($";{Environment.NewLine}",
+                    lastSpamMessages.Select(m => m.Value));
                 DbContext.ChangeTracker.Clear();
                 await UpdateAsync(spammer);
                 banned = true;

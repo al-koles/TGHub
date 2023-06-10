@@ -18,6 +18,7 @@
 @inject LocalStorageProvider LocalStorageProvider
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject IServiceProvider ServiceProvider
+@inject ILocalDateTimeManager LocalDateTimeManager
 
 <div class="h-full">
     <LotteryForm Model="@_model" IsEdit="@true" RedirectUrl="@RedirectUrl"/>
@@ -46,6 +47,10 @@
             NavigationManager.NavigateTo(RedirectUrl ?? "/posts");
             return;
         }
+
+        await LocalDateTimeManager.SetFromJsAsync();
+        lottery.StartDateTime = LocalDateTimeManager.Convert(lottery.StartDateTime, To.Local);
+        lottery.EndDateTime = LocalDateTimeManager.Convert(lottery.EndDateTime, To.Local);
 
         var isLotteryPostCreator = lottery.Creator.AdministratorId == LocalStorageProvider.Id;
         var isUserOwnerOfLotteryChannelEntity = await lotteryService
