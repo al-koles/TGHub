@@ -29,6 +29,8 @@ public class SpamMessageService : Service<SpamMessage>, ISpamMessageService
             query = query.Where(filter.Where);
         }
 
+        query = query.Sort(filter);
+
         if (filter.Skip.HasValue)
         {
             query = query.Skip(filter.Skip.Value);
@@ -39,7 +41,7 @@ public class SpamMessageService : Service<SpamMessage>, ISpamMessageService
             query = query.Take(filter.Take.Value);
         }
 
-        return query.Sort(filter).ToListAsync();
+        return query.ToListAsync();
     }
 
     public async Task<List<SpamMessage>> GetLastSpamMessagesBySpammerAsync(Spammer spammer)

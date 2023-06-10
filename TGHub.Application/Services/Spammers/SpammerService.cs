@@ -41,6 +41,8 @@ public class SpammerService : Service<Spammer>, ISpammerService
             query = query.Where(filter.Where);
         }
 
+        query = query.Sort(filter);
+
         if (filter.Skip.HasValue)
         {
             query = query.Skip(filter.Skip.Value);
@@ -51,7 +53,7 @@ public class SpammerService : Service<Spammer>, ISpammerService
             query = query.Take(filter.Take.Value);
         }
 
-        return query.Sort(filter).ToListAsync();
+        return query.ToListAsync();
     }
 
     public override Task<Spammer?> FirstOrDefaultAsync(Expression<Func<Spammer, bool>>? predicate = null)

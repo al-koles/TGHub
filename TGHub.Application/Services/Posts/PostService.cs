@@ -30,16 +30,6 @@ public class PostService : Service<Post>, IPostService
             query = query.Where(filter.Where);
         }
 
-        if (filter.Skip.HasValue)
-        {
-            query = query.Skip(filter.Skip.Value);
-        }
-
-        if (filter.Take.HasValue)
-        {
-            query = query.Take(filter.Take.Value);
-        }
-
         if (filter is PostFilter postFilter)
         {
             if (postFilter.From.HasValue)
@@ -66,7 +56,19 @@ public class PostService : Service<Post>, IPostService
             }
         }
 
-        return query.Sort(filter).ToListAsync();
+        query = query.Sort(filter);
+
+        if (filter.Skip.HasValue)
+        {
+            query = query.Skip(filter.Skip.Value);
+        }
+
+        if (filter.Take.HasValue)
+        {
+            query = query.Take(filter.Take.Value);
+        }
+
+        return query.ToListAsync();
     }
 
     public override Task<Post?> FirstOrDefaultAsync(Expression<Func<Post, bool>>? predicate = null)

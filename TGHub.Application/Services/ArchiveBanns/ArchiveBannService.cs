@@ -32,6 +32,8 @@ public class ArchiveBannService : Service<ArchiveBann>, IArchiveBannService
             query = query.Where(filter.Where);
         }
 
+        query = query.Sort(filter);
+
         if (filter.Skip.HasValue)
         {
             query = query.Skip(filter.Skip.Value);
@@ -42,6 +44,6 @@ public class ArchiveBannService : Service<ArchiveBann>, IArchiveBannService
             query = query.Take(filter.Take.Value);
         }
 
-        return query.Sort(filter).ToListAsync();
+        return query.ToListAsync();
     }
 }
