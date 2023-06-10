@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize]
 @page "/lotteries/create"
+@using System.Globalization
 @using TGHub.Blazor.Pages.Lotteries.Models
 @using TGHub.Blazor.Pages.Lotteries.Forms
 
@@ -18,7 +19,7 @@
     public string? DefaultDate
     {
         get => _defaultDateTime?.ToString();
-        set => _defaultDateTime = DateTime.TryParse(value, out var dateTime) ? dateTime : null;
+        set => _defaultDateTime = DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime) ? dateTime : null;
     }
 
     private DateTime? _defaultDateTime;
