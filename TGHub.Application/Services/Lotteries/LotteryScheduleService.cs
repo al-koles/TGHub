@@ -24,7 +24,7 @@ public class LotteryScheduleService : ILotteryScheduleService
         var newTrigger = TriggerBuilder.Create()
             .WithIdentity(triggerKey)
             .ForJob(SendLotteryJob.Key)
-            .StartAt(lottery.StartDateTime)
+            .StartAt(new DateTimeOffset(lottery.StartDateTime, TimeSpan.Zero))
             .UsingJobData(new JobDataMap
                 { { nameof(SendLotteryJob.LotteryId), lottery.Id } })
             .Build();
@@ -47,7 +47,7 @@ public class LotteryScheduleService : ILotteryScheduleService
         var newTrigger = TriggerBuilder.Create()
             .WithIdentity(triggerKey)
             .ForJob(SendLotteryResultJob.Key)
-            .StartAt(lottery.EndDateTime)
+            .StartAt(new DateTimeOffset(lottery.EndDateTime, TimeSpan.Zero))
             .UsingJobData(new JobDataMap
                 { { nameof(SendLotteryResultJob.LotteryId), lottery.Id } })
             .Build();

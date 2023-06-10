@@ -22,7 +22,7 @@ public class PostScheduleService : IPostScheduleService
         var newTrigger = TriggerBuilder.Create()
             .WithIdentity(triggerKey)
             .ForJob(SendPostJob.Key)
-            .StartAt(post.ReleaseDateTime)
+            .StartAt(new DateTimeOffset(post.ReleaseDateTime, TimeSpan.Zero))
             .UsingJobData(new JobDataMap
                 { { nameof(SendPostJob.PostId), post.Id } })
             .Build();
