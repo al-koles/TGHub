@@ -453,4 +453,13 @@
   <data name="EnshureBann" xml:space="preserve">
     <value>Are you sure you want to bann user '{0}'?</value>
   </data>
+  <data name="ArchiveBann" xml:space="preserve">
+    <value>Archive bann</value>
+  </data>
+  <data name="UnBannInitiator" xml:space="preserve">
+    <value>Unbann initiator</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
 </root>

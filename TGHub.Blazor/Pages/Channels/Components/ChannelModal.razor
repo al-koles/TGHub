@@ -279,7 +279,7 @@
         ModalService.Show<SpammerModal>(spammer.TelegramId.ToString(),
             new ModalParameters
             {
-                { nameof(SpammerModal.Spammer), spammer }
+                { nameof(SpammerModal.SpammerId), spammer.Id }
             },
             new ModalOptions
             {

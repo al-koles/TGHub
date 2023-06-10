@@ -168,6 +168,9 @@
   <data name="MissingPost" xml:space="preserve">
     <value>Missing post "{0}". May be it was deleted</value>
   </data>
+  <data name="MissingSpammer" xml:space="preserve">
+    <value>Spammer {0} does not exist</value>
+  </data>
   <data name="NoAdministratedChannels" xml:space="preserve">
     <value>&lt;p&gt;No your administrated channels detected. Go to Telegram and add &lt;a target="_blank" href="https://t.me/tghub_manager_bot"&gt;@tghub_manager_bot&lt;/a&gt; to any of your administrated channels&lt;/p&gt;</value>
   </data>

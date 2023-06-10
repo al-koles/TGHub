@@ -1,5 +1,6 @@
 ﻿@using TGHub.Application.Resources
 @using TGHub.Application.Services.ArchiveBanns
+@using TGHub.Application.Services.Spammers
 @using TGHub.Application.Services.SpamMessages
 @using TGHub.Blazor.Pages.Channels.Data
 @using TGHub.Blazor.Resources
@@ -8,11 +9,13 @@
 @using TGHub.Application.Common.Filtering
 @using System.Globalization
 @inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 @inject IServiceProvider ServiceProvider
+@inject IToastService ToastService
 
 <div class="mt-3">
     <label class="font-bold">TelegramId:</label>
-    @Spammer.TelegramId
+    @_spammer.TelegramId
     @{
         var colorClass = _status == SpammerStatus.Active ? "green-500" : "red-500";
         var statusText = _status == SpammerStatus.Active ? UiStringsLoc[UiStrings.Active] : UiStringsLoc[UiStrings.Banned];
@@ -24,32 +27,32 @@
         @if (_status == SpammerStatus.Active)
         {
             <button class="rounded px-2 py-1 bg-red-700/80 hover:bg-red-700 text-[#ffffff]"
-                    @onclick="@OpenBannModal">
+                    @onclick="@OpenBannModalAsync">
                 @UiStringsLoc[UiStrings.Bann]
             </button>
         }
         else
         {
             <button class="rounded px-2 py-1 bg-[@ColorStrings.C5]/80 hover:bg-[@ColorStrings.C5] text-[#ffffff]"
-                    @onclick="@OpenUnBannModal">
+                    @onclick="@OpenUnBannModalAsync">
                 @UiStringsLoc[UiStrings.Unban]
             </button>
         }
     </span>
 </div>
-@if (!string.IsNullOrEmpty(Spammer.FirstName))
+@if (!string.IsNullOrEmpty(_spammer.FirstName))
 {
     <div class="mt-3">
         <label class="font-bold">@UiStringsLoc[UiStrings.Name]:</label>
-        @Spammer.FirstName @Spammer.LastName
+        @_spammer.FirstName @_spammer.LastName
     </div>
 }
-@if (!string.IsNullOrEmpty(Spammer.UserName))
+@if (!string.IsNullOrEmpty(_spammer.UserName))
 {
     <div class="mt-3">
         <label class="font-bold">@UiStringsLoc[UiStrings.Username]:</label>
-        <a href="@(Constants.TgBaseUrl)/@Spammer.UserName" target="_blank">
-            @@@Spammer.UserName
+        <a href="@(Constants.TgBaseUrl)/@_spammer.UserName" target="_blank">
+            @@@_spammer.UserName
         </a>
     </div>
 }
@@ -58,22 +61,22 @@
 {
     <div>
         <label class="font-bold mt-3">@UiStringsLoc[UiStrings.BannedAt]:</label>
-        @Spammer.BannDateTime?.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern)
+        @_spammer.BannDateTime?.ToString(CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern)
     </div>
-    if (Spammer.BannInitiator != null)
+    if (_spammer.BannInitiator != null)
     {
         <div class="mt-3">
             <label class="font-bold">@UiStringsLoc[UiStrings.BannInitiator]</label>
             <div class="inline ml-1">
-                <UserTile User="@(Spammer.BannInitiator.Administrator ?? new TgHubUser())"/>
+                <UserTile User="@(_spammer.BannInitiator.Administrator ?? new TgHubUser())"/>
             </div>
         </div>
-        if (!string.IsNullOrEmpty(Spammer.BannContext))
+        if (!string.IsNullOrEmpty(_spammer.BannContext))
         {
             <div class="mt-3">
                 <label class="font-bold">@UiStringsLoc[UiStrings.BannContext]</label>
                 <div class="whitespace-pre-wrap">
-                    @((MarkupString)Spammer.BannContext)
+                    @((MarkupString)_spammer.BannContext)
                 </div>
             </div>
         }
@@ -83,20 +86,20 @@
         <div class="mt-3 rounded-lg p-2 max-h-[10rem] overflow-y-auto bg-[@ColorStrings.C0]">
             <div class="font-bold">@UiStringsLoc[UiStrings.AutoBannContext]</div>
             <div class="whitespace-pre-wrap">
-                @((MarkupString)Spammer.BannContext)
+                @((MarkupString)_spammer.BannContext!)
             </div>
         </div>
     }
 }
-@if (Spammer.ArchiveBanns.Any())
+@if (_archiveBanns.Any())
 {
     <div class="mt-3">
         <label class="font-bold">@UiStringsLoc[UiStrings.BannHistory]</label>
         <div class="max-h-[15rem] overflow-y-auto p-1 bg-[@ColorStrings.C0] rounded-xl">
-            @foreach (var bann in Spammer.ArchiveBanns)
+            @foreach (var bann in _archiveBanns)
             {
                 <div class="bg-[#ffffff] rounded-xl p-2 hover:-translate-y-0.5 hover:drop-shadow-md hover:bg-gray-100 cursor-pointer"
-                     @onclick="@(() => OpenArchiveBannModalAsync(bann))">
+                     @onclick="@(() => OpenArchiveBannModal(bann))">
                     <div>
                         <label class="font-bold">@UiStringsLoc[UiStrings.BannedAt]:</label>
                         @bann.From.ToString(CultureInfo.CurrentCulture.DateTimeFormat.SortableDateTimePattern)
@@ -111,12 +114,12 @@
     </div>
 }
 
-@if (Spammer.SpamMessages.Any())
+@if (_spamMessages.Any())
 {
     <div class="mt-3">
         <label class="font-bold">@UiStringsLoc[UiStrings.LastSpamMessages]</label>
         <div class="max-h-[15rem] overflow-y-auto p-1 bg-[@ColorStrings.C0] rounded-xl flex flex-col gap-0.5">
-            @foreach (var spamMessage in Spammer.SpamMessages)
+            @foreach (var spamMessage in _spamMessages)
             {
                 <div class="bg-[#ffffff] rounded-xl p-2 hover:-translate-y-0.5 hover:drop-shadow-md hover:bg-gray-100 cursor-pointer"
                      @onclick="@(() => OpenSpamMessageModal(spamMessage))">
@@ -142,8 +145,11 @@
     private IModalService ModalService { get; set; } = null!;
 
     [Parameter]
-    public Spammer Spammer { get; set; } = new();
+    public int SpammerId { get; set; }
 
+    private Spammer _spammer = new();
+    private List<SpamMessage> _spamMessages = new();
+    private List<ArchiveBann> _archiveBanns = new();
     private SpammerStatus _status;
 
     protected override async Task OnParametersSetAsync()
@@ -155,29 +161,44 @@
     {
         await using var scope = ServiceProvider.CreateAsyncScope();
 
-        var spamMessageService = scope.ServiceProvider.GetRequiredService<ISpamMessageService>();
-        Spammer.SpamMessages = await spamMessageService.ListAsync(new FilterBase<SpamMessage>
+        var spammerService = scope.ServiceProvider.GetRequiredService<ISpammerService>();
+        var spammer = await spammerService.FirstOrDefaultAsync(s => s.Id == SpammerId);
+        if (spammer == null)
         {
-            Where = m => m.SpammerId == Spammer.Id,
+            ToastService.ShowWarning(NotificationStringsLoc[NotificationStrings.MissingSpammer]);
+            await Modal.CloseAsync();
+            return;
+        }
+        _spammer = spammer;
+
+        var spamMessageService = scope.ServiceProvider.GetRequiredService<ISpamMessageService>();
+        _spamMessages = await spamMessageService.ListAsync(new FilterBase<SpamMessage>
+        {
+            Where = m => m.SpammerId == _spammer.Id,
             SortBy = m => m.DateTimeWritten,
             SortDirection = SortDirection.Descending
         });
 
         var archiveBannService = scope.ServiceProvider.GetRequiredService<IArchiveBannService>();
-        Spammer.ArchiveBanns = await archiveBannService.ListAsync(new FilterBase<ArchiveBann>
+        _archiveBanns = await archiveBannService.ListAsync(new FilterBase<ArchiveBann>
         {
-            Where = b => b.SpammerId == Spammer.Id,
+            Where = b => b.SpammerId == _spammer.Id,
             SortBy = b => b.From,
             SortDirection = SortDirection.Descending
         });
 
-        _status = Spammer.BannDateTime == null ? SpammerStatus.Active : SpammerStatus.Banned;
+        _status = _spammer.BannDateTime == null ? SpammerStatus.Active : SpammerStatus.Banned;
+        StateHasChanged();
     }
 
 
-    private async Task OpenArchiveBannModalAsync(ArchiveBann bann)
+    private void OpenArchiveBannModal(ArchiveBann bann)
     {
-        ModalService.Show<ArchiveBannModal>();
+        ModalService.Show<ArchiveBannModal>(UiStringsLoc[UiStrings.ArchiveBann],
+            new ModalParameters
+            {
+                { nameof(ArchiveBannModal.ArchiveBann), bann }
+            });
     }
 
     private void OpenSpamMessageModal(SpamMessage spamMessage)
@@ -189,22 +210,32 @@
             });
     }
 
-    private void OpenUnBannModal()
+    private async Task OpenUnBannModalAsync()
     {
-        var question = string.Format(UiStringsLoc[UiStrings.EnshureUnbann], Spammer.TelegramId);
-        ModalService.Show<UnBannModal>(question, new ModalParameters
+        var question = string.Format(UiStringsLoc[UiStrings.EnshureUnbann], _spammer.TelegramId);
+        var modal = ModalService.Show<UnBannModal>(question, new ModalParameters
         {
-            { nameof(UnBannModal.Spammer), Spammer }
+            { nameof(UnBannModal.Spammer), _spammer }
         });
+        var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            await RefreshAsync();
+        }
     }
 
-    private void OpenBannModal()
+    private async Task OpenBannModalAsync()
     {
-        var question = string.Format(UiStringsLoc[UiStrings.EnshureBann], Spammer.TelegramId);
-        ModalService.Show<BannModal>(question, new ModalParameters
+        var question = string.Format(UiStringsLoc[UiStrings.EnshureBann], _spammer.TelegramId);
+        var modal = ModalService.Show<BannModal>(question, new ModalParameters
         {
-            { nameof(BannModal.Spammer), Spammer }
+            { nameof(BannModal.Spammer), _spammer }
         });
+        var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            await RefreshAsync();
+        }
     }
 
 }

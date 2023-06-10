@@ -57,11 +57,6 @@
 
     private async Task BannAsync()
     {
-        if (Spammer.Channel.LinkedChatTelegramId == null)
-        {
-            ToastService.ShowWarning(string.Format(NotificationStringsLoc[NotificationStrings.MissingCommentsGroup], Spammer.Channel.Name));
-            return;
-        }
         if (_isUnBanning)
         {
             return;
@@ -72,21 +67,33 @@
         {
             await using var scope = ServiceProvider.CreateAsyncScope();
 
+            var spammerService = scope.ServiceProvider.GetRequiredService<ISpammerService>();
+            var spammer = await spammerService.FirstOrDefaultAsync(s => s.Id == Spammer.Id);
+            if (spammer == null)
+            {
+                ToastService.ShowWarning(NotificationStringsLoc[NotificationStrings.MissingSpammer]);
+                return;
+            }
+            if (spammer.Channel.LinkedChatTelegramId == null)
+            {
+                ToastService.ShowWarning(string.Format(NotificationStringsLoc[NotificationStrings.MissingCommentsGroup], spammer.Channel.Name));
+                return;
+            }
+
             var tgBotClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
-            await tgBotClient.BannUserAsync(Spammer.TelegramId, Spammer.Channel.LinkedChatTelegramId.Value);
+            await tgBotClient.BannUserAsync(spammer.TelegramId, spammer.Channel.LinkedChatTelegramId.Value);
 
             var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
             var bannInitiator = await channelAdministratorService
                 .FirstOrDefaultAsync(a => a.AdministratorId == LocalStorageProvider.Id &&
-                                          a.ChannelId == Spammer.ChannelId);
+                                          a.ChannelId == spammer.ChannelId);
 
-            Spammer.BannDateTime = DateTime.UtcNow;
-            Spammer.BannInitiator = bannInitiator;
-            Spammer.BannInitiatorId = bannInitiator!.Id;
-            Spammer.BannContext = _context;
+            spammer.BannDateTime = DateTime.UtcNow;
+            spammer.BannInitiator = bannInitiator;
+            spammer.BannInitiatorId = bannInitiator!.Id;
+            spammer.BannContext = _context;
 
-            var spammerService = scope.ServiceProvider.GetRequiredService<ISpammerService>();
-            await spammerService.UpdateAsync(Spammer);
+            await spammerService.UpdateAsync(spammer);
         }
         catch (Exception e)
         {

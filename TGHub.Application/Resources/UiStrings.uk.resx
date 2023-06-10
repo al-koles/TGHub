@@ -453,4 +453,13 @@
   <data name="EnshureBann" xml:space="preserve">
     <value>Ви впевнені, що хочете забанити користувача '{0}'?</value>
   </data>
+  <data name="ArchiveBann" xml:space="preserve">
+    <value>Архівний бан</value>
+  </data>
+  <data name="UnBannInitiator" xml:space="preserve">
+    <value>Ініціатор розбану</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Невідомий</value>
+  </data>
 </root>
