@@ -456,6 +456,9 @@
   <data name="ArchiveBann" xml:space="preserve">
     <value>Archive bann</value>
   </data>
+  <data name="SpamMessageLimit" xml:space="preserve">
+    <value>Spam message limit</value>
+  </data>
   <data name="UnBannInitiator" xml:space="preserve">
     <value>Unbann initiator</value>
   </data>

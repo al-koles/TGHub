@@ -9,6 +9,7 @@ public class Channel : EntityBase
     public bool ListSpamOn { get; set; }
     public bool IsActive { get; set; }
     public string? LogoFileName { get; set; }
+    public int SpamMessageLimit { get; set; }
 
     public ICollection<ChannelAdministrator> Administrators { get; set; } = new List<ChannelAdministrator>();
     public ICollection<SpamWord> SpamWords { get; set; } = new HashSet<SpamWord>();

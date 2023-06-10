@@ -853,6 +853,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spam message limit.
+        /// </summary>
+        public static string SpamMessageLimit {
+            get {
+                return ResourceManager.GetString("SpamMessageLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spam messages.
         /// </summary>
         public static string SpamMessages {

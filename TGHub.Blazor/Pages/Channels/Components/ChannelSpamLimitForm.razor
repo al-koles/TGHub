@@ -1,0 +1,75 @@
+﻿@using TGHub.Application.Resources
+@using TGHub.Application.Services.Channels
+@using TGHub.Blazor.Pages.Channels.Data
+@using TGHub.Blazor.Resources
+@inject IServiceProvider ServiceProvider
+@inject IToastService ToastService
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject ILogger<AddSpamWordForm> Logger
+
+<EditForm Model="@_channelSpamLimitModel" OnValidSubmit="@OnValidSubmitAsync">
+    <ObjectGraphDataAnnotationsValidator/>
+    <div>
+        <div class="flex flex-wrap items-center">
+            <div>
+                <InputNumber class="@($"rounded-full px-2 py-1 border focus:outline-[{ColorStrings.C5}]")"
+                             @bind-Value="@_channelSpamLimitModel.ChannelSpamLimit"
+                             min="0"/>
+            </div>
+            <button type="submit" class="h-full rounded-lg flex items-center p-2 text-[@ColorStrings.C5]/80 hover:text-[@ColorStrings.C5]">
+                @UiStringsLoc[UiStrings.Submit]
+            </button>
+        </div>
+        <ValidationMessage For="@(() => _channelSpamLimitModel.ChannelSpamLimit)"/>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int ChannelId { get; set; }
+
+    [Parameter]
+    public int ChannelSpamLimit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> SpamLimitUpdated { get; set; }
+
+    private readonly ChannelSpamLimitModel _channelSpamLimitModel = new();
+
+    protected override void OnParametersSet()
+    {
+        _channelSpamLimitModel.ChannelId = ChannelId;
+        if (_channelSpamLimitModel.ChannelSpamLimit == default)
+        {
+            _channelSpamLimitModel.ChannelSpamLimit = ChannelSpamLimit;
+        }
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
+        try
+        {
+            var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == ChannelId);
+            if (channel == null)
+            {
+                ToastService.ShowError(NotificationStringsLoc[NotificationStrings.MissingChannel]);
+                return;
+            }
+            channel.SpamMessageLimit = _channelSpamLimitModel.ChannelSpamLimit;
+            await channelService.UpdateAsync(channel);
+
+            await SpamLimitUpdated.InvokeAsync(_channelSpamLimitModel.ChannelSpamLimit);
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError(NotificationStringsLoc[NotificationStrings.SubmitError]);
+            Logger.LogError(e, "Failed to update SpamMessageLimit to '{0}' for channel '{1}'",
+                _channelSpamLimitModel.ChannelSpamLimit, ChannelId);
+        }
+    }
+
+}

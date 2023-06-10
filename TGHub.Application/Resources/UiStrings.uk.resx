@@ -456,6 +456,9 @@
   <data name="ArchiveBann" xml:space="preserve">
     <value>Архівний бан</value>
   </data>
+  <data name="SpamMessageLimit" xml:space="preserve">
+    <value>Ліміт спам повідомлень</value>
+  </data>
   <data name="UnBannInitiator" xml:space="preserve">
     <value>Ініціатор розбану</value>
   </data>
