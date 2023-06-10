@@ -8,11 +8,11 @@ public enum To
 
 public interface ILocalDateTimeManager
 {
+    TimeSpan Offset { get; set; }
     event Action? OnOffsetChanged;
     event Func<Task>? OnOffsetChangedAsync;
-    TimeSpan Offset { get; set; }
     void SetOffsetByTimeZoneId(string timeZoneId);
     Task SetFromJsAsync();
-    (DateOnly, TimeOnly) ConvertDateAndTime(DateOnly date, TimeOnly time, To format);
-    DateTime ConvertDateTime(DateTime dateTime, To format);
+    (DateOnly, TimeOnly) Convert(DateOnly date, TimeOnly time, To format);
+    DateTime Convert(DateTime dateTime, To format);
 }

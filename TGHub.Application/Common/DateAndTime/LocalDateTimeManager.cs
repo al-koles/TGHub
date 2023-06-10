@@ -40,7 +40,7 @@ public class LocalDateTimeManager : ILocalDateTimeManager
         Offset = TimeSpan.FromHours(offset);
     }
 
-    public (DateOnly, TimeOnly) ConvertDateAndTime(DateOnly date, TimeOnly time, To format)
+    public (DateOnly, TimeOnly) Convert(DateOnly date, TimeOnly time, To format)
     {
         var resultDateTime = date.ToDateTime(time) + Offset * (int)format;
 
@@ -50,7 +50,7 @@ public class LocalDateTimeManager : ILocalDateTimeManager
         return (date, time);
     }
 
-    public DateTime ConvertDateTime(DateTime dateTime, To format)
+    public DateTime Convert(DateTime dateTime, To format)
     {
         return dateTime + (int)format * Offset;
     }

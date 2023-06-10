@@ -18,6 +18,7 @@
 @inject LocalStorageProvider LocalStorageProvider
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject IServiceProvider ServiceProvider
+@inject ILocalDateTimeManager LocalDateTimeManager
 
 <div class="h-full">
     <PostForm Model="@_model" IsEdit="@true" RedirectUrl="@RedirectUrl"/>
@@ -63,6 +64,8 @@
             return;
         }
 
+        await LocalDateTimeManager.SetFromJsAsync();
+        post.ReleaseDateTime = LocalDateTimeManager.Convert(post.ReleaseDateTime, To.Local);
         Mapper.Map(post, _model);
 
         _model.Attachments = post.Attachments.Select(a =>

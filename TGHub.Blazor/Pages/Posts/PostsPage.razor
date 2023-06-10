@@ -21,6 +21,7 @@
 @inject IServiceProvider ServiceProvider
 @inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
 @inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject ILocalDateTimeManager LocalDateTimeManager
 
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
@@ -41,6 +42,9 @@
 
 @code {
 
+    [CascadingParameter]
+    private IModalService Modal { get; set; }
+
     [Parameter]
     [SupplyParameterFromQuery]
     public string? Year { get; set; }
@@ -48,9 +52,6 @@
     [Parameter]
     [SupplyParameterFromQuery]
     public string? Month { get; set; }
-
-    [CascadingParameter]
-    private IModalService Modal { get; set; }
 
     private int _year = DateTime.UtcNow.Year;
     private Month _month = (Month)DateTime.UtcNow.Month;
@@ -85,6 +86,8 @@
         var post = await postService.FirstOrDefaultAsync(p => p.Id == id);
         if (post != null)
         {
+            post.ReleaseDateTime = LocalDateTimeManager.Convert(post.ReleaseDateTime, To.Local);
+
             var parameters = new ModalParameters()
                 .Add(nameof(PostInfoModal.PostInfo), post);
             var options = new ModalOptions
@@ -125,6 +128,8 @@
 
     private async Task RefreshEventsAsync()
     {
+        await LocalDateTimeManager.SetFromJsAsync();
+
         StateHasChanged();
         var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
         var lastDayOfWeek = firstDayOfWeek + 6;
@@ -132,10 +137,12 @@
         var from = new DateTime(_year, (int)_month, 1);
         var daysToFirstDayOfWeek = (from.DayOfWeek - firstDayOfWeek + 7) % 7;
         from = from.AddDays(-1 * daysToFirstDayOfWeek);
+        from = LocalDateTimeManager.Convert(from, To.Utc);
 
         var to = new DateTime(_year, (int)_month, 1).AddMonths(1).AddDays(-1);
         var daysToWeekEndCount = ((int)lastDayOfWeek - (int)to.DayOfWeek + 7) % 7;
         to = to.AddDays(daysToWeekEndCount);
+        to = LocalDateTimeManager.Convert(to, To.Utc);
 
         var filter = new PostFilter
         {
@@ -153,6 +160,10 @@
         using var scope = ServiceProvider.CreateScope();
         var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
         var posts = await postService.ListAsync(filter);
+        foreach (var post in posts)
+        {
+            post.ReleaseDateTime = LocalDateTimeManager.Convert(post.ReleaseDateTime, To.Local);
+        }
         _events = Mapper.Map<List<CalendarEventModel>>(posts);
         await RefreshEventsStatusesAsync(posts);
         await InvokeAsync(StateHasChanged);
