@@ -76,6 +76,11 @@
         container.appendChild(scriptElement);
 
     }
+        
+      function getClientTimeZoneOffset() {
+        let datetime = new Date();
+        return datetime.getTimezoneOffset() / -60;
+      }
 </script>
 
 </body>
