@@ -109,7 +109,7 @@ public class TgSpamService : ITgSpamService
                     message.MessageId, message.From.Id, message.Chat.Id);
             }
 
-            var shouldBann = await _spammerService.BannSpammerIfOutOfLimitAsync(spammer, Constants.SpamLimit);
+            var shouldBann = await _spammerService.BannSpammerIfOutOfLimitAsync(spammer, channel.SpamMessageLimit);
             if (shouldBann)
             {
                 try

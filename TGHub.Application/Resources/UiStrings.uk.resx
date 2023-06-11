@@ -456,6 +456,12 @@
   <data name="ArchiveBann" xml:space="preserve">
     <value>Архівний бан</value>
   </data>
+  <data name="NoChannels" xml:space="preserve">
+    <value>Схоже, у вас немає жодного адміністративного каналу. Якщо у вас є такий, додайте до нього бота {0} з правами адміністратора. Якщо ви все ще бачите цю сторінку, спробуйте перезавантажити її та написати публікацію на своєму каналі</value>
+  </data>
+  <data name="SpamMessageLimit" xml:space="preserve">
+    <value>Ліміт спам повідомлень</value>
+  </data>
   <data name="UnBannInitiator" xml:space="preserve">
     <value>Ініціатор розбану</value>
   </data>

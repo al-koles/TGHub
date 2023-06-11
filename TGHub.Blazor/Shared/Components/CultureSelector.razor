@@ -2,7 +2,7 @@
 @using TGHub.Blazor.Resources
 @using System.Globalization
 @using TGHub.Application
-@inject NavigationManager Navigation
+@inject NavigationManager NavigationManager
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 
 <div class="cursor-pointer @CssClass"
@@ -46,12 +46,10 @@
             {
                 _culture = value;
 
-                var uri = new Uri(Navigation.Uri)
-                    .GetComponents(UriComponents.PathAndQuery, UriFormat.UriEscaped);
                 var cultureEscaped = Uri.EscapeDataString(value.Name);
-                var uriEscaped = Uri.EscapeDataString(uri);
+                var uriEscaped = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
 
-                Navigation.NavigateTo(
+                NavigationManager.NavigateTo(
                     $"api/Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
                     true);
             }
