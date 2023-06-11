@@ -47,7 +47,7 @@
                 _culture = value;
 
                 var cultureEscaped = Uri.EscapeDataString(value.Name);
-                var uriEscaped = Uri.EscapeDataString(Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery));
+                var uriEscaped = Uri.EscapeDataString(new Uri(NavigationManager.Uri).PathAndQuery);
 
                 NavigationManager.NavigateTo(
                     $"api/Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
