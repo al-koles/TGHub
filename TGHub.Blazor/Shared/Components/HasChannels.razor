@@ -1,0 +1,57 @@
+﻿@using TGHub.Application.Resources
+@using TGHub.Application.Services.Base
+@using TGHub.Domain.Entities
+@using TGHub.Telegram.Bot.Options
+@using Microsoft.Extensions.Options
+@using TGHub.Application
+@using TGHub.Application.Common
+@using TGHub.Application.Common.Filtering
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IOptionsSnapshot<TelegramBotOptions> TelegramBotOptionsSnapshot
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inject LocalStorageProvider LocalStorageProvider
+
+@if (_hasChannels)
+{
+    @ChildContent
+}
+else
+{
+    <p>
+        @((MarkupString)_message)
+    </p>
+}
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private string _message = null!;
+    private bool _hasChannels;
+
+    protected override void OnInitialized()
+    {
+        var options = TelegramBotOptionsSnapshot.Value;
+        var botUserName = $"@{options.BotUserName}";
+        var botUrl = $"{Constants.TgBaseUrl}/{options.BotUserName}";
+
+        var a = $"<a href=\"{botUrl}\" target=\"_blank\">{botUserName}</a>";
+        _message = string.Format(UiStringsLoc[UiStrings.NoChannels], a);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
+        var administratedChannels = await channelAdministratorService
+            .ListAsync(new FilterBase<ChannelAdministrator>
+            {
+                Where = a => a.IsActive && a.Channel.IsActive && a.AdministratorId == LocalStorageProvider.Id
+            });
+
+        _hasChannels = administratedChannels.Any();
+    }
+
+}

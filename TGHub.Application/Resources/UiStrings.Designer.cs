@@ -637,6 +637,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Looks like you don&apos;t have any administrated channels. If you have such add bot {0} to it with administrator rights. If you still see this page try reloading it and write a post to your channel.
+        /// </summary>
+        public static string NoChannels {
+            get {
+                return ResourceManager.GetString("NoChannels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorry, there&apos;s nothing at this address..
         /// </summary>
         public static string NotFound {

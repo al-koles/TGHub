@@ -456,6 +456,9 @@
   <data name="ArchiveBann" xml:space="preserve">
     <value>Archive bann</value>
   </data>
+  <data name="NoChannels" xml:space="preserve">
+    <value>Looks like you don't have any administrated channels. If you have such add bot {0} to it with administrator rights. If you still see this page try reloading it and write a post to your channel</value>
+  </data>
   <data name="SpamMessageLimit" xml:space="preserve">
     <value>Spam message limit</value>
   </data>
