@@ -31,9 +31,10 @@
 {
     <div class="mt-3">
         <label class="font-bold">@UiStringsLoc[UiStrings.Spammer]:</label>
-        <button @onclick="@ShowSpammerModal" class="text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]">
+        <a class="text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]"
+           href="spammers/@Spammer.Id">
             @Spammer?.TelegramId
-        </button>
+        </a>
     </div>
 }
 <div class="mt-3">
@@ -53,18 +54,5 @@
 
     [Parameter]
     public Spammer? Spammer { get; set; }
-
-    private void ShowSpammerModal()
-    {
-        ModalService.Show<SpammerModal>(UiStringsLoc[UiStrings.Spammer],
-            new ModalParameters
-            {
-                { nameof(SpammerModal.SpammerId), SpamMessage.SpammerId }
-            },
-            new ModalOptions
-            {
-                Size = ModalSize.Large
-            });
-    }
 
 }
