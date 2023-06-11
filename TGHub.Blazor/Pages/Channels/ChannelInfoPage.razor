@@ -5,8 +5,8 @@
 @using TGHub.Application.Services.Spammers
 @using TGHub.Application.Services.SpamMessages
 @using TGHub.Application.Services.SpamWords
-@using TGHub.Blazor.Resources
 @using TGHub.Blazor.Pages.Channels.Components
+@using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using System.Globalization
@@ -76,7 +76,7 @@
                         @foreach (var bannedUser in _bannedSpammers)
                         {
                             <a class="drop-shadow active:drop-shadow-none text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]"
-                                    href="spammers/@bannedUser.Id">
+                               href="spammers/@bannedUser.Id">
                                 @bannedUser.TelegramId
                             </a>
                         }
