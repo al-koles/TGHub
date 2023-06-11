@@ -29,7 +29,7 @@ else
     public RenderFragment ChildContent { get; set; }
 
     private string _message = null!;
-    private bool _hasChannels;
+    private bool _hasChannels = true;
 
     protected override void OnInitialized()
     {
@@ -43,15 +43,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await using var scope = ServiceProvider.CreateAsyncScope();
-        var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
-        var administratedChannels = await channelAdministratorService
-            .ListAsync(new FilterBase<ChannelAdministrator>
-            {
-                Where = a => a.IsActive && a.Channel.IsActive && a.AdministratorId == LocalStorageProvider.Id
-            });
+        if (LocalStorageProvider.Id != default)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var channelAdministratorService = scope.ServiceProvider.GetRequiredService<IService<ChannelAdministrator>>();
+            var administratedChannels = await channelAdministratorService
+                .ListAsync(new FilterBase<ChannelAdministrator>
+                {
+                    Where = a => a.IsActive && a.Channel.IsActive && a.AdministratorId == LocalStorageProvider.Id
+                });
 
-        _hasChannels = administratedChannels.Any();
+            _hasChannels = administratedChannels.Any();
+        }
     }
 
 }
