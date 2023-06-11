@@ -87,7 +87,7 @@
         <div class="rounded-xl bg-[#ffffff]/70 p-4">
             <label class="font-bold">@UiStringsLoc[UiStrings.SpamWords]</label>
             <div class="rounded-lg bg-[@ColorStrings.C0] p-1">
-                <AddSpamWordForm ChannelId="@Id"/>
+                <AddSpamWordForm ChannelId="@Id" SpamWordAdded="@RefreshFromDbAsync"/>
                 <div class="grid grid-cols-3 gap-2 max-h-[20-rem] overflow-y-auto justify-items-center p-2">
                     @foreach (var spamWord in _spamWords)
                     {
