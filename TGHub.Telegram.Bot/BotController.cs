@@ -51,6 +51,9 @@ public class BotController : ControllerBase
                 case UpdateType.Message:
                     await AnswerMessage(update);
                     break;
+                case UpdateType.ChannelPost:
+                    await AnswerPost(update);
+                    break;
                 case UpdateType.MyChatMember:
                     await MyChatMember(update);
                     break;
@@ -73,60 +76,47 @@ public class BotController : ControllerBase
             return;
         }
 
-        Channel? channel = null;
-        switch (message.Chat.Type)
+        if (message.Chat.Type == ChatType.Supergroup)
         {
-            case ChatType.Channel:
-                channel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == message.Chat.Id);
-                if (channel == null)
+            var channel = await _channelService.FirstOrDefaultAsync(ch => ch.LinkedChatTelegramId == message.Chat.Id);
+            if (channel == null)
+            {
+                var tgSupergroup = await _telegramBotClient.GetChatAsync(message.Chat.Id);
+                if (tgSupergroup.LinkedChatId != null)
                 {
-                    await _tgChannelService.CreateOrUpdateChannelFromTgAsync(message.Chat.Id);
-                    channel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == message.Chat.Id);
-                }
-
-                break;
-            case ChatType.Supergroup:
-                channel = await _channelService.FirstOrDefaultAsync(ch => ch.LinkedChatTelegramId == message.Chat.Id);
-                if (channel == null)
-                {
-                    var tgSupergroup = await _telegramBotClient.GetChatAsync(message.Chat.Id);
-                    if (tgSupergroup.LinkedChatId != null)
+                    channel = await _channelService
+                        .FirstOrDefaultAsync(ch => ch.TelegramId == tgSupergroup.LinkedChatId);
+                    if (channel == null)
                     {
+                        await _tgChannelService.CreateOrUpdateChannelFromTgAsync(tgSupergroup.LinkedChatId.Value);
                         channel = await _channelService
                             .FirstOrDefaultAsync(ch => ch.TelegramId == tgSupergroup.LinkedChatId);
-                        if (channel == null)
-                        {
-                            await _tgChannelService.CreateOrUpdateChannelFromTgAsync(tgSupergroup.LinkedChatId.Value);
-                            channel = await _channelService
-                                .FirstOrDefaultAsync(ch => ch.TelegramId == tgSupergroup.LinkedChatId);
-                        }
-                        else
-                        {
-                            channel.LinkedChatTelegramId = tgSupergroup.Id;
-                            channel.IsActive = true;
-                            await _channelService.UpdateAsync(channel);
-                        }
+                    }
+                    else
+                    {
+                        channel.LinkedChatTelegramId = tgSupergroup.Id;
+                        channel.IsActive = true;
+                        await _channelService.UpdateAsync(channel);
                     }
                 }
-
-                break;
-        }
-
-        if (channel != null)
-        {
-            string messageText = null!;
-            if (!string.IsNullOrEmpty(message.Text))
-            {
-                messageText = message.Text;
-            }
-            else if (!string.IsNullOrEmpty(message.Caption))
-            {
-                messageText = message.Caption;
             }
 
-            if (!string.IsNullOrEmpty(messageText))
+            if (channel != null)
             {
-                await _tgSpamService.CheckMessageForSpamAsync(message, messageText);
+                string messageText = null!;
+                if (!string.IsNullOrEmpty(message.Text))
+                {
+                    messageText = message.Text;
+                }
+                else if (!string.IsNullOrEmpty(message.Caption))
+                {
+                    messageText = message.Caption;
+                }
+
+                if (!string.IsNullOrEmpty(messageText))
+                {
+                    await _tgSpamService.CheckMessageForSpamAsync(message, messageText);
+                }
             }
         }
     }
@@ -139,8 +129,16 @@ public class BotController : ControllerBase
             return;
         }
 
-        await _telegramBotClient.SendTextMessageAsync(post.Chat.Id, post.Text,
-            replyToMessageId: post.MessageId);
+        var channel = await _channelService.FirstOrDefaultAsync(ch => ch.TelegramId == post.Chat.Id);
+        if (channel == null)
+        {
+            await _tgChannelService.CreateOrUpdateChannelFromTgAsync(post.Chat.Id);
+        }
+        else if (!channel.IsActive)
+        {
+            channel.IsActive = true;
+            await _channelService.UpdateAsync(channel);
+        }
     }
 
     private async Task MyChatMember(Update update)
