@@ -32,7 +32,8 @@ public static class DependencyInjection
         services.AddScoped<SessionStorageProvider>();
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         services.AddScoped<ILocalDateTimeManager, LocalDateTimeManager>();
-        services.AddSingleton<ILiveUpdatesHub, LiveUpdatesHub>();
+        services.AddSingleton<LiveUpdatesHub>();
+        services.AddTransient<ILiveUpdatesClient, LiveUpdatesClient>();
 
         services.AddTransient<IService<TgHubUser>, Service<TgHubUser>>();
         services.AddTransient<IChannelService, ChannelService>();

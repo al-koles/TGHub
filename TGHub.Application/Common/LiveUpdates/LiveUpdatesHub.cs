@@ -1,22 +1,24 @@
 ﻿namespace TGHub.Application.Common.LiveUpdates;
 
-internal class LiveUpdatesHub : ILiveUpdatesHub
+internal class LiveUpdatesHub
 {
     private readonly List<Receiver> _receivers = new();
 
-    public void SendUpdate(params string[] identifiers)
+    public void SendUpdate(Guid senderId, params string[] identifiers)
     {
-        var receiversToUpdate = _receivers.Where(r => identifiers.All(i => r.Identifiers.Contains(i)));
+        var receiversToUpdate = _receivers
+            .Where(r => r.Id != senderId && identifiers.All(i => r.Identifiers.Contains(i)));
         foreach (var receiver in receiversToUpdate)
         {
             receiver.Handler.Invoke();
         }
     }
 
-    public IDisposable StartReceiving(Func<Task> handler, params string[] identifiers)
+    public IDisposable StartReceiving(Guid receiverId, Func<Task> handler, params string[] identifiers)
     {
         var receiver = new Receiver
         {
+            Id = receiverId,
             Identifiers = identifiers,
             Handler = handler
         };

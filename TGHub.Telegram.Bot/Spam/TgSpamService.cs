@@ -16,7 +16,7 @@ namespace TGHub.Telegram.Bot.Spam;
 public class TgSpamService : ITgSpamService
 {
     private readonly IChannelService _channelService;
-    private readonly ILiveUpdatesHub _liveUpdatesHub;
+    private readonly ILiveUpdatesClient _liveUpdatesClient;
     private readonly ILogger<TgSpamService> _logger;
     private readonly ISpammerService _spammerService;
     private readonly ISpamMessageService _spamMessageService;
@@ -27,7 +27,7 @@ public class TgSpamService : ITgSpamService
     public TgSpamService(IChannelService channelService, ISpamModerator spamModerator,
         ITelegramBotClient telegramBotClient, ISpamMessageService spamMessageService,
         ISpammerService spammerService, ISpamWordsService spamWordsService, ILogger<TgSpamService> logger,
-        ILiveUpdatesHub liveUpdatesHub)
+        ILiveUpdatesClient liveUpdatesClient)
     {
         _channelService = channelService;
         _spamModerator = spamModerator;
@@ -36,7 +36,7 @@ public class TgSpamService : ITgSpamService
         _spammerService = spammerService;
         _spamWordsService = spamWordsService;
         _logger = logger;
-        _liveUpdatesHub = liveUpdatesHub;
+        _liveUpdatesClient = liveUpdatesClient;
     }
 
     public async Task CheckMessageForSpamAsync(Message message, string text)
@@ -125,7 +125,7 @@ public class TgSpamService : ITgSpamService
                 }
             }
 
-            _liveUpdatesHub.SendUpdate($"channel-{channel.Id}");
+            _liveUpdatesClient.SendUpdate($"channel-{channel.Id}");
         }
     }
 }

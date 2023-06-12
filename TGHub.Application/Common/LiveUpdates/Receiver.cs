@@ -2,6 +2,7 @@
 
 internal class Receiver : IDisposable
 {
+    internal Guid Id { get; set; }
     internal string[] Identifiers { get; set; } = null!;
     internal Func<Task> Handler { get; set; } = null!;
 

@@ -468,4 +468,7 @@
   <data name="Unknown" xml:space="preserve">
     <value>Невідомий</value>
   </data>
+  <data name="NothingToShow" xml:space="preserve">
+    <value>Дані відсутні</value>
+  </data>
 </root>

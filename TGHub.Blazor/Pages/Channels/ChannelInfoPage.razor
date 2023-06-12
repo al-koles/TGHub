@@ -7,7 +7,7 @@
 @inject IServiceProvider ServiceProvider
 @inject ILocalDateTimeManager LocalDateTimeManager
 @inject NavigationManager NavigationManager
-@inject ILiveUpdatesHub LiveUpdatesHub
+@inject ILiveUpdatesClient LiveUpdatesClient
 @using TGHub.Application.Resources
 @using TGHub.Application.Services.Channels
 @using TGHub.Application.Services.Spammers
@@ -67,30 +67,32 @@
                 <label class="font-bold">@UiStringsLoc[UiStrings.SpamMessageLimit]</label>
                 <ChannelSpamLimitForm ChannelId="@Id"
                                       ChannelSpamLimit="@_channel.SpamMessageLimit"
-                                      SpamLimitUpdated="@(newLimit => _channel.SpamMessageLimit = newLimit)"/>
+                                      SpamLimitUpdated="@OnSpamLimitUpdated"/>
             </div>
         </div>
-        @if (_bannedSpammers.Any())
-        {
-            <div class="rounded-xl bg-[#ffffff]/70 p-4">
-                <div>
-                    <label class="font-bold">@UiStringsLoc[UiStrings.BannedSpammers]</label>
-                    <div class="grid grid-cols-3 gap-2 max-h-[20-rem] overflow-y-auto justify-items-center">
-                        @foreach (var bannedUser in _bannedSpammers)
-                        {
-                            <a class="drop-shadow active:drop-shadow-none text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]"
-                               href="spammers/@bannedUser.Id">
-                                @bannedUser.TelegramId
-                            </a>
-                        }
-                    </div>
+        <div class="rounded-xl bg-[#ffffff]/70 p-4">
+            <label class="font-bold">@UiStringsLoc[UiStrings.BannedSpammers]</label>
+            @if (_bannedSpammers.Any())
+            {
+                <div class="grid grid-cols-3 gap-2 max-h-[20-rem] overflow-y-auto justify-items-center">
+                    @foreach (var bannedUser in _bannedSpammers)
+                    {
+                        <a class="drop-shadow active:drop-shadow-none text-[@ColorStrings.C4]/80 hover:text-[@ColorStrings.C4]"
+                           href="spammers/@bannedUser.Id">
+                            @bannedUser.TelegramId
+                        </a>
+                    }
                 </div>
-            </div>
-        }
+            }
+            else
+            {
+                <div class="m-2">@UiStringsLoc[UiStrings.NothingToShow]</div>
+            }
+        </div>
         <div class="rounded-xl bg-[#ffffff]/70 p-4">
             <label class="font-bold">@UiStringsLoc[UiStrings.SpamWords]</label>
             <div class="rounded-lg bg-[@ColorStrings.C0] p-1">
-                <AddSpamWordForm ChannelId="@Id" SpamWordAdded="@RefreshFromDbAsync"/>
+                <AddSpamWordForm ChannelId="@Id" SpamWordAdded="@OnSpamWordAdded"/>
                 <div class="grid grid-cols-3 gap-2 max-h-[20-rem] overflow-y-auto justify-items-center p-2">
                     @foreach (var spamWord in _spamWords)
                     {
@@ -108,10 +110,10 @@
                 </div>
             </div>
         </div>
-        @if (_lastSpamMessages.Any())
-        {
-            <div class="rounded-xl bg-[#ffffff]/70 p-4">
-                <label class="font-bold">@UiStringsLoc[UiStrings.LastSpamMessages]</label>
+        <div class="rounded-xl bg-[#ffffff]/70 p-4">
+            <label class="font-bold">@UiStringsLoc[UiStrings.LastSpamMessages]</label>
+            @if (_lastSpamMessages.Any())
+            {
                 <div class="max-h-[20rem] overflow-y-auto p-1 bg-[@ColorStrings.C0] rounded-xl flex flex-col gap-0.5">
                     @foreach (var spamMessage in _lastSpamMessages)
                     {
@@ -127,8 +129,12 @@
                         </div>
                     }
                 </div>
-            </div>
-        }
+            }
+            else
+            {
+                <div class="m-2">@UiStringsLoc[UiStrings.NothingToShow]</div>
+            }
+        </div>
     </div>
 </div>
 
@@ -145,12 +151,12 @@
     private List<Spammer> _bannedSpammers = new();
     private List<SpamMessage> _lastSpamMessages = new();
     private List<SpamWord> _spamWords = new();
-    private IDisposable _updatesReceiver;
+    private IDisposable _updatesReceiver = null!;
 
     protected override async Task OnInitializedAsync()
     {
         await LocalDateTimeManager.SetFromJsAsync();
-        _updatesReceiver = LiveUpdatesHub.StartReceiving(RefreshFromDbAsync, $"channel-{Id}");
+        _updatesReceiver = LiveUpdatesClient.StartReceiving(RefreshFromDbAsync, $"channel-{Id}");
     }
 
     protected override async Task OnParametersSetAsync()
@@ -216,6 +222,7 @@
             var tgBotClient = scope.ServiceProvider.GetRequiredService<ITgHubTelegramBotClient>();
             await tgBotClient.CreateOrUpdateChannelFromTg(_channel.TelegramId);
 
+            LiveUpdatesClient.SendUpdate($"channel-{Id}");
             await RefreshFromDbAsync();
 
             ToastService.ShowSuccess(string.Format(NotificationStringsLoc[NotificationStrings.ChannelRefreshSuccess], _channel.Name));
@@ -254,6 +261,7 @@
                 channel!.OffensiveSpamOn = !channel.OffensiveSpamOn;
                 await channelService.UpdateAsync(channel);
                 _channel.OffensiveSpamOn = channel.OffensiveSpamOn;
+                LiveUpdatesClient.SendUpdate($"channel-{Id}");
             }
             catch (NotFoundException e)
             {
@@ -285,6 +293,7 @@
                 channel!.ListSpamOn = !channel.ListSpamOn;
                 await channelService.UpdateAsync(channel);
                 _channel.ListSpamOn = channel.ListSpamOn;
+                LiveUpdatesClient.SendUpdate($"channel-{Id}");
             }
             catch (NotFoundException e)
             {
@@ -321,11 +330,25 @@
         {
             await spamWordsService.DeleteAsync(spamWord);
             _spamWords.Remove(spamWord);
+            LiveUpdatesClient.SendUpdate($"channel-{Id}");
         }
         catch
         {
             ToastService.ShowError(NotificationStringsLoc[NotificationStrings.DeleteError]);
         }
+    }
+
+    private void OnSpamLimitUpdated(int spamLimit)
+    {
+        _channel.SpamMessageLimit = spamLimit;
+        LiveUpdatesClient.SendUpdate($"channel-{Id}");
+    }
+
+    private void OnSpamWordAdded(SpamWord word)
+    {
+        _spamWords.Add(word);
+        _spamWords = _spamWords.OrderBy(w => w.Value).ToList();
+        LiveUpdatesClient.SendUpdate($"channel-{Id}");
     }
 
     public void Dispose()
