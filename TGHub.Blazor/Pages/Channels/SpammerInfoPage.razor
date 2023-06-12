@@ -1,5 +1,12 @@
 ﻿@attribute [Authorize]
 @page "/spammers/{id:int}"
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject IServiceProvider ServiceProvider
+@inject IToastService ToastService
+@inject ILocalDateTimeManager LocalDateTimeManager
+@inject NavigationManager NavigationManager
+@inject ILiveUpdatesClient LiveUpdatesClient
 @using TGHub.Application.Resources
 @using TGHub.Application.Services.ArchiveBanns
 @using TGHub.Application.Services.Spammers
@@ -8,15 +15,11 @@
 @using TGHub.Blazor.Pages.Channels.Data
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
+@using TGHub.Application.Common.LiveUpdates
 @using TGHub.Application
 @using System.Globalization
 @using TGHub.Application.Common.Filtering
-@inject IStringLocalizer<UiStrings> UiStringsLoc
-@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
-@inject IServiceProvider ServiceProvider
-@inject IToastService ToastService
-@inject ILocalDateTimeManager LocalDateTimeManager
-@inject NavigationManager NavigationManager
+@implements IDisposable
 
 <div class="min-h-full w-full flex flex-col">
     <PageTitle>@UiStringsLoc[UiStrings.Spammer]</PageTitle>
@@ -159,10 +162,12 @@
     private List<SpamMessage> _spamMessages = new();
     private List<ArchiveBann> _archiveBanns = new();
     private SpammerStatus _status;
+    private IDisposable _updatesReceiver = null!;
 
     protected override async Task OnInitializedAsync()
     {
         await LocalDateTimeManager.SetFromJsAsync();
+        _updatesReceiver = LiveUpdatesClient.StartReceiving(RefreshAsync, $"spammer-{Id}");
     }
 
     protected override async Task OnParametersSetAsync()
@@ -214,7 +219,7 @@
         }
 
         _status = _spammer.BannDateTime == null ? SpammerStatus.Active : SpammerStatus.Banned;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private void OpenArchiveBannModal(ArchiveBann bann)
@@ -245,6 +250,7 @@
         var result = await modal.Result;
         if (result.Confirmed)
         {
+            LiveUpdatesClient.SendUpdate($"spammer-{Id}");
             await RefreshAsync();
         }
     }
@@ -259,8 +265,14 @@
         var result = await modal.Result;
         if (result.Confirmed)
         {
+            LiveUpdatesClient.SendUpdate($"spammer-{Id}");
             await RefreshAsync();
         }
+    }
+
+    public void Dispose()
+    {
+        _updatesReceiver.Dispose();
     }
 
 }

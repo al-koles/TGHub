@@ -126,6 +126,7 @@ public class TgSpamService : ITgSpamService
             }
 
             _liveUpdatesClient.SendUpdate($"channel-{channel.Id}");
+            _liveUpdatesClient.SendUpdate($"spammer-{spammer.Id}");
         }
     }
 }
