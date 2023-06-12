@@ -7,7 +7,8 @@ internal class LiveUpdatesHub
     public void SendUpdate(Guid senderId, params string[] identifiers)
     {
         var receiversToUpdate = _receivers
-            .Where(r => r.Id != senderId && identifiers.All(i => r.Identifiers.Contains(i)));
+            .Where(r => r.Id != senderId && identifiers.All(i => r.Identifiers.Contains(i)))
+            .ToList();
         foreach (var receiver in receiversToUpdate)
         {
             receiver.Handler.Invoke();

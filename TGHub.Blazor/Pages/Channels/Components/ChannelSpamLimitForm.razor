@@ -41,10 +41,7 @@
     protected override void OnParametersSet()
     {
         _channelSpamLimitModel.ChannelId = ChannelId;
-        if (_channelSpamLimitModel.ChannelSpamLimit == default)
-        {
-            _channelSpamLimitModel.ChannelSpamLimit = ChannelSpamLimit;
-        }
+        _channelSpamLimitModel.ChannelSpamLimit = ChannelSpamLimit;
     }
 
     private async Task OnValidSubmitAsync()
