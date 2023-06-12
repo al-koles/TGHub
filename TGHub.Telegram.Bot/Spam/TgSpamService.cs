@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using TGHub.Application;
+using TGHub.Application.Common.LiveUpdates;
 using TGHub.Application.Services.Channels;
 using TGHub.Application.Services.Spammers;
 using TGHub.Application.Services.Spammers.Models;
@@ -16,6 +16,7 @@ namespace TGHub.Telegram.Bot.Spam;
 public class TgSpamService : ITgSpamService
 {
     private readonly IChannelService _channelService;
+    private readonly ILiveUpdatesHub _liveUpdatesHub;
     private readonly ILogger<TgSpamService> _logger;
     private readonly ISpammerService _spammerService;
     private readonly ISpamMessageService _spamMessageService;
@@ -25,7 +26,8 @@ public class TgSpamService : ITgSpamService
 
     public TgSpamService(IChannelService channelService, ISpamModerator spamModerator,
         ITelegramBotClient telegramBotClient, ISpamMessageService spamMessageService,
-        ISpammerService spammerService, ISpamWordsService spamWordsService, ILogger<TgSpamService> logger)
+        ISpammerService spammerService, ISpamWordsService spamWordsService, ILogger<TgSpamService> logger,
+        ILiveUpdatesHub liveUpdatesHub)
     {
         _channelService = channelService;
         _spamModerator = spamModerator;
@@ -34,6 +36,7 @@ public class TgSpamService : ITgSpamService
         _spammerService = spammerService;
         _spamWordsService = spamWordsService;
         _logger = logger;
+        _liveUpdatesHub = liveUpdatesHub;
     }
 
     public async Task CheckMessageForSpamAsync(Message message, string text)
@@ -121,6 +124,8 @@ public class TgSpamService : ITgSpamService
                     _logger.LogError(e, "Failed to ban chat '{0}' user '{1}'", message.Chat.Id, message.From.Id);
                 }
             }
+
+            _liveUpdatesHub.SendUpdate($"channel-{channel.Id}");
         }
     }
 }

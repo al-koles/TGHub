@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using TGHub.Application.Common;
 using TGHub.Application.Common.DateAndTime;
+using TGHub.Application.Common.LiveUpdates;
 using TGHub.Application.Common.SessionStorage;
 using TGHub.Application.Services.ArchiveBanns;
 using TGHub.Application.Services.Base;
@@ -31,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<SessionStorageProvider>();
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         services.AddScoped<ILocalDateTimeManager, LocalDateTimeManager>();
+        services.AddSingleton<ILiveUpdatesHub, LiveUpdatesHub>();
 
         services.AddTransient<IService<TgHubUser>, Service<TgHubUser>>();
         services.AddTransient<IChannelService, ChannelService>();

@@ -1,5 +1,13 @@
 ﻿@attribute [Authorize]
 @page "/channels/{id:int}"
+@inject IStringLocalizer<UiStrings> UiStringsLoc
+@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
+@inject IToastService ToastService
+@inject ILogger<ChannelInfoPage> Logger
+@inject IServiceProvider ServiceProvider
+@inject ILocalDateTimeManager LocalDateTimeManager
+@inject NavigationManager NavigationManager
+@inject ILiveUpdatesHub LiveUpdatesHub
 @using TGHub.Application.Resources
 @using TGHub.Application.Services.Channels
 @using TGHub.Application.Services.Spammers
@@ -9,17 +17,12 @@
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
+@using TGHub.Application.Common.LiveUpdates
+@using TGHub.Application.Interfaces
 @using System.Globalization
 @using TGHub.Application.Common.Filtering
-@using TGHub.Application.Interfaces
 @using TGHub.Application.Common.Exceptions
-@inject IStringLocalizer<UiStrings> UiStringsLoc
-@inject IStringLocalizer<NotificationStrings> NotificationStringsLoc
-@inject IToastService ToastService
-@inject ILogger<ChannelInfoPage> Logger
-@inject IServiceProvider ServiceProvider
-@inject ILocalDateTimeManager LocalDateTimeManager
-@inject NavigationManager NavigationManager
+@implements IDisposable
 
 <div class="min-h-full w-full flex flex-col">
     <PageTitle>@UiStringsLoc[UiStrings.Channel]</PageTitle>
@@ -142,10 +145,12 @@
     private List<Spammer> _bannedSpammers = new();
     private List<SpamMessage> _lastSpamMessages = new();
     private List<SpamWord> _spamWords = new();
+    private IDisposable _updatesReceiver;
 
     protected override async Task OnInitializedAsync()
     {
         await LocalDateTimeManager.SetFromJsAsync();
+        _updatesReceiver = LiveUpdatesHub.StartReceiving(RefreshFromDbAsync, $"channel-{Id}");
     }
 
     protected override async Task OnParametersSetAsync()
@@ -193,6 +198,7 @@
             Where = w => w.ChannelId == Id,
             SortBy = w => w.Value
         });
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task RefreshFromTgAsync()
@@ -320,6 +326,11 @@
         {
             ToastService.ShowError(NotificationStringsLoc[NotificationStrings.DeleteError]);
         }
+    }
+
+    public void Dispose()
+    {
+        _updatesReceiver.Dispose();
     }
 
 }
