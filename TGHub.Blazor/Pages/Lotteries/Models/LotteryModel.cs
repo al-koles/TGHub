@@ -29,6 +29,7 @@ public class LotteryModel : IMapWith<Lottery>
     [Required(ErrorMessage = "The Channel field is required.")]
     public ChannelAdministrator Creator { get; set; }
 
+    [MaxLength(10)]
     [Required] public List<CustomInputFileModel> Attachments { get; set; } = new();
 
     public void Mapping(Profile profile)

@@ -655,6 +655,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing to show.
+        /// </summary>
+        public static string NothingToShow {
+            get {
+                return ResourceManager.GetString("NothingToShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         public static string Off {
