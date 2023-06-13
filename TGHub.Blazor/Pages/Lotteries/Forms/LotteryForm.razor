@@ -140,10 +140,11 @@
                     return;
                 }
 
+                Mapper.Map(Model, lottery);
+
                 lottery.StartDateTime = LocalDateTimeManager.Convert(lottery.StartDateTime, To.Utc);
                 lottery.EndDateTime = LocalDateTimeManager.Convert(lottery.EndDateTime, To.Utc);
 
-                Mapper.Map(Model, lottery);
                 await lotteryService.UpdateAsync(lottery);
             }
             else

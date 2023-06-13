@@ -35,8 +35,10 @@ public class PostModel : IMapWith<Post>
     [Required(ErrorMessage = "The Channel field is required.")]
     public ChannelAdministrator Creator { get; set; }
 
+    [MaxLength(100)]
     [Required] [ValidateComplexType] public List<PostButtonModel> Buttons { get; set; } = new();
 
+    [MaxLength(10)]
     [Required] public List<CustomInputFileModel> Attachments { get; set; } = new();
 
     public void Mapping(Profile profile)
