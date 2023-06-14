@@ -20,12 +20,13 @@
 @using TGHub.Application.Common.LiveUpdates
 @using TGHub.Application.Interfaces
 @using System.Globalization
+@using TGHub.Application
 @using TGHub.Application.Common.Filtering
 @using TGHub.Application.Common.Exceptions
 @implements IDisposable
 
+<PageTitle>@UiStringsLoc[UiStrings.Channel] - @Constants.WebSiteName</PageTitle>
 <div class="min-h-full w-full flex flex-col">
-    <PageTitle>@UiStringsLoc[UiStrings.Channel]</PageTitle>
     <PageHeaderTitle Text="@UiStringsLoc[UiStrings.Channel]"/>
     <div class="grow w-full grid gap-2 justify-center mt-3" style="grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));">
         <div class="rounded-xl bg-[#ffffff]/70 p-4">

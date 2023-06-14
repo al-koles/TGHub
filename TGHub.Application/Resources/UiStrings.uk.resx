@@ -468,7 +468,19 @@
   <data name="Unknown" xml:space="preserve">
     <value>Невідомий</value>
   </data>
+  <data name="AccessDeniedTitle" xml:space="preserve">
+    <value>Доступ заборонено</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Увійти</value>
+  </data>
+  <data name="NoChannelsTitle" xml:space="preserve">
+    <value>Канали відсутні</value>
+  </data>
   <data name="NothingToShow" xml:space="preserve">
     <value>Дані відсутні</value>
+  </data>
+  <data name="Post" xml:space="preserve">
+    <value>Пост</value>
   </data>
 </root>

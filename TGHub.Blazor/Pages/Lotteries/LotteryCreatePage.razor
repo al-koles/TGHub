@@ -1,9 +1,13 @@
 ﻿@attribute [Authorize]
 @page "/lotteries/create"
 @using System.Globalization
+@using TGHub.Application
+@using TGHub.Application.Resources
 @using TGHub.Blazor.Pages.Lotteries.Models
 @using TGHub.Blazor.Pages.Lotteries.Forms
+@inject IStringLocalizer<UiStrings> UiStringsLoc
 
+<PageTitle>@UiStringsLoc[UiStrings.CreateLottery] - @Constants.WebSiteName</PageTitle>
 <div class="h-full">
     <LotteryForm Model="@_model" IsEdit="@false" RedirectUrl="@RedirectUrl"/>
 </div>

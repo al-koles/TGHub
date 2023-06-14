@@ -5,12 +5,13 @@
 @using TGHub.Domain.Entities
 @using TGHub.Application.Common
 @using TGHub.Application.Common.Filtering
+@using TGHub.Application
 @attribute [Authorize]
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject IServiceProvider ServiceProvider
 @inject LocalStorageProvider LocalStorageProvider
 
-<PageTitle>@UiStringsLoc[UiStrings.Channels]</PageTitle>
+<PageTitle>@UiStringsLoc[UiStrings.Channels] - @Constants.WebSiteName</PageTitle>
 
 <div class="h-full flex flex-col">
     <div class="my-2">
