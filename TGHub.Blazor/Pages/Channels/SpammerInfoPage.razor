@@ -7,8 +7,10 @@
 @inject ILocalDateTimeManager LocalDateTimeManager
 @inject NavigationManager NavigationManager
 @inject ILiveUpdatesClient LiveUpdatesClient
+@inject LocalStorageProvider LocalStorageProvider
 @using TGHub.Application.Resources
 @using TGHub.Application.Services.ArchiveBanns
+@using TGHub.Application.Services.Channels
 @using TGHub.Application.Services.Spammers
 @using TGHub.Application.Services.SpamMessages
 @using TGHub.Blazor.Pages.Channels.Components
@@ -16,6 +18,7 @@
 @using TGHub.Blazor.Resources
 @using TGHub.Domain.Entities
 @using TGHub.Application.Common.LiveUpdates
+@using TGHub.Application.Common
 @using TGHub.Application
 @using System.Globalization
 @using TGHub.Application.Common.Filtering
@@ -187,6 +190,20 @@
             NavigationManager.NavigateTo("/channels");
             return;
         }
+
+        var channelService = scope.ServiceProvider.GetRequiredService<IChannelService>();
+        var channel = await channelService.FirstOrDefaultAsync(ch => ch.Id == spammer.ChannelId);
+
+        var currentAdministrator = channel!.Administrators
+            .FirstOrDefault(a => a.AdministratorId == LocalStorageProvider.Id);
+        var isUserAdministrator = currentAdministrator != null;
+        if (!isUserAdministrator)
+        {
+            ToastService.ShowError(string.Format(NotificationStringsLoc[UiStrings.AccessDenied], Id));
+            NavigationManager.NavigateTo("/access-denied?RedirectUrl=/channels");
+            return;
+        }
+
         _spammer = spammer;
         if (_spammer.BannDateTime.HasValue)
         {
