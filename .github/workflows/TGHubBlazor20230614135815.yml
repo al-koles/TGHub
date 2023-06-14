@@ -2,7 +2,7 @@ name: Build and deploy .NET Core application to Web App TGHubBlazor2023061413581
 on:
   push:
     branches:
-    - feat/add-live-updates
+    - dev
 env:
   AZURE_WEBAPP_NAME: TGHubBlazor20230614135815
   AZURE_WEBAPP_PACKAGE_PATH: TGHub.Blazor\published
