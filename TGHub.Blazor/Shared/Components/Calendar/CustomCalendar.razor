@@ -25,7 +25,7 @@
                         {
                             var events = Events.Where(e => e.ReleaseDateTime.Date == day)
                                 .OrderBy(e => e.ReleaseDateTime).ToList();
-                            <td class="border">
+                            <td class="border" style="width: calc(100% / 7)">
                                 <CalendarDay Date="@day" Events="@events" EventClick="@EventClick"/>
                             </td>
                         }
