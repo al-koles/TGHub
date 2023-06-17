@@ -12,6 +12,7 @@
 @using TGHub.Domain.Enums
 @using TGHub.Application.Common
 @using System.Globalization
+@using TGHub.Application
 
 @inject IMapper Mapper
 @inject NavigationManager NavigationManager
@@ -23,6 +24,7 @@
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 @inject ILocalDateTimeManager LocalDateTimeManager
 
+<PageTitle>@UiStringsLoc[UiStrings.Posts] - @Constants.WebSiteName</PageTitle>
 <div class="h-full flex flex-col">
     <div class="w-full flex items-center justify-between my-2">
         <PageHeaderTitle Text="@UiStringsLoc[UiStrings.Posts]"/>

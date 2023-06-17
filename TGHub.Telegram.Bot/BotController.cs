@@ -181,7 +181,7 @@ public class BotController : ControllerBase
             if (user.Username == null)
             {
                 await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery.Id,
-                    "Go to Telegram setting and specify your account username before", true);
+                    "Go to Telegram setting and specify your account username before", true, cacheTime: 10);
                 return;
             }
 
@@ -189,14 +189,14 @@ public class BotController : ControllerBase
             if (lottery == null)
             {
                 await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery!.Id,
-                    "This lottery was deleted");
+                    "This lottery was deleted", cacheTime: 10);
                 return;
             }
 
             if (lottery.ResultTelegramId != null)
             {
                 await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery!.Id,
-                    "This lottery ended");
+                    "This lottery ended", cacheTime: 10);
                 return;
             }
 
@@ -211,12 +211,12 @@ public class BotController : ControllerBase
                 });
                 await _lotteryService.UpdateAsync(lottery);
                 await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery.Id,
-                    "Congratulations! You are a participant now", true);
+                    "Congratulations! You are a participant now", true, cacheTime: 10);
             }
             else
             {
                 await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery.Id,
-                    "You are already a participant");
+                    "You are already a participant", cacheTime: 10);
             }
         }
         else
@@ -226,7 +226,7 @@ public class BotController : ControllerBase
                 $"sent by user ({user.Id}) " +
                 $"in chat ({update.CallbackQuery!.ChatInstance})");
             await _telegramBotClient.AnswerCallbackQueryAsync(update.CallbackQuery!.Id,
-                "Error. We've logged it and it will be fixed soon", true);
+                "Error. We've logged it and it will be fixed soon", true, cacheTime: 10);
         }
     }
 }

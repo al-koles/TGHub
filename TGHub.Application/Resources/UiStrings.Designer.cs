@@ -70,6 +70,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access denied.
+        /// </summary>
+        public static string AccessDeniedTitle {
+            get {
+                return ResourceManager.GetString("AccessDeniedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
         public static string Active {
@@ -520,6 +529,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string Login {
+            get {
+                return ResourceManager.GetString("Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Log out.
         /// </summary>
         public static string LogOut {
@@ -646,6 +664,15 @@ namespace TGHub.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No channels.
+        /// </summary>
+        public static string NoChannelsTitle {
+            get {
+                return ResourceManager.GetString("NoChannelsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorry, there&apos;s nothing at this address..
         /// </summary>
         public static string NotFound {
@@ -732,6 +759,15 @@ namespace TGHub.Application.Resources {
         public static string PhotoVideo {
             get {
                 return ResourceManager.GetString("PhotoVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post.
+        /// </summary>
+        public static string Post {
+            get {
+                return ResourceManager.GetString("Post", resourceCulture);
             }
         }
         

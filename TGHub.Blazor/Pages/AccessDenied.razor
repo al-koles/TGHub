@@ -1,8 +1,10 @@
 ﻿@page "/access-denied"
 @using TGHub.Application.Resources
 @using TGHub.Blazor.Resources
+@using TGHub.Application
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 
+<PageTitle>@UiStringsLoc[UiStrings.AccessDeniedTitle] - @Constants.WebSiteName</PageTitle>
 <div class="flex gap-4">
     @if (!string.IsNullOrEmpty(RedirectUrl))
     {

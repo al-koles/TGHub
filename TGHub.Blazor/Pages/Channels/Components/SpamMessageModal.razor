@@ -3,8 +3,10 @@
 @using TGHub.Domain.Entities
 @using TGHub.Domain.Enums
 @using System.Globalization
+@using TGHub.Application
 @inject IStringLocalizer<UiStrings> UiStringsLoc
 
+<PageTitle>@UiStringsLoc[UiStrings.SpamMessage] - @Constants.WebSiteName</PageTitle>
 <div>
     <label class="font-bold mr-1">@UiStringsLoc[UiStrings.Reason]: </label>
     @if ((SpamMessage.Type & SpamMessageType.OffensiveLanguage) == SpamMessageType.OffensiveLanguage)
