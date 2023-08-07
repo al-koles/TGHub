@@ -162,12 +162,12 @@
         using var scope = ServiceProvider.CreateScope();
         var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
         var posts = await postService.ListAsync(filter);
-        foreach (var post in posts)
-        {
-            post.ReleaseDateTime = LocalDateTimeManager.Convert(post.ReleaseDateTime, To.Local);
-        }
         _events = Mapper.Map<List<CalendarEventModel>>(posts);
         await RefreshEventsStatusesAsync(posts);
+        foreach (var _event in _events)
+        {
+            _event.ReleaseDateTime = LocalDateTimeManager.Convert(_event.ReleaseDateTime, To.Local);
+        }
         await InvokeAsync(StateHasChanged);
     }
 
