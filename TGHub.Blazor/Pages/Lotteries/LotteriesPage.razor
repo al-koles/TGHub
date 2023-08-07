@@ -168,8 +168,8 @@
         var lotteryScheduleService = scope.ServiceProvider.GetRequiredService<ILotteryScheduleService>();
         await Task.WhenAll(lotteries.Select(async lottery =>
         {
-            var lotteryAsyncStatus = lotteryScheduleService.GetLotterySendStatusAsync(lottery);
-            var resultAsyncStatus = lotteryScheduleService.GetResultSendStatusAsync(lottery);
+            var lotteryStatus = await lotteryScheduleService.GetLotterySendStatusAsync(lottery);
+            var resultStatus = await lotteryScheduleService.GetResultSendStatusAsync(lottery);
 
             lottery.StartDateTime = LocalDateTimeManager.Convert(lottery.StartDateTime, To.Local);
             lottery.EndDateTime = LocalDateTimeManager.Convert(lottery.EndDateTime, To.Local);
@@ -181,14 +181,14 @@
                     Id = lottery.Id,
                     ReleaseDateTime = lottery.StartDateTime,
                     Title = $"{UiStringsLoc[UiStrings.Start]}: {lottery.Title}",
-                    Status = Mapper.Map<CalendarEventStatus>(await lotteryAsyncStatus)
+                    Status = Mapper.Map<CalendarEventStatus>(lotteryStatus)
                 },
                 new CalendarEventModel
                 {
                     Id = lottery.Id,
                     ReleaseDateTime = lottery.EndDateTime,
                     Title = $"{UiStringsLoc[UiStrings.End]}: {lottery.Title}",
-                    Status = Mapper.Map<CalendarEventStatus>(await resultAsyncStatus)
+                    Status = Mapper.Map<CalendarEventStatus>(resultStatus)
                 }
             });
         }));
